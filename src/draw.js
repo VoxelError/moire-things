@@ -1,11 +1,13 @@
-export const stroke_line = (context, { start, end, width, stroke, cap }) => {
+export const stroke_line = (context, { start, end, width, stroke, cap, alpha }) => {
 	context.beginPath()
 	context.moveTo(start[0], start[1])
 	context.lineTo(end[0], end[1])
 	context.lineWidth = width ?? 1
 	context.strokeStyle = stroke ?? "white"
 	context.lineCap = cap ?? "butt"
+	context.globalAlpha = alpha ?? 1
 	context.stroke()
+	context.globalAlpha = 1
 }
 
 export const stroke_arc = (context, { center, radius, width, stroke }) => {
