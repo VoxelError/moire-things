@@ -10,7 +10,7 @@ export const stroke_line = (context, { start, end, width, stroke, cap, alpha }) 
 	context.globalAlpha = 1
 }
 
-export const stroke_arc = (context, { center, radius, width, stroke }) => {
+export const stroke_arc = (context, { center, radius, width, stroke, alpha }) => {
 	context.beginPath()
 	context.arc(
 		center[0],
@@ -21,10 +21,11 @@ export const stroke_arc = (context, { center, radius, width, stroke }) => {
 	)
 	context.lineWidth = width ?? 1
 	context.strokeStyle = stroke ?? "white"
+	context.globalAlpha = alpha ?? 1
 	context.stroke()
 }
 
-export const fill_arc = (context, { center, radius, fill }) => {
+export const fill_arc = (context, { center, radius, fill, alpha }) => {
 	context.beginPath()
 	context.arc(
 		center[0],
@@ -34,5 +35,6 @@ export const fill_arc = (context, { center, radius, fill }) => {
 		2 * Math.PI
 	)
 	context.fillStyle = fill ?? "white"
+	context.globalAlpha = alpha ?? 1
 	context.fill()
 }

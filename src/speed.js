@@ -4,7 +4,7 @@ const context = canvas.getContext("2d")
 const width = canvas.width = window.innerWidth
 const height = canvas.height = window.innerHeight
 
-const { sin, cos, abs, sqrt } = Math
+const { sin, cos, abs, sqrt, hypot } = Math
 const to_radians = (num) => (num * Math.PI) / 180
 
 let actor = {
@@ -16,7 +16,7 @@ let actor = {
 	y_thrust: 0,
 }
 
-const calc_speed = () => (abs(actor.x_thrust) + abs(actor.y_thrust))
+const calc_speed = () => hypot(actor.x_thrust, actor.y_thrust)
 
 let keybinds = {
 	ArrowUp: false,
@@ -84,7 +84,7 @@ const draw = () => {
 
 	controls()
 	move_actor()
-	draw_pendulum()
+	draw_actor()
 
 	requestAnimationFrame(draw)
 }
