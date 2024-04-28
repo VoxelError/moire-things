@@ -25,6 +25,20 @@ export const stroke_arc = (context, { center, radius, width, stroke, alpha }) =>
 	context.stroke()
 }
 
+export const stroke_square = (context, { center, side, width, stroke, alpha }) => {
+	context.beginPath()
+	context.rect(
+		center[0] - side / 2,
+		center[1] - side / 2,
+		side,
+		side,
+	)
+	context.lineWidth = width ?? 1
+	context.strokeStyle = stroke ?? "white"
+	context.globalAlpha = alpha ?? 1
+	context.stroke()
+}
+
 export const fill_arc = (context, { center, radius, fill, alpha }) => {
 	context.beginPath()
 	context.arc(
