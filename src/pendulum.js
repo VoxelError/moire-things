@@ -9,20 +9,34 @@ const height = canvas.height = window.innerHeight
 const pi = Math.PI
 const { sin, cos, abs, random, sqrt } = Math
 const to_radians = (num) => (num * Math.PI) / 180
+const sin_wave = (theta, amplitude = 1, v_shift = 0, frequency = 1, phase = 0) => amplitude * sin(frequency * (theta - phase)) + v_shift
+const cos_wave = (theta, amplitude = 1, v_shift = 0, frequency = 1, phase = 0) => amplitude * cos(frequency * (theta - phase)) + v_shift
 
 let count = 0
 const skip = (frames) => !(count % frames)
 
+let draw_mode = JSON.parse(localStorage.getItem("draw_mode")) ?? 1
 const points = JSON.parse(localStorage.getItem("points")) ?? []
 const add_point = (x, y, theta = 0, length = 150) => points.push([x, y, theta, length])
 
-const draw_points = () => cursor.held && skip(2) && add_point(cursor.x, cursor.y)
+const draw_points = () => {
+	if (!cursor.held) return
+
+	if (draw_mode == 1 && !skip(5)) return
+	if (draw_mode == 2 && !skip(5)) return
+	if (draw_mode == 3 && !skip(5)) return
+
+	add_point(cursor.x, cursor.y)
+}
 
 const plot_points = () => {
+	// const count_x = (multiplier) => (count - 1) * multiplier
 	// count < height / 2 && skip(5) && add_point(width / 2, height * 0.75 - count)
 	// count < width / 4 && skip(5) && add_point(width - count * 4, 0)
 	// count < 200 && skip(10) && add_point(width / 2, height / 2)
 	// count < 100 && skip(10) && add_point(center.x, center.y - count, 0, count + 200)
+	// count < height && skip(10) && add_point(width / 2 + count, count)
+	// count <= 45 && add_point(sin_wave(to_radians(count_x(10)), width / 4, width / 2, to_radians(45)), count_x(10) + 250)
 }
 
 const cursor = {
@@ -51,11 +65,6 @@ const add_eye = (e) => {
 
 document.addEventListener("mousedown", (e) => {
 	e.button == 0 && (cursor.held = true)
-	if (e.button == 1) {
-		count = 0
-		points.length = 0
-		// for (let i = 0; i < 66; i++) { add_point(width / 2, height / 2 + i * 5, 0, i * 5 + 150) }
-	}
 })
 document.addEventListener("mouseup", (e) => {
 	cursor.held = false
@@ -66,6 +75,16 @@ document.addEventListener("mousemove", (e) => {
 document.addEventListener("wheel", (e) => {
 	// 	e.preventDefault()
 	// 	cursor.size += e.deltaY * 0.1
+})
+document.addEventListener("keydown", (e) => {
+	if (e.code == "Backquote") {
+		count = 0
+		points.length = 0
+		// for (let i = 0; i < 66; i++) { add_point(width / 2, height / 2 + i * 5, 0, i * 5 + 150) }
+	}
+	for (let i = 1; i < 10; i++) {
+		e.code == `Digit${i}` && (draw_mode = i)
+	}
 })
 
 const draw_pendulums = () => {
@@ -118,7 +137,8 @@ const draw_fins = () => {
 			],
 			width: 8,
 			stroke: "grey",
-			alpha: 0.25 * (sin(theta / sqrt(length * 0.15)) + 1),
+			// alpha: 0.25 * (sin(theta / sqrt(length * 0.15)) + 1),
+			alpha: sin_wave(theta / sqrt(length * 0.15), 0.25, 0.35),
 			// alpha: 0.25,
 		})
 	})
@@ -146,16 +166,19 @@ const draw_orbs = () => {
 }
 
 const draw_bounce = () => {
+	const gravity = 9.82
+
 	points.forEach((point) => {
 		const [x, y, theta, length] = point
-		const motion = abs(cos(theta / sqrt(length * 0.15)) * y)
+		// const motion = abs(cos(theta / sqrt(length * 0.15)) * y)
+		const motion = height - abs(cos_wave(theta / sqrt(height - y / gravity), height - y))
 
-		point[2] += to_radians(15)
+		point[2] += to_radians(60)
 
 		fill_arc(context, {
 			center: [
 				x,
-				height - motion
+				motion
 			],
 			radius: 15,
 			alpha: 0.5,
@@ -164,9 +187,21 @@ const draw_bounce = () => {
 }
 
 const draw_spin = () => {
+	const middle = width / 2
+
+	stroke_line(context, {
+		start: [middle, 0],
+		end: [middle, height],
+		stroke: "grey",
+		alpha: 0.15 * sin(count * 0.08) + 0.5,
+	})
+
 	points.forEach((point) => {
 		const [x, y, theta] = point
-		const motion = (x / 2) * cos(theta) + width / 2
+		const motion = cos_wave(theta, x - middle, middle)
+		// const transparency = sin_wave(x < middle ? -theta : theta, 0.5, 0.5)
+		const transparency = sin_wave(theta, 0.5, 0.5)
+
 		point[2] += to_radians(3)
 
 		fill_arc(context, {
@@ -175,8 +210,38 @@ const draw_spin = () => {
 				y
 			],
 			radius: 15,
+			alpha: transparency,
+		})
+	})
+}
+
+const draw_snake = () => {
+	const middle = width / 2
+
+	stroke_line(context, {
+		start: [middle, 0],
+		end: [middle, height],
+		stroke: "grey",
+		alpha: 0.15 * sin(count * 0.08) + 0.5,
+	})
+
+	points.forEach((point) => {
+		const [x, y, theta] = point
+		const motion = (x - middle) * cos(theta) + middle
+		const alpha = 0.5 * sin(to_radians(720) * theta) + 0.5
+		point[2] += to_radians(3)
+
+		fill_arc(context, {
+			center: [
+				motion,
+				y
+			],
+			radius: 15 + alpha * 10,
 			// alpha: 0.25 * (sin(theta / sqrt(length * 0.15)) + 1.1),
-			alpha: 0.45 * sin(theta) + 0.5,
+			// alpha: 0.5 * sin(theta) + 0.5,
+			// alpha: 0.5 * sin(x < middle ? -theta : theta) + 0.5,
+			// alpha: 0.5 * sin(to_radians(1) * motion) + 0.5,
+			alpha,
 		})
 	})
 }
@@ -259,11 +324,23 @@ export const render = () => {
 	// fade(0.25)
 
 	localStorage.setItem("points", JSON.stringify(points))
+	localStorage.setItem("draw_mode", JSON.stringify(draw_mode))
 	draw_points()
 	plot_points()
 
-	draw_spin()
-	// draw_bounce()
+	draw_mode == 1 && draw_pendulums()
+	draw_mode == 2 && draw_fins()
+	draw_mode == 3 && draw_orbs()
+
+	draw_mode == 4 && draw_eyes()
+	draw_mode == 5 && draw_circles()
+
+	draw_mode == 6 && draw_spin()
+	draw_mode == 7 && draw_bounce()
+	draw_mode == 8 && draw_snake()
+
+	draw_mode == 9 && draw_squares()
+
 	draw_cursor()
 
 	requestAnimationFrame(render)
