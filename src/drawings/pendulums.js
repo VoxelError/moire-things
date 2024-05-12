@@ -18,6 +18,11 @@ const add_point = (x, y, theta = 0, length = 150) => points.push([x, y, theta, l
 const draw_points = () => {
 	if (!cursor.held) return
 
+	if (get_draw_mode() == 2) {
+		add_point(cursor.x, cursor.y, 0, /* random() * 333 */)
+		return
+	}
+
 	if (get_draw_mode() == 5) {
 		add_point(cursor.x, cursor.y)
 		cursor.held = false
@@ -40,14 +45,25 @@ const draw_points = () => {
 }
 
 const plot_points = () => {
-	const mult = 10
+	// if (get_draw_mode() == 2) {
+	// 	for (let i = 0; i < 360; i++) {
+	// 		add_point(
+	// 			width / 2 + (333 * cos(degrees(i))),
+	// 			height / 2 + (333 * sin(degrees(i))),
+	// 			-degrees(i)
+	// 		)
+	// 	}
+	// }
+
 	if (get_draw_mode() == 0) {
 		for (let i = 0; i < 6; i++) {
-			add_point(width / 2, height / 2, 0, 0)
+			add_point(width / 2, height / 2)
 		}
 	}
+
 	cursor.plot = false
-	// count < width / mult ? add_point(count * mult, height - (count ** 1.325)) : cursor.plot = false
+
+	// count < width / 10 ? add_point(count * 10, height - (count ** 1.325)) : cursor.plot = false
 	// count <= 45 && add_point(sin_wave(degrees(count * 10), width / 4, width / 2, degrees(45)), (count * 10) + 250)
 	// count < height / 2 && skip(5) && add_point(width / 2, height * 0.75 - count)
 	// count < width / 4 && skip(5) && add_point(width - count * 4, 0)
@@ -120,28 +136,35 @@ const draw_pendulums = () => {
 			],
 			radius: 15,
 			// alpha: 0.5 * (sin(1 / sqrt(length / gravity) * theta) + 1),
-			alpha: 1,
+			alpha: 0.5,
 		})
 	})
 }
 
+// console.log(context.translate)
+// context.translate(10, 10)
+
 const draw_fins = () => {
 	points.forEach((point) => {
 		const [x, y, theta, length] = point
-		const motion = cos(theta / sqrt(length * 0.15))
 
-		point[2] += degrees(15)
+		point[2] += degrees(20)
+		// point[2] += sin(degrees(count)) / 2 + 0.6
+		// point[3] = (cos(theta) + 1) * 250
 
 		stroke_line(context, {
 			start: [x, y],
 			end: [
-				x + (length * sin(motion)),
-				y + (length * cos(motion))
+				x + (length * sin(theta)),
+				y + (length * cos(theta))
+				// x,
+				// y + (length) - height / 2
 			],
-			width: 8,
+			width: 10,
 			stroke: "grey",
+			// cap: "round",
 			// alpha: 0.25 * (sin(theta / sqrt(length * 0.15)) + 1),
-			alpha: sin_wave(theta / sqrt(length * 0.15), 0.25, 0.35),
+			alpha: sin_wave(theta, 0.25, 0.35, 0.25),
 			// alpha: 0.25,
 		})
 	})
@@ -327,11 +350,13 @@ const draw_eyes = () => {
 }
 
 const draw_larva = () => {
-	if (points.length > 6) points.length = 6
+	if (points.length > 1) points.length = 1
 	points.forEach((point, index) => {
-		point[2] = degrees(count / 200) * (index + 1)
+		const time = degrees(count) * (index + 1)
 
-		const unit = 5
+		point[2] = time / 100
+
+		const unit = 2
 		const max = 500
 
 		// context.save()
@@ -346,9 +371,8 @@ const draw_larva = () => {
 					// width / 2,
 					// height / 2
 				],
-				// radius: i - (phase * unit),
 				radius: i,
-				alpha: 0.25,
+				alpha: 0.5,
 				stroke: "red"
 
 			})
@@ -361,6 +385,33 @@ const draw_larva = () => {
 	context.font = "30px Arial"
 	context.globalAlpha = 0.1
 	context.fillText(count, 25, 50)
+}
+
+const draw_twirls = () => {
+	points.forEach((point) => {
+		const [x, y, theta, length] = point
+		const motion = sin(theta)
+
+		point[2] += degrees(30)
+		// point[2] += sin(degrees(count)) / 2 + 0.6
+		// point[3] = (cos(theta) + 1) * 250
+
+		stroke_line(context, {
+			start: [x, y],
+			end: [
+				x + (length * sin(motion)),
+				y + (length * cos(motion))
+				// x,
+				// y + (length) - height / 2
+			],
+			width: 10,
+			stroke: "grey",
+			// cap: "round",
+			// alpha: 0.25 * (sin(theta / sqrt(length * 0.15)) + 1),
+			// alpha: sin_wave(theta / sqrt(length * 0.15), 0.25, 0.35),
+			alpha: 0.25,
+		})
+	})
 }
 
 const draw_cursor = () => {

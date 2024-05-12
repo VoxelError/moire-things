@@ -1,35 +1,30 @@
-import React, { StrictMode } from 'react'
+import React, { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
-import circles from './canvases/circles'
-import pendulums from './canvases/pendulums'
-import { get_draw_mode } from './controls'
+import { Provider } from 'react-redux'
+import { configureStore } from '@reduxjs/toolkit'
 
-// createRoot(document.getElementById('root')).render(
-// 	<StrictMode>
-// 		{/* <App /> */}
-// 	</StrictMode>
-// )
+import pendulums from './drawings/pendulums.js'
+import circles from './drawings/circles.js'
+import count from './reducers/count.js'
 
-// document.getElementById("canvas_type").setAttribute("src", "./src/canvases/pendulum.js")
+const store = configureStore({ reducer: { count } })
 
-!function render() {
-	pendulums()
-	// circles()
-
-	// switch (get_draw_mode()) {
-	// case 1: pendulums(); break
-	// case 2: draw_fins(); break
-	// case 3: draw_orbs(); break
-	// case 4: circles(); break
-	// case 5: draw_eyes(); break
-	// case 6: draw_spin(); break
-	// case 7: draw_bounce(); break
-	// case 8: draw_snake(); break
-	// case 9: draw_squares(); break
-	// case 0: draw_hyperclock(); break
-	// }
-
+!function update() {
 	const count = JSON.parse(localStorage.getItem("count")) ?? 0
 	localStorage.setItem("count", JSON.stringify(count + 1))
-	requestAnimationFrame(render)
+
+	pendulums()
+	requestAnimationFrame(update)
 }()
+
+const App = () => {
+	useEffect(() => { })
+}
+
+createRoot(document.getElementById('root')).render(
+	<StrictMode>
+		<Provider store={store}>
+			<App />
+		</Provider>
+	</StrictMode>
+)
