@@ -4,10 +4,10 @@ import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 
 import pendulums from './drawings/pendulums.js'
-import circles from './drawings/circles.js'
 import count from './reducers/count.js'
+import points from './reducers/points.js'
 
-const store = configureStore({ reducer: { count } })
+const store = configureStore({ reducer: { count, points } })
 
 !function update() {
 	const count = JSON.parse(localStorage.getItem("count")) ?? 0

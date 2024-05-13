@@ -1,12 +1,15 @@
 import { get_draw_mode } from "../controls.js"
 import { fill_arc, stroke_arc, stroke_line, stroke_square } from "../draw_tools.js"
-import { pi, sin, cos, abs, sqrt, random, floor, degrees, to_degrees, sin_wave, cos_wave } from "../math.js"
+import { pi, sin, cos, abs, sqrt, random, floor, degrees, sin_wave, cos_wave } from "../math.js"
+import mother from "./heart.js"
+import circles from "./circles.js"
+import pointer from "./pointer.js"
 
 const canvas = document.getElementById("game_canvas")
 const context = canvas.getContext("2d")
 
-const width = canvas.width = window.innerWidth
-const height = canvas.height = window.innerHeight
+export const width = canvas.width = window.innerWidth
+export const height = canvas.height = window.innerHeight
 
 let count = 0
 const reset_count = () => localStorage.setItem("count", JSON.stringify(0))
@@ -72,7 +75,7 @@ const plot_points = () => {
 	// count < height && skip(10) && add_point(width / 2 + count, count)
 }
 
-const cursor = {
+export const cursor = {
 	x: width - 50,
 	y: 50,
 	r: 0,
@@ -80,11 +83,18 @@ const cursor = {
 	held: false,
 	grabbed: true,
 	size: 66,
-	plot: false
+	plot: false,
+	pin: {
+		x: width / 2 + 200,
+		y: height / 2
+	}
 }
 
 document.addEventListener("mousedown", (e) => {
 	e.button == 0 && (cursor.held = true)
+	cursor.pin.x = e.pageX
+	cursor.pin.y = e.pageY
+	// console.log(cursor.pin)
 })
 document.addEventListener("mouseup", (e) => {
 	cursor.held = false
@@ -274,22 +284,6 @@ const draw_snake = () => {
 	})
 }
 
-const draw_circles = () => {
-	points.forEach((point) => {
-		const [x, y] = point
-		const phase = abs(sin((point[2])))
-		point[2] += degrees(3)
-
-		stroke_arc(context, {
-			center: [x, y],
-			radius: phase * height * 0.1,
-			// alpha: 1 - phase,
-			alpha: phase * 0.5,
-
-		})
-	})
-}
-
 // add_point(width / 2, height / 2, 50, 50)
 // add_point(width / 2, height / 2, -50, 50)
 // add_point(width / 2, height / 2, 50, -50)
@@ -414,17 +408,6 @@ const draw_twirls = () => {
 	})
 }
 
-const draw_cursor = () => {
-	cursor.delta += degrees(1)
-	stroke_arc(context, {
-		center: [
-			cursor.x,
-			cursor.y
-		],
-		radius: abs(sin(cursor.delta * 2.5) * cursor.size / 5)
-	})
-}
-
 const fade = (alpha) => {
 	context.save()
 	context.globalAlpha = alpha
@@ -443,20 +426,21 @@ export default () => {
 	localStorage.setItem("points", JSON.stringify(points))
 	cursor.plot && plot_points()
 	draw_points()
-	draw_cursor()
-
-	// draw_pendulums()
 
 	switch (get_draw_mode()) {
 		case 1: draw_pendulums(); break
 		case 2: draw_fins(); break
 		case 3: draw_orbs(); break
-		case 4: draw_circles(); break
+		case 4: circles(context, points); break
 		case 5: draw_eyes(); break
 		case 6: draw_spin(); break
 		case 7: draw_bounce(); break
 		case 8: draw_snake(); break
 		case 9: draw_squares(); break
 		case 0: draw_larva(); break
+
+		case 101: mother(context, count); break
 	}
+
+	pointer(context)
 }

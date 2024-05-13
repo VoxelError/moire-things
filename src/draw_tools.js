@@ -39,6 +39,30 @@ export const stroke_square = (context, { center, side, width, stroke, alpha }) =
 	context.stroke()
 }
 
+export const stroke_curve1 = (context, { start, end, control, width, stroke, cap, alpha }) => {
+	context.beginPath()
+	context.moveTo(start[0], start[1])
+	context.quadraticCurveTo(control[0], control[1], end[0], end[1])
+	context.lineWidth = width ?? 1
+	context.strokeStyle = stroke ?? "white"
+	context.lineCap = cap ?? "butt"
+	context.globalAlpha = alpha ?? 1
+	context.stroke()
+	context.globalAlpha = 1
+}
+
+export const stroke_curve2 = (context, { start, end, control, width, stroke, cap, alpha }) => {
+	context.beginPath()
+	context.moveTo(start[0], start[1])
+	context.bezierCurveTo(control[0], control[1], control[2], control[3], end[0], end[1])
+	context.lineWidth = width ?? 1
+	context.strokeStyle = stroke ?? "white"
+	context.lineCap = cap ?? "butt"
+	context.globalAlpha = alpha ?? 1
+	context.stroke()
+	context.globalAlpha = 1
+}
+
 export const fill_arc = (context, { center, radius, fill, alpha }) => {
 	context.beginPath()
 	context.arc(
