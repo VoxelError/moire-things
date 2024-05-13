@@ -1,12 +1,15 @@
 import { get_draw_mode } from "../controls.js"
 import { fill_arc, stroke_arc, stroke_line, stroke_square } from "../draw_tools.js"
-import { pi, sin, cos, abs, sqrt, random, floor, degrees, to_degrees, sin_wave, cos_wave } from "../math.js"
+import { pi, sin, cos, abs, sqrt, random, floor, degrees, sin_wave, cos_wave } from "../math.js"
+import mother from "./heart.js"
+import circles from "./circles.js"
+import pointer from "./pointer.js"
 
 const canvas = document.getElementById("game_canvas")
 const context = canvas.getContext("2d")
 
-const width = canvas.width = window.innerWidth
-const height = canvas.height = window.innerHeight
+export const width = canvas.width = window.innerWidth
+export const height = canvas.height = window.innerHeight
 
 let count = 0
 const reset_count = () => localStorage.setItem("count", JSON.stringify(0))
@@ -17,6 +20,11 @@ const add_point = (x, y, theta = 0, length = 150) => points.push([x, y, theta, l
 
 const draw_points = () => {
 	if (!cursor.held) return
+
+	if (get_draw_mode() == 2) {
+		add_point(cursor.x, cursor.y, 0, /* random() * 333 */)
+		return
+	}
 
 	if (get_draw_mode() == 5) {
 		add_point(cursor.x, cursor.y)
@@ -40,14 +48,25 @@ const draw_points = () => {
 }
 
 const plot_points = () => {
-	const mult = 10
+	// if (get_draw_mode() == 2) {
+	// 	for (let i = 0; i < 360; i++) {
+	// 		add_point(
+	// 			width / 2 + (333 * cos(degrees(i))),
+	// 			height / 2 + (333 * sin(degrees(i))),
+	// 			-degrees(i)
+	// 		)
+	// 	}
+	// }
+
 	if (get_draw_mode() == 0) {
 		for (let i = 0; i < 6; i++) {
-			add_point(width / 2, height / 2, 0, 0)
+			add_point(width / 2, height / 2)
 		}
 	}
+
 	cursor.plot = false
-	// count < width / mult ? add_point(count * mult, height - (count ** 1.325)) : cursor.plot = false
+
+	// count < width / 10 ? add_point(count * 10, height - (count ** 1.325)) : cursor.plot = false
 	// count <= 45 && add_point(sin_wave(degrees(count * 10), width / 4, width / 2, degrees(45)), (count * 10) + 250)
 	// count < height / 2 && skip(5) && add_point(width / 2, height * 0.75 - count)
 	// count < width / 4 && skip(5) && add_point(width - count * 4, 0)
@@ -56,7 +75,7 @@ const plot_points = () => {
 	// count < height && skip(10) && add_point(width / 2 + count, count)
 }
 
-const cursor = {
+export const cursor = {
 	x: width - 50,
 	y: 50,
 	r: 0,
@@ -64,11 +83,18 @@ const cursor = {
 	held: false,
 	grabbed: true,
 	size: 66,
-	plot: false
+	plot: false,
+	pin: {
+		x: width / 2 + 200,
+		y: height / 2
+	}
 }
 
 document.addEventListener("mousedown", (e) => {
 	e.button == 0 && (cursor.held = true)
+	cursor.pin.x = e.pageX
+	cursor.pin.y = e.pageY
+	// console.log(cursor.pin)
 })
 document.addEventListener("mouseup", (e) => {
 	cursor.held = false
@@ -120,28 +146,35 @@ const draw_pendulums = () => {
 			],
 			radius: 15,
 			// alpha: 0.5 * (sin(1 / sqrt(length / gravity) * theta) + 1),
-			alpha: 1,
+			alpha: 0.5,
 		})
 	})
 }
 
+// console.log(context.translate)
+// context.translate(10, 10)
+
 const draw_fins = () => {
 	points.forEach((point) => {
 		const [x, y, theta, length] = point
-		const motion = cos(theta / sqrt(length * 0.15))
 
-		point[2] += degrees(15)
+		point[2] += degrees(20)
+		// point[2] += sin(degrees(count)) / 2 + 0.6
+		// point[3] = (cos(theta) + 1) * 250
 
 		stroke_line(context, {
 			start: [x, y],
 			end: [
-				x + (length * sin(motion)),
-				y + (length * cos(motion))
+				x + (length * sin(theta)),
+				y + (length * cos(theta))
+				// x,
+				// y + (length) - height / 2
 			],
-			width: 8,
+			width: 10,
 			stroke: "grey",
+			// cap: "round",
 			// alpha: 0.25 * (sin(theta / sqrt(length * 0.15)) + 1),
-			alpha: sin_wave(theta / sqrt(length * 0.15), 0.25, 0.35),
+			alpha: sin_wave(theta, 0.25, 0.35, 0.25),
 			// alpha: 0.25,
 		})
 	})
@@ -251,22 +284,6 @@ const draw_snake = () => {
 	})
 }
 
-const draw_circles = () => {
-	points.forEach((point) => {
-		const [x, y] = point
-		const phase = abs(sin((point[2])))
-		point[2] += degrees(3)
-
-		stroke_arc(context, {
-			center: [x, y],
-			radius: phase * height * 0.1,
-			// alpha: 1 - phase,
-			alpha: phase * 0.5,
-
-		})
-	})
-}
-
 // add_point(width / 2, height / 2, 50, 50)
 // add_point(width / 2, height / 2, -50, 50)
 // add_point(width / 2, height / 2, 50, -50)
@@ -327,11 +344,13 @@ const draw_eyes = () => {
 }
 
 const draw_larva = () => {
-	if (points.length > 6) points.length = 6
+	if (points.length > 1) points.length = 1
 	points.forEach((point, index) => {
-		point[2] = degrees(count / 200) * (index + 1)
+		const time = degrees(count) * (index + 1)
 
-		const unit = 5
+		point[2] = time / 100
+
+		const unit = 2
 		const max = 500
 
 		// context.save()
@@ -346,9 +365,8 @@ const draw_larva = () => {
 					// width / 2,
 					// height / 2
 				],
-				// radius: i - (phase * unit),
 				radius: i,
-				alpha: 0.25,
+				alpha: 0.5,
 				stroke: "red"
 
 			})
@@ -363,14 +381,30 @@ const draw_larva = () => {
 	context.fillText(count, 25, 50)
 }
 
-const draw_cursor = () => {
-	cursor.delta += degrees(1)
-	stroke_arc(context, {
-		center: [
-			cursor.x,
-			cursor.y
-		],
-		radius: abs(sin(cursor.delta * 2.5) * cursor.size / 5)
+const draw_twirls = () => {
+	points.forEach((point) => {
+		const [x, y, theta, length] = point
+		const motion = sin(theta)
+
+		point[2] += degrees(30)
+		// point[2] += sin(degrees(count)) / 2 + 0.6
+		// point[3] = (cos(theta) + 1) * 250
+
+		stroke_line(context, {
+			start: [x, y],
+			end: [
+				x + (length * sin(motion)),
+				y + (length * cos(motion))
+				// x,
+				// y + (length) - height / 2
+			],
+			width: 10,
+			stroke: "grey",
+			// cap: "round",
+			// alpha: 0.25 * (sin(theta / sqrt(length * 0.15)) + 1),
+			// alpha: sin_wave(theta / sqrt(length * 0.15), 0.25, 0.35),
+			alpha: 0.25,
+		})
 	})
 }
 
@@ -392,20 +426,21 @@ export default () => {
 	localStorage.setItem("points", JSON.stringify(points))
 	cursor.plot && plot_points()
 	draw_points()
-	draw_cursor()
-
-	// draw_pendulums()
 
 	switch (get_draw_mode()) {
 		case 1: draw_pendulums(); break
 		case 2: draw_fins(); break
 		case 3: draw_orbs(); break
-		case 4: draw_circles(); break
+		case 4: circles(context, points); break
 		case 5: draw_eyes(); break
 		case 6: draw_spin(); break
 		case 7: draw_bounce(); break
 		case 8: draw_snake(); break
 		case 9: draw_squares(); break
 		case 0: draw_larva(); break
+
+		case 101: mother(context, count); break
 	}
+
+	pointer(context)
 }
