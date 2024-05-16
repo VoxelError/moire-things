@@ -39,6 +39,20 @@ export const stroke_square = (context, { center, side, width, stroke, alpha }) =
 	context.stroke()
 }
 
+export const stroke_rect = (context, { start, dims, width, stroke, alpha }) => {
+	context.beginPath()
+	context.rect(
+		start[0],
+		start[1],
+		dims[0],
+		dims[1],
+	)
+	context.lineWidth = width ?? 1
+	context.strokeStyle = stroke ?? "white"
+	context.globalAlpha = alpha ?? 1
+	context.stroke()
+}
+
 export const stroke_curve1 = (context, { start, end, control, width, stroke, cap, alpha }) => {
 	context.beginPath()
 	context.moveTo(start[0], start[1])

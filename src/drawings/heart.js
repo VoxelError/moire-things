@@ -1,38 +1,22 @@
-import { stroke_curve2, stroke_line } from "../draw_tools"
-import { abs, cos, cos_wave, degrees, sin } from "../math"
-import { width, height } from "./pendulums"
+import { stroke_curve2, stroke_line } from "../lib/draws"
+import { abs, cos, cos_wave, degrees, sin } from "../lib/math"
+import { width, height, count } from "./_main"
 
-export default (context, count) => {
+export default (context) => {
 	const axis = {
 		x: width / 2,
 		y: height / 2
 	}
 
-	const point1 = {
-		x: 300,
-		y: 400
-	}
-
-	const point2 = {
-		x: 400,
-		y: 0
-	}
+	const point1 = { x: 300, y: 400 }
+	const point2 = { x: 400, y: 0 }
 
 	context.save()
 	context.translate(axis.x, axis.y)
 	context.scale(1, -1)
 
-	// stroke_line(context, {
-	// 	start: [-axis.x, 0],
-	// 	end: [axis.x, 0],
-	// 	alpha: 0.1
-	// })
-
-	// stroke_line(context, {
-	// 	start: [0, -axis.y],
-	// 	end: [0, axis.y],
-	// 	alpha: 0.1
-	// })
+	// stroke_line(context, { start: [-axis.x, 0], end: [axis.x, 0], alpha: 0.1 })
+	// stroke_line(context, { start: [0, -axis.y], end: [0, axis.y], alpha: 0.1 })
 
 	const max = 100
 

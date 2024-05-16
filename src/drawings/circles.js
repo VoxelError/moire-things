@@ -1,8 +1,7 @@
-import { stroke_arc } from "../draw_tools.js"
-import { sin, abs, degrees } from "../math.js"
-import { width, height } from "./pendulums"
+import { stroke_arc } from "../lib/draws.js"
+import { sin, abs, degrees } from "../lib/math.js"
+import { width, height } from "./_main.js"
 
-// abs, sin, degrees, stroke_arc, height
 export default (context, points) => {
 	points.forEach((point) => {
 		const [x, y] = point

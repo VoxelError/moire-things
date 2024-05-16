@@ -1,11 +1,8 @@
-import { get_draw_mode } from "../controls"
-import { stroke_arc } from "../draw_tools"
-import { abs, degrees, sin } from "../math"
-import { cursor } from "./pendulums"
+import { stroke_arc } from "../lib/draws"
+import { abs, degrees, sin } from "../lib/math"
+import { cursor } from "./_main"
 
 export default (context) => {
-	if (get_draw_mode() == 101) return
-
 	cursor.delta += degrees(1)
 	stroke_arc(context, {
 		center: [
