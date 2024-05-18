@@ -9,23 +9,12 @@
 
 <body>
 	<canvas id="game_canvas"></canvas>
+	<div id="menu">
+		<button id="reset" class="menu-item">Reset</button>
+		<button id="plot" class="menu-item">Plot</button>
+		<select id="drawing_mode" class="menu-item"></select>
+	</div>
 	<script type="module" src="./src/index.js"></script>
-	<script type="module" src="./src/lib/controls.js"></script>
-	<style>
-		body {
-			margin: 0px;
-			background-color: black;
-			display: flex;
-		}
-
-		div {
-			display: flex;
-		}
-
-		canvas {
-			padding: 0px;
-		}
-	</style>
 </body>
 
 </html>

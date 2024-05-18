@@ -5,7 +5,7 @@ export default (context, points) => {
 	points.forEach((point) => {
 		const [x, y, theta, length] = point
 
-		point[2] += degrees(20)
+		point[2] += degrees(5)
 		// point[2] += sin(degrees(count)) / 2 + 0.6
 		// point[3] = (cos(theta) + 1) * 250
 

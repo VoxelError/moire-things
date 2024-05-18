@@ -1,0 +1,26 @@
+body {
+	margin: 0px;
+	background-color: black;
+	display: flex;
+	cursor: none;
+}
+
+#menu {
+	display: flex;
+	position: fixed;
+	top: 0;
+	right: 0;
+}
+
+.menu-item {
+	margin: 16px;
+	width: 100px;
+	height: 25px;
+	background-color: black;
+	color: white;
+	text-align: center;
+}
+
+canvas {
+	padding: 0px;
+}
