@@ -1,22 +1,16 @@
-const canvas = document.getElementById("game_canvas")
-const context = canvas.getContext("2d")
-
-const width = canvas.width = window.innerWidth
-const height = canvas.height = window.innerHeight
+import { degrees } from "../lib/math"
+import { height, width } from "./_main"
 
 const { sin, cos, abs, sqrt, hypot } = Math
-const to_radians = (num) => (num * Math.PI) / 180
 
 let actor = {
 	x: width / 2,
 	y: height / 2,
 	r: 30,
-	a: to_radians(90),
+	a: degrees(90),
 	x_thrust: 0,
 	y_thrust: 0,
 }
-
-const calc_speed = () => hypot(actor.x_thrust, actor.y_thrust)
 
 let keybinds = {
 	ArrowUp: false,
@@ -36,8 +30,8 @@ key_listen("ArrowRight")
 key_listen("ArrowLeft")
 
 const controls = () => {
-	keybinds.ArrowRight && (actor.a -= to_radians(5))
-	keybinds.ArrowLeft && (actor.a += to_radians(5))
+	keybinds.ArrowRight && (actor.a -= degrees(5))
+	keybinds.ArrowLeft && (actor.a += degrees(5))
 
 	if (keybinds.ArrowUp) {
 		actor.x_thrust += cos(actor.a) * 0.2
@@ -60,10 +54,13 @@ const move_actor = () => {
 	actor.y > height + actor.r && (actor.y = -actor.r)
 }
 
-const draw_actor = () => {
+export default (context) => {
+	controls()
+	move_actor()
+
 	const { x, y, r, a } = actor
 	context.beginPath()
-	context.arc(x, y, r + calc_speed(), 0, to_radians(360))
+	context.arc(x, y, r + hypot(actor.x_thrust, actor.y_thrust), 0, degrees(360))
 	context.moveTo(
 		x - (r * sin(a)),
 		y - (r * cos(a)),)
@@ -78,15 +75,3 @@ const draw_actor = () => {
 	context.strokeStyle = "white"
 	context.stroke()
 }
-
-const draw = () => {
-	context.clearRect(0, 0, width, height)
-
-	controls()
-	move_actor()
-	draw_actor()
-
-	requestAnimationFrame(draw)
-}
-
-draw()

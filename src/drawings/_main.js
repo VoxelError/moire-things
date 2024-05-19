@@ -1,5 +1,4 @@
-import { draw_points, drawing_mode, plot_points } from "../lib/controls.js"
-import { cos, degrees, pi, sin } from "../lib/math.js"
+import { cursor, draw_points, drawing_mode, plot_points } from "../lib/controls.js"
 
 import heart from "./heart.js"
 import circles from "./circles.js"
@@ -24,61 +23,49 @@ const context = canvas.getContext("2d")
 export const width = canvas.width = window.innerWidth
 export const height = canvas.height = window.innerHeight
 
-export let count = 0
-const reset_count = () => localStorage.setItem("count", JSON.stringify(0))
-const points = JSON.parse(localStorage.getItem("points")) ?? []
-const set_points = (length) => points.length = length
-const reset_points = () => points.length = 0
+export let count = JSON.parse(localStorage.getItem("count")) ?? 0
+export const points = JSON.parse(localStorage.getItem("points")) ?? []
 
-const skip = (frames) => !(count % frames)
 export const add_point = (x, y, theta = 0, length = 150) => points.push([x, y, theta, length])
 
-export const cursor = {
-	x: width - 50,
-	y: 50,
-	r: 0,
-	delta: 0,
-	held: false,
-	grabbed: true,
-	size: 66,
-	plot: false,
-	menu: false,
-	pin: {
-		x: width / 2 + 200,
-		y: height / 2
-	}
-}
+// const skip = (frames) => !(count % frames)
 
-document.addEventListener("keydown", (e) => {
-	if (e.code == "KeyW") {
-		reset_count()
-		reset_points()
-		context.clearRect(0, 0, width, height)
-
-		drawing_mode == "larva" && (cursor.plot = true)
-	}
+const reset_button = document.getElementById("reset_button")
+reset_button.addEventListener("click", () => {
+	count = 0
+	points.length = 0
+	context.clearRect(0, 0, width, height)
 })
 
-const fade = (alpha) => {
-	context.save()
-	context.globalAlpha = alpha
-	context.fillStyle = "black"
-	context.fillRect(0, 0, width, height)
-	context.restore()
-}
+const plot_button = document.getElementById("plot_button")
+plot_button.addEventListener("click", () => plot_points())
+
+// const fade = (alpha) => {
+// 	context.save()
+// 	context.globalAlpha = alpha
+// 	context.fillStyle = "black"
+// 	context.fillRect(0, 0, width, height)
+// 	context.restore()
+// }
 
 // context.globalCompositeOperation = "xor"
 
 export default () => {
-	count = JSON.parse(localStorage.getItem("count"))
+	localStorage.setItem("count", JSON.stringify(count++))
 	localStorage.setItem("points", JSON.stringify(points))
-	cursor.plot && plot_points()
+	localStorage.setItem("drawing_mode", JSON.stringify(drawing_mode))
 	draw_points()
+
+	switch (drawing_mode) {
+		case "Fins": plot_button.style.color = "white"; break
+		case "Squares": plot_button.style.color = "white"; break
+		case "Sun": plot_button.style.color = "white"; break
+		default: plot_button.style.color = "grey"; break
+	}
 
 	context.clearRect(0, 0, width, height)
 	// fade(0.25)
-
-	pointer(context)
+	cursor.show && pointer(context)
 
 	switch (drawing_mode) {
 		case "Larva": larva(context, points); break

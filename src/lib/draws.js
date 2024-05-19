@@ -13,6 +13,7 @@ const stroke = (type, {
 	context.lineCap = cap
 	context.globalAlpha = alpha
 	context.stroke()
+	context.globalAlpha = 1
 }
 
 export const stroke_line = (context, { start, end, width, stroke, cap, alpha }) => {
@@ -40,6 +41,7 @@ export const stroke_arc = (context, { center, radius, width, stroke, alpha }) =>
 	context.strokeStyle = stroke ?? "white"
 	context.globalAlpha = alpha ?? 1
 	context.stroke()
+	context.globalAlpha = 1
 }
 
 export const stroke_ellipse = (context, { center, radii, rotation, arc = [0, tau], width, stroke, alpha }) => {
@@ -57,6 +59,7 @@ export const stroke_ellipse = (context, { center, radii, rotation, arc = [0, tau
 	context.strokeStyle = stroke ?? "white"
 	context.globalAlpha = alpha ?? 1
 	context.stroke()
+	context.globalAlpha = 1
 }
 
 export const stroke_square = (context, { center, side, width, stroke, alpha }) => {
@@ -71,6 +74,7 @@ export const stroke_square = (context, { center, side, width, stroke, alpha }) =
 	context.strokeStyle = stroke ?? "white"
 	context.globalAlpha = alpha ?? 1
 	context.stroke()
+	context.globalAlpha = 1
 }
 
 export const stroke_rect = (context, { start, dims, width, stroke, alpha }) => {
@@ -85,6 +89,7 @@ export const stroke_rect = (context, { start, dims, width, stroke, alpha }) => {
 	context.strokeStyle = stroke ?? "white"
 	context.globalAlpha = alpha ?? 1
 	context.stroke()
+	context.globalAlpha = 1
 }
 
 export const stroke_curve1 = (context, { start, end, control, width, stroke, cap, alpha }) => {
@@ -123,4 +128,5 @@ export const fill_arc = (context, { center, radius, fill, alpha }) => {
 	context.fillStyle = fill ?? "white"
 	context.globalAlpha = alpha ?? 1
 	context.fill()
+	context.globalAlpha = 1
 }

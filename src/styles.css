@@ -3,17 +3,20 @@ body {
 	background-color: black;
 	display: flex;
 	cursor: none;
+	user-select: none;
 }
 
 #menu {
-	display: flex;
+	margin: 16px;
 	position: fixed;
 	top: 0;
 	right: 0;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 16px;
 }
 
 .menu-item {
-	margin: 16px;
 	width: 100px;
 	height: 25px;
 	background-color: black;
@@ -21,6 +24,14 @@ body {
 	text-align: center;
 }
 
-canvas {
-	padding: 0px;
+.menu-item:hover {
+	border-color: white;
+}
+
+button.menu-item {
+	border-color: grey;
+}
+
+select:focus {
+	outline: none;
 }

@@ -1,6 +1,6 @@
 import { fill_arc, stroke_arc } from "../lib/draws"
 import { abs, degrees, sin } from "../lib/math"
-import { cursor } from "./_main"
+import { cursor } from "../lib/controls"
 
 export default (context) => {
 	cursor.delta += degrees(1)

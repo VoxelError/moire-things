@@ -1,4 +1,4 @@
-import { fill_arc, stroke_arc, stroke_line } from "../lib/draws"
+import { fill_arc, stroke_arc, stroke_ellipse, stroke_line } from "../lib/draws"
 import { abs, cos, degrees, pi, sin, tau } from "../lib/math"
 import { count, height, width } from "./_main"
 
@@ -9,22 +9,26 @@ export default (context, points) => {
 		const [x, y] = point
 		const sun = Math.atan2(y - height / 2, x - width / 2)
 
-		context.beginPath()
-		context.ellipse(
-			width / 2,
-			height / 2,
-			circumference,
-			(height / 10) * 0.5,
-			sun,
-			// tau * 0.25 /* + degrees(abs(sin(count / 50)) * 50) */ + pi,
-			// tau * 0.75 /* - degrees(abs(sin(count / 50)) * 50) */ + pi
-			0,
-			tau
-		)
-		context.strokeStyle = "grey"
 		context.setLineDash([100, 100])
 		context.lineDashOffset = count * 10
-		context.stroke()
+
+		stroke_ellipse(context, {
+			center: [
+				width / 2,
+				height / 2,
+			],
+			radii: [
+				circumference,
+				(height / 10) * 0.5,
+			],
+			rotation: sun,
+			arc: [
+				0,
+				tau,
+			],
+			stroke: "grey",
+		})
+
 		context.setLineDash([])
 		context.lineDashOffset = 0
 	})

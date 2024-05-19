@@ -1,6 +1,6 @@
 import { stroke_arc } from "../lib/draws"
 import { abs, cos, degrees, sin } from "../lib/math"
-import { cursor } from "./_main"
+import { cursor } from "../lib/controls"
 
 export default (context, points) => {
 	if (points.length > 25) points.length = 25

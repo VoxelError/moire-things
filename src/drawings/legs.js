@@ -1,6 +1,6 @@
 import { fill_arc } from "../lib/draws"
 import { abs, cos, degrees, sin } from "../lib/math"
-import { cursor } from "./_main"
+import { cursor } from "../lib/controls"
 
 export default (context, points) => {
 	points.forEach((point) => {

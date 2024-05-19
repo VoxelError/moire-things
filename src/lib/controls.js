@@ -1,62 +1,38 @@
-import { add_point, cursor, height, width } from "../drawings/_main"
+import { add_point, height, width } from "../drawings/_main"
 import { cos, degrees, sin } from "./math"
 
-export let drawing_mode = JSON.parse(localStorage.getItem("draw_mode")) ?? 1
+export let drawing_mode = JSON.parse(localStorage.getItem("drawing_mode")) ?? "Bounce"
+
+export const cursor = {
+	x: -100,
+	y: -100,
+	r: 0,
+	delta: 0,
+	held: false,
+	show: true,
+	size: 66,
+}
 
 const dropdown = document.getElementById("drawing_mode")
+dropdown.addEventListener("change", (event) => drawing_mode = event.target.value)
 
-const modes = [
-	"Larva",
-	"Pendulums",
-	"Fins",
-	"Orbs",
-	"Circles",
-	"Eyes",
-	"Spin",
-	"Bounce",
-	"Snake",
-	"Squares",
-	"Legs",
-	"Heart",
-	"Twirls",
-	"Sun",
-	"Sphere",
-]
-
-modes.forEach((mode) => {
-	dropdown.innerHTML += `<option value="${mode}">${mode}</option>`
-})
-
-dropdown.addEventListener("mouseover", () => {
-	cursor.menu = true
+const canvas = document.getElementById("game_canvas")
+canvas.addEventListener("mouseleave", () => {
 	cursor.held = false
-	dropdown.style.borderColor = "white"
+	cursor.show = false
 })
-dropdown.addEventListener("mouseleave", () => {
-	cursor.menu = false
-	dropdown.style.borderColor = "grey"
+canvas.addEventListener("mouseover", () => cursor.show = true)
+
+document.addEventListener("mousedown", (event) => {
+	if (event.target.id !== "game_canvas") return
+	event.button == 0 && (cursor.held = true)
 })
-dropdown.addEventListener("change", (event) => {
-	drawing_mode = event.target.value
-	localStorage.setItem("draw_mode", JSON.stringify(drawing_mode))
+document.addEventListener("mouseup", () => cursor.held = false)
+document.addEventListener("mousemove", (event) => {
+	cursor.x = event.pageX
+	cursor.y = event.pageY
 })
-document.addEventListener("keydown", (event) => {
-	event.code == "KeyE" && (cursor.plot = true)
-})
-document.addEventListener("mousedown", (e) => {
-	e.button == 0 && cursor.menu == false && (cursor.held = true)
-	cursor.pin.x = e.pageX
-	cursor.pin.y = e.pageY
-	// console.log(cursor.pin)
-})
-document.addEventListener("mouseup", (e) => {
-	cursor.held = false
-})
-document.addEventListener("mousemove", (e) => {
-	cursor.x = e.pageX
-	cursor.y = e.pageY
-})
-document.addEventListener("wheel", (e) => {
+document.addEventListener("wheel", (event) => {
 	// 	e.preventDefault()
 	// 	cursor.size += e.deltaY * 0.1
 })
@@ -64,40 +40,23 @@ document.addEventListener("wheel", (e) => {
 export const draw_points = () => {
 	if (!cursor.held) return
 
-	if (drawing_mode == 0) return
-
-	if (drawing_mode == 3) {
-		add_point(cursor.x, cursor.y - 150)
-		return
+	switch (drawing_mode) {
+		case "Larva": break
+		case "Heart": break
+		case "Orbs": add_point(cursor.x, cursor.y - 150); break
+		case "Squares": add_point(cursor.x, cursor.y, 1, 1); break
+		// case 7: add_point(cursor.x, cursor.y, 0, 1); break
+		case "Eyes": {
+			add_point(cursor.x, cursor.y)
+			cursor.held = false
+			break
+		}
+		default: add_point(cursor.x, cursor.y)
 	}
-
-	if (drawing_mode == 5) {
-		add_point(cursor.x, cursor.y)
-		cursor.held = false
-		return
-	}
-
-	if (drawing_mode == 7) {
-		add_point(cursor.x, cursor.y, 0, 1)
-		return
-	}
-
-	if (drawing_mode == 9) {
-		add_point(cursor.x, cursor.y, 1, 1)
-		return
-	}
-
-	add_point(cursor.x, cursor.y)
 }
 
 export const plot_points = () => {
 	switch (drawing_mode) {
-		case "Larva": {
-			for (let i = 0; i < 6; i++) {
-				add_point(width / 2, height / 2)
-			}
-			break
-		}
 		case "Fins": {
 			const max = 90
 
@@ -108,28 +67,31 @@ export const plot_points = () => {
 					-degrees(i)
 				)
 			}
+
+			break
+		}
+
+		case "Squares": {
+			for (let i = 1; i <= 25; i++) {
+				add_point(0, 0, i / 50, i / 50)
+			}
+
+			break
+		}
+
+		case "Sun": {
+			const max = 360
+
+			for (let i = 0; i < max; i++) {
+				add_point(
+					width / 2 - cos(degrees(i * 360 / max)),
+					height / 2 - sin(degrees(i * 360 / max))
+				)
+			}
+
 			break
 		}
 	}
-
-	if (drawing_mode == "Squares") {
-		for (let i = 1; i <= 25; i++) {
-			add_point(0, 0, i / 50, i / 50)
-		}
-	}
-
-	if (drawing_mode == "Sun") {
-		const max = 360
-
-		for (let i = 0; i < max; i++) {
-			add_point(
-				width / 2 - cos(degrees(i * 360 / max)),
-				height / 2 - sin(degrees(i * 360 / max))
-			)
-		}
-	}
-
-	cursor.plot = false
 
 	// count < width / 10 ? add_point(count * 10, height - (count ** 1.325)) : cursor.plot = false
 	// count <= 45 && add_point(sin_wave(degrees(count * 10), width / 4, width / 2, degrees(45)), (count * 10) + 250)
