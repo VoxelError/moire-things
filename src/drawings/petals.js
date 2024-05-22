@@ -3,14 +3,14 @@ import { abs, cos, degrees, sin } from "../lib/math"
 import { cursor } from "../lib/controls"
 
 export default (context, points) => {
-	if (points.length > 25) points.length = 25
+	// if (points.length > 50) points.length = 50
 	points.forEach((point) => {
 		const [x, y] = point
 		const phase = abs(sin((point[2])))
 		point[2] += degrees(3)
 		const polar = [Math.hypot(x - cursor.x, y - cursor.y), Math.atan2(y - cursor.y, x - cursor.x)]
 
-		const unit = polar[0] / 50
+		const unit = polar[0] / 20
 		const max = polar[0]
 		const radius = 100
 
@@ -19,10 +19,10 @@ export default (context, points) => {
 
 			stroke_arc(context, {
 				center: [
-					x - cos(polar[1]) * (max > radius ? (1 - ratio) * radius : max - i),
-					y - sin(polar[1]) * (max > radius ? (1 - ratio) * radius : max - i)
+					x + cos(polar[1]) * (max > radius ? (1 - ratio) * radius : max - i),
+					y + sin(polar[1]) * (max > radius ? (1 - ratio) * radius : max - i)
 				],
-				radius: radius * ratio + phase * 2,
+				radius: radius * ratio / 2 + phase * 2,
 				alpha: 1 - ratio
 
 			})

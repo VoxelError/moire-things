@@ -1,6 +1,6 @@
 import { fill_arc, stroke_arc } from "../lib/draws"
 import { abs, degrees, sin } from "../lib/math"
-import { cursor } from "../lib/controls"
+import { cursor, drawing_mode } from "../lib/controls"
 
 export default (context) => {
 	cursor.delta += degrees(1)
@@ -15,6 +15,10 @@ export default (context) => {
 		radius: abs(sin(cursor.delta * 2.5) * cursor.size / 5)
 	})
 
+	context.setLineDash([])
+
+	if (["Heart", "Larva", "Sphere", "Stare"].includes(drawing_mode)) return
+
 	fill_arc(context, {
 		center: [
 			cursor.x,
@@ -23,6 +27,4 @@ export default (context) => {
 		radius: 2,
 		fill: "grey"
 	})
-
-	context.setLineDash([])
 }

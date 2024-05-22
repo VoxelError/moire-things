@@ -43,10 +43,12 @@ export const draw_points = () => {
 	switch (drawing_mode) {
 		case "Larva": break
 		case "Heart": break
+		case "Sphere": break
+		case "Stare": break
 		case "Orbs": add_point(cursor.x, cursor.y - 150); break
 		case "Squares": add_point(cursor.x, cursor.y, 1, 1); break
 		// case 7: add_point(cursor.x, cursor.y, 0, 1); break
-		case "Eyes": {
+		case "Petals": {
 			add_point(cursor.x, cursor.y)
 			cursor.held = false
 			break
