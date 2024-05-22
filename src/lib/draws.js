@@ -1,3 +1,21 @@
+import { tau } from "./math"
+
+const stroke = (type, {
+	width = 1,
+	stroke = "white",
+	cap = "butt",
+	alpha = 1,
+}) => {
+	context.beginPath()
+	type()
+	context.lineWidth = width
+	context.strokeStyle = stroke
+	context.lineCap = cap
+	context.globalAlpha = alpha
+	context.stroke()
+	context.globalAlpha = 1
+}
+
 export const stroke_line = (context, { start, end, width, stroke, cap, alpha }) => {
 	context.beginPath()
 	context.moveTo(start[0], start[1])
@@ -23,6 +41,25 @@ export const stroke_arc = (context, { center, radius, width, stroke, alpha }) =>
 	context.strokeStyle = stroke ?? "white"
 	context.globalAlpha = alpha ?? 1
 	context.stroke()
+	context.globalAlpha = 1
+}
+
+export const stroke_ellipse = (context, { center, radii, rotation, arc = [0, tau], width, stroke, alpha }) => {
+	context.beginPath()
+	context.ellipse(
+		center[0],
+		center[1],
+		radii[0],
+		radii[1],
+		rotation ?? 0,
+		arc[0],
+		arc[1]
+	)
+	context.lineWidth = width ?? 1
+	context.strokeStyle = stroke ?? "white"
+	context.globalAlpha = alpha ?? 1
+	context.stroke()
+	context.globalAlpha = 1
 }
 
 export const stroke_square = (context, { center, side, width, stroke, alpha }) => {
@@ -37,6 +74,22 @@ export const stroke_square = (context, { center, side, width, stroke, alpha }) =
 	context.strokeStyle = stroke ?? "white"
 	context.globalAlpha = alpha ?? 1
 	context.stroke()
+	context.globalAlpha = 1
+}
+
+export const stroke_rect = (context, { start, dims, width, stroke, alpha }) => {
+	context.beginPath()
+	context.rect(
+		start[0],
+		start[1],
+		dims[0],
+		dims[1],
+	)
+	context.lineWidth = width ?? 1
+	context.strokeStyle = stroke ?? "white"
+	context.globalAlpha = alpha ?? 1
+	context.stroke()
+	context.globalAlpha = 1
 }
 
 export const stroke_curve1 = (context, { start, end, control, width, stroke, cap, alpha }) => {
@@ -75,4 +128,5 @@ export const fill_arc = (context, { center, radius, fill, alpha }) => {
 	context.fillStyle = fill ?? "white"
 	context.globalAlpha = alpha ?? 1
 	context.fill()
+	context.globalAlpha = 1
 }

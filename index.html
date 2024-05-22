@@ -8,28 +8,14 @@
 </head>
 
 <body>
-	<div id="root"></div>
 	<canvas id="game_canvas"></canvas>
+	<!-- <div id="root"></div> -->
+	<div id="menu">
+		<button id="reset_button" class="menu-item">Reset</button>
+		<button id="plot_button" class="menu-item">Plot</button>
+		<select id="drawing_mode" class="menu-item"></select>
+	</div>
 	<script type="module" src="./src/index.jsx"></script>
-	<script type="module" src="./src/controls.js"></script>
-	<!-- <script type="module" src="./src/canvases/pendulum.js"></script> -->
-	<style>
-		body {
-			margin: 0px;
-			background-color: black;
-			display: flex;
-		}
-
-		div {
-			display: flex;
-		}
-
-		canvas {
-			padding: 0px;
-			width: 100vw;
-			height: 100vh;
-		}
-	</style>
 </body>
 
 </html>
