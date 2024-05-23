@@ -1,9 +1,9 @@
+import React, { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 import render from './drawings/_main.js'
 import './ui/dropdown.js'
 import './ui/buttons.js'
-import './styles.css'
-import { createRoot } from 'react-dom/client'
-import { StrictMode } from 'react'
+import './styles.scss'
 
 !function update() {
 	render()

@@ -1,8 +1,8 @@
 import { fill_arc, stroke_arc, stroke_curve1, stroke_curve2, stroke_line } from "../lib/draws"
 import { abs, cos, cos_wave, degrees, pi, sin, sin_wave } from "../lib/math"
-import { width, height, count } from "./_main"
+import { width, height } from "./_main"
 
-export default (context) => {
+export default (context, count) => {
 	const axis = {
 		x: width / 2,
 		y: height / 2

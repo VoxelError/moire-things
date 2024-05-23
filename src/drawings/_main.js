@@ -21,17 +21,19 @@ import stare from "./stare.js"
 const canvas = document.getElementById("game_canvas")
 const context = canvas.getContext("2d")
 
-export const width = canvas.width = window.innerWidth
-export const height = canvas.height = window.innerHeight
+export const width = window.innerWidth
+export const height = window.innerHeight
 
-export let count = JSON.parse(localStorage.getItem("count")) ?? 0
-export const points = JSON.parse(localStorage.getItem("points")) ?? []
+canvas.width = width
+canvas.height = height
 
-export const reset_count = () => count = 0
-export const reset_points = () => points.length = 0
-export const add_point = (x, y, theta = 0, length = 150) => points.push([x, y, theta, length])
+let count = JSON.parse(localStorage.getItem("count")) ?? 0
+const points = JSON.parse(localStorage.getItem("points")) ?? []
 
-// const skip = (frames) => !(count % frames)
+export const add_count = (value = 1) => { count += value }
+export const reset_count = () => { count = 0 }
+export const reset_points = () => { points.length = 0 }
+export const add_point = (x, y, theta = 0, length = 150) => { points.push([x, y, theta, length]) }
 
 // const fade = (alpha) => {
 // 	context.save()
@@ -44,7 +46,8 @@ export const add_point = (x, y, theta = 0, length = 150) => points.push([x, y, t
 // context.globalCompositeOperation = "xor"
 
 export default () => {
-	localStorage.setItem("count", JSON.stringify(count++))
+	add_count()
+	localStorage.setItem("count", JSON.stringify(count))
 	localStorage.setItem("points", JSON.stringify(points))
 	localStorage.setItem("drawing_mode", JSON.stringify(drawing_mode))
 	draw_points()
@@ -64,18 +67,18 @@ export default () => {
 		case "Bounce": bounce(context, points); break
 		case "Circles": circles(context, points); break
 		case "Fins": fins(context, points); break
-		case "Heart": heart(context); break
-		case "Larva": larva(context, points); break
+		case "Heart": heart(context, count); break
+		case "Larva": larva(context, count); break
 		case "Legs": legs(context, points); break
 		case "Orbs": orbs(context, points); break
 		case "Pendulums": pendulums(context, points); break
 		case "Petals": eyes(context, points); break
 		case "Snake": snake(context, points); break
-		case "Sphere": sphere(context, points); break
-		case "Spin": spin(context, points); break
+		case "Sphere": sphere(context, count); break
+		case "Spin": spin(context, points, count); break
 		case "Squares": squares(context, points); break
-		case "Stare": stare(context, points); break
-		case "Sun": sun(context, points); break
+		case "Stare": stare(context, count); break
+		case "Sun": sun(context, points, count); break
 		case "Twirls": twirls(context, points); break
 	}
 }

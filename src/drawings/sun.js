@@ -1,8 +1,8 @@
-import { fill_arc, stroke_arc, stroke_ellipse, stroke_line } from "../lib/draws"
-import { abs, cos, degrees, pi, sin, tau } from "../lib/math"
-import { count, height, width } from "./_main"
+import { fill_arc, stroke_arc, stroke_ellipse } from "../lib/draws"
+import { sin, tau } from "../lib/math"
+import { height, width } from "./_main"
 
-export default (context, points) => {
+export default (context, points, count) => {
 	const circumference = width / 5 + sin(count / 25) * 50
 
 	points.forEach((point, index) => {

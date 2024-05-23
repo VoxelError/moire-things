@@ -95,6 +95,8 @@ export const plot_points = () => {
 		}
 	}
 
+	// const skip = (frames) => !(count % frames)
+
 	// count < width / 10 ? add_point(count * 10, height - (count ** 1.325)) : cursor.plot = false
 	// count <= 45 && add_point(sin_wave(degrees(count * 10), width / 4, width / 2, degrees(45)), (count * 10) + 250)
 	// count < height / 2 && skip(5) && add_point(width / 2, height * 0.75 - count)

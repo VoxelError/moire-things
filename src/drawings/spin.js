@@ -1,8 +1,8 @@
 import { fill_arc, stroke_line } from "../lib/draws"
 import { cos_wave, degrees, sin, sin_wave } from "../lib/math"
-import { count, height, width } from "./_main"
+import { height, width } from "./_main"
 
-export default (context, points) => {
+export default (context, points, count) => {
 	const middle = width / 2
 
 	stroke_line(context, {

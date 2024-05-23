@@ -6,6 +6,10 @@ body {
 	user-select: none;
 }
 
+#root {
+	display: flex
+}
+
 #menu {
 	margin: 16px;
 	position: fixed;

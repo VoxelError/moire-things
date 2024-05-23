@@ -1,8 +1,8 @@
-import { fill_arc, stroke_arc, stroke_ellipse, stroke_line } from "../lib/draws"
-import { abs, cos, degrees, pi, sin, sin_wave, tau } from "../lib/math"
-import { count, height, width } from "./_main"
+import { stroke_arc, stroke_ellipse } from "../lib/draws"
+import { sin_wave } from "../lib/math"
+import { height, width } from "./_main"
 
-export default (context, points) => {
+export default (context, count) => {
 	const axis = width / 5 + sin_wave(count, 10, 0, 0.05)
 
 	const max = 15

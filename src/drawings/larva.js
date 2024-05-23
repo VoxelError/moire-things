@@ -1,18 +1,14 @@
 import { stroke_arc } from "../lib/draws"
 import { cos, degrees, sin } from "../lib/math"
-import { count, height, width } from "./_main"
+import { height, width } from "./_main"
 
-export default (context, points) => {
-	for (let i = 0; i < 7; i++) {
+export default (context, count) => {
+	for (let i = 0; i < 5; i++) {
 		const time = degrees(count) * (i + 1)
 		const theta = time / 100
 
 		const unit = 5
 		const max = 500
-
-		// context.save()
-		// if (i == 1) context.scale(1, 0.25)
-		// if (i == 1) context.translate(0, height * 1.5)
 
 		for (let i = unit; i <= max; i += unit) {
 			stroke_arc(context, {
@@ -23,13 +19,12 @@ export default (context, points) => {
 					// height / 2
 				],
 				radius: i,
-				alpha: 0.8 - i / max,
+				// alpha: 0.8 - i / max,
+				alpha: 0.25,
 				stroke: "red"
 
 			})
 		}
-
-		// context.restore()
 	}
 
 	context.fillStyle = "white"
