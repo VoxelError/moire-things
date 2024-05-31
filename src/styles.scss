@@ -2,38 +2,33 @@ body {
 	margin: 0px;
 	background-color: black;
 	display: flex;
-	cursor: none;
+	// cursor: none;
 	user-select: none;
 }
 
-#root {
-	display: flex
-}
-
-#menu {
-	margin: 16px;
-	position: fixed;
+canvas {
+	position: absolute;
 	top: 0;
-	right: 0;
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 16px;
+	left: 0;
+	// background: linear-gradient(15deg, #303346, #3241b4);
+	// filter: blur(10px) contrast(10px);
 }
 
 .menu-item {
 	width: 100px;
 	height: 25px;
+	// border-radius: 4px;
 	background-color: black;
 	color: white;
 	text-align: center;
-}
 
-.menu-item:hover {
-	border-color: white;
+	&:hover {
+		border-color: white;
+	}
 }
 
 button.menu-item {
-	border-color: grey;
+	border-color: gray;
 }
 
 select:focus {

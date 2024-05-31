@@ -1,7 +1,8 @@
-import { add_point, height, width } from "../drawings/_main"
-import { cos, degrees, sin } from "./math"
+import { add_point } from "../drawings/_main"
+import { cos, degrees, random, rng, sin } from "./math"
 
 export let drawing_mode = JSON.parse(localStorage.getItem("drawing_mode")) ?? "Bounce"
+export const set_drawing_mode = (value) => drawing_mode = value
 
 export const cursor = {
 	x: -100,
@@ -12,9 +13,6 @@ export const cursor = {
 	show: true,
 	size: 66,
 }
-
-const dropdown = document.getElementById("drawing_mode")
-dropdown.addEventListener("change", (event) => drawing_mode = event.target.value)
 
 const canvas = document.getElementById("game_canvas")
 canvas.addEventListener("mouseleave", () => {
@@ -41,32 +39,40 @@ export const draw_points = () => {
 	if (!cursor.held) return
 
 	switch (drawing_mode) {
-		case "Larva": break
 		case "Heart": break
+		case "Larva": break
 		case "Sphere": break
 		case "Stare": break
+
+		// case "Fins": add_point(cursor.x, cursor.y, 0, 150); break
+		case "Fins": add_point(cursor.x, cursor.y, 0, rng(100, 50)); break
 		case "Orbs": add_point(cursor.x, cursor.y - 150); break
 		case "Squares": add_point(cursor.x, cursor.y, 1, 1); break
+		case "Stalks": add_point(cursor.x, cursor.y, 0, random() * 360); break
 		// case 7: add_point(cursor.x, cursor.y, 0, 1); break
-		case "Petals": {
-			add_point(cursor.x, cursor.y)
-			cursor.held = false
-			break
-		}
-		default: add_point(cursor.x, cursor.y)
+		// case "Petals": {
+		// 	add_point(cursor.x, cursor.y)
+		// 	cursor.held = false
+		// 	break
+		// }
+		default: add_point(cursor.x, cursor.y, 0, 0)
 	}
 }
 
 export const plot_points = () => {
 	switch (drawing_mode) {
 		case "Fins": {
-			const max = 90
+			const max = 60
+			const center = {
+				x: window.innerWidth / 2,
+				y: window.innerHeight / 2
+			}
 
 			for (let i = 0; i < max; i++) {
 				add_point(
-					width / 2 + (250 * cos(degrees(i))),
-					height / 2 + (250 * sin(degrees(i))),
-					-degrees(i)
+					center.x + (250 * cos(degrees(i * 360 / max))),
+					center.y + (250 * sin(degrees(i * 360 / max))),
+					-degrees(i * 360 / max)
 				)
 			}
 
@@ -86,8 +92,8 @@ export const plot_points = () => {
 
 			for (let i = 0; i < max; i++) {
 				add_point(
-					width / 2 - cos(degrees(i * 360 / max)),
-					height / 2 - sin(degrees(i * 360 / max))
+					window.innerWidth / 2 - cos(degrees(i * 360 / max)),
+					window.innerHeight / 2 - sin(degrees(i * 360 / max))
 				)
 			}
 

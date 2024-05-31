@@ -16,7 +16,7 @@ export default (context, points) => {
 				y + (length * cos(motion))
 			],
 			radius: 15,
-			alpha: 0.25 * (sin(theta / sqrt(length * 0.15)) + 1.1),
+			alpha: 0.25 * (cos(theta / sqrt(length * 0.15)) + 1.1),
 			// alpha: 0.5,
 		})
 	})

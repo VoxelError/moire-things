@@ -1,22 +1,26 @@
 import { fill_arc, stroke_line } from "../lib/draws"
 import { cos_wave, degrees, sin, sin_wave } from "../lib/math"
-import { height, width } from "./_main"
 
 export default (context, points, count) => {
-	const middle = width / 2
+	const mid = window.innerWidth / 2
 
 	stroke_line(context, {
-		start: [middle, 0],
-		end: [middle, height],
-		stroke: "grey",
+		start: [mid, 0],
+		end: [mid, window.innerHeight],
+		stroke: "gray",
 		alpha: 0.15 * sin(count * 0.08) + 0.5,
 	})
 
 	points.forEach((point) => {
 		const [x, y, theta] = point
-		const motion = cos_wave(theta, x - middle, middle)
-		// const transparency = sin_wave(x < middle ? -theta : theta, 0.5, 0.5)
-		const transparency = sin_wave(theta, 0.5, 0.5)
+		const motion = cos_wave(theta, x - mid, mid)
+		const rotation = () => {
+			if (x < mid) return -theta
+			if (x > mid) return theta
+			if (x == mid) return 1
+		}
+		// const transparency = sin_wave(theta, 0.5, 0.5)
+		const transparency = sin_wave(rotation(), 0.5, 0.5)
 
 		point[2] += degrees(3)
 

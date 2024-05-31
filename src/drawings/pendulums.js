@@ -18,7 +18,7 @@ export default (context, points) => {
 				y + (length * cos(motion))
 			],
 			width: 8,
-			stroke: "grey",
+			stroke: "gray",
 			cap: "round",
 			// alpha: 0.5 * (sin(1 / sqrt(length / gravity) * theta) + 1),
 			alpha: 0.25,

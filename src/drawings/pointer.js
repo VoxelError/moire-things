@@ -25,6 +25,6 @@ export default (context) => {
 			cursor.y
 		],
 		radius: 2,
-		fill: "grey"
+		fill: "gray"
 	})
 }

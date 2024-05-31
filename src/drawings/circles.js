@@ -1,6 +1,5 @@
 import { stroke_arc } from "../lib/draws.js"
 import { sin, abs, degrees } from "../lib/math.js"
-import { width, height } from "./_main.js"
 
 export default (context, points) => {
 	points.forEach((point) => {
@@ -10,7 +9,7 @@ export default (context, points) => {
 
 		stroke_arc(context, {
 			center: [x, y],
-			radius: phase * height * 0.1,
+			radius: phase * window.innerHeight * 0.1,
 			// alpha: 1 - phase,
 			alpha: phase * 0.5,
 
