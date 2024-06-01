@@ -5,9 +5,7 @@ export default () => {
 		<button
 			id="pause_button"
 			className="menu-item"
-			onClick={() => {
-				alert(":o")
-			}}
+			onClick={() => window.pause = !window.pause}
 		>Pause</button >
 	)
 }

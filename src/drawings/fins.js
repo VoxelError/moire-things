@@ -1,10 +1,10 @@
 import { fill_arc, stroke_line } from "../lib/draws"
-import { abs, cos, cos_wave, degrees, rng, sin, sin_wave, sqrt, tau } from "../lib/math"
+import { abs, cos, cos_wave, degrees, radians, rng, sin, sin_wave, sqrt, tau } from "../lib/math"
 import { add_point } from "./_main"
 
 export default (context, points, count) => {
-	add_point(window.innerWidth / 2, window.innerHeight / 2, 0, rng(100, 50))
-	add_point(window.innerWidth / 2, window.innerHeight / 2, 0, window.innerHeight * 0.45)
+	add_point(window.innerWidth / 2, window.innerHeight / 2, 0, rng(100, 50) + 200)
+	// add_point(window.innerWidth / 2, window.innerHeight / 2, 0, window.innerHeight * 0.45)
 
 	points.forEach((point, index) => {
 		const [x, y, theta, length] = point
@@ -28,7 +28,8 @@ export default (context, points, count) => {
 			cap: "round",
 			// alpha: cos_wave(theta, 0.25, 0.25),
 			// alpha: 0.25,
-			stroke: `hsl(${cos_wave(theta, count)}, 100%, 50%)`
+			// stroke: `hsl(${cos_wave(theta, count)}, 100%, 50%)`,
+			stroke: `hsl(${radians(theta + count / 200)}, 100%, 50%)`,
 		})
 
 		fill_arc(context, {

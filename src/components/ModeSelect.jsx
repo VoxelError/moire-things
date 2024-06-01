@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { drawing_mode, set_drawing_mode } from "../lib/controls"
 
 const modes = [
@@ -25,11 +25,20 @@ const modes = [
 ]
 
 export default () => {
+	const [current_mode, set_mode] = useState(drawing_mode)
+
 	return (
 		<select
 			id="drawing_mode"
 			className="menu-item"
+			value={current_mode}
+			onWheel={(event) => {
+				const change = modes[modes.indexOf(current_mode) + (event.deltaY > 0 ? 1 : -1)]
+				set_mode(change)
+				set_drawing_mode(change)
+			}}
 			onChange={(event) => {
+				set_mode(event.target.value)
 				set_drawing_mode(event.target.value)
 
 				const plot_button = document.getElementById("plot_button")
@@ -40,14 +49,8 @@ export default () => {
 					default: plot_button.style.color = "gray"; break
 				}
 			}}
-			defaultValue={drawing_mode}
 		>
-			{modes.map((e, i) =>
-				<option
-					key={i}
-					value={e}
-				>{e}</option>
-			)}
+			{modes.map((e, i) => <option key={i} value={e}>{e}</option>)}
 		</select>
 	)
 }

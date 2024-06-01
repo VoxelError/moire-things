@@ -3,8 +3,9 @@ import { cos, degrees, sin } from "../lib/math"
 
 export default (context, points) => {
 	points.forEach((point) => {
-		const [x, y, theta, length] = point
+		const [x, y, theta] = point
 		const motion = sin(theta)
+		const length = 150
 
 		point[2] += degrees(30)
 		// point[2] += sin(degrees(count)) / 2 + 0.6

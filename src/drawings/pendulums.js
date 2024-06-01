@@ -6,7 +6,8 @@ export default (context, points) => {
 	const amplitude = degrees(45)
 
 	points.forEach((point) => {
-		const [x, y, theta, length] = point
+		const [x, y, theta] = point
+		const length = 150
 		const motion = cos(1 / sqrt(length / gravity) * theta) * amplitude
 
 		point[2] += degrees(15)

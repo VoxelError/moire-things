@@ -6,7 +6,7 @@ export default (context, count) => {
 		const time = degrees(count) * (i + 1)
 		const theta = time / 100
 
-		const unit = 5
+		const unit = 2
 		const max = 500
 
 		for (let i = unit; i <= max; i += unit) {
@@ -18,16 +18,16 @@ export default (context, count) => {
 					// height / 2
 				],
 				radius: i,
-				// alpha: 0.8 - i / max,
-				alpha: 0.25,
+				alpha: 0.8 - i / max,
+				// alpha: 0.25,
 				stroke: "red"
 
 			})
 		}
 	}
 
-	context.fillStyle = "white"
-	context.font = "30px Arial"
-	context.globalAlpha = 0.1
-	context.fillText(count, 25, 50)
+	// context.fillStyle = "white"
+	// context.font = "30px Arial"
+	// context.globalAlpha = 0.1
+	// context.fillText(count, 25, 50)
 }

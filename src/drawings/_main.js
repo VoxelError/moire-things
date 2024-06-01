@@ -38,7 +38,7 @@ let count = JSON.parse(localStorage.getItem("count")) ?? 0
 const points = JSON.parse(localStorage.getItem("points")) ?? []
 
 export const add_count = (value = 1) => count += value
-export const add_point = (x, y, theta = 0, length = 150) => { points.push([x, y, theta, length]) }
+export const add_point = (x, y, theta = 0, length = 0) => { points.push([x, y, theta, length]) }
 
 export const reset_count = () => count = 0
 export const reset_points = () => points.length = 0
@@ -73,8 +73,10 @@ const plot = () => {
 	// for (let i = 0; i < 66; i++) { add_point(width / 2, height / 2 + i * 5, 0, i * 5 + 150) }
 }
 
+window.pause = false
+
 export default () => {
-	add_count()
+	!window.pause && add_count()
 	localStorage.setItem("count", JSON.stringify(count))
 	localStorage.setItem("points", JSON.stringify(points))
 	localStorage.setItem("drawing_mode", JSON.stringify(drawing_mode))

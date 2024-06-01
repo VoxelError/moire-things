@@ -8,11 +8,13 @@ const init = {
 	},
 	length: 160,
 	angle: 0,
-	width: 15
+	width: 15,
+	alpha: 1
 }
 
 const draw_tree = (context, count, args = init) => {
-	const { root, length, angle, width } = args
+	const { root, length, angle, width, alpha } = args
+	const start = 36096
 
 	if (length < 10) return
 
@@ -26,20 +28,23 @@ const draw_tree = (context, count, args = init) => {
 		end: [0, -length],
 		width,
 		cap: "round",
+		alpha,
 	})
 
 	draw_tree(context, count, {
 		root: { x: 0, y: -length },
 		length: length * 0.8,
 		angle: angle + degrees(count),
-		width: width * 0.69
+		width: width * 0.69,
+		alpha: 1
 	})
 
 	draw_tree(context, count, {
 		root: { x: 0, y: -length },
 		length: length * 0.8,
 		angle: angle - degrees(count),
-		width: width * 0.69
+		width: width * 0.69,
+		alpha: 1
 	})
 
 	context.restore()

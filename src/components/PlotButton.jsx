@@ -2,7 +2,6 @@ import React, { useEffect } from "react"
 import { drawing_mode } from "../lib/controls"
 import { add_point } from "../drawings/_main"
 import { cos, degrees, sin } from "../lib/math"
-// import { plot_points } from "../lib/controls"
 
 const plot_points = () => {
 	switch (drawing_mode) {
