@@ -73,6 +73,8 @@ const plot = () => {
 	// for (let i = 0; i < 66; i++) { add_point(width / 2, height / 2 + i * 5, 0, i * 5 + 150) }
 }
 
+window.pause = false
+
 export default () => {
 	!window.pause && add_count()
 	localStorage.setItem("count", JSON.stringify(count))
