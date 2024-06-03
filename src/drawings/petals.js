@@ -3,7 +3,6 @@ import { abs, cos, degrees, sin } from "../lib/math"
 import { cursor } from "../lib/controls"
 
 export default (context, points) => {
-	// if (points.length > 50) points.length = 50
 	points.forEach((point) => {
 		const [x, y] = point
 		const phase = abs(sin((point[2])))
@@ -16,11 +15,12 @@ export default (context, points) => {
 
 		for (let i = max; i > 0; i -= unit) {
 			const ratio = i / max
+			const facing = -1
 
 			stroke_arc(context, {
 				center: [
-					x + cos(polar[1]) * (max > radius ? (1 - ratio) * radius : max - i),
-					y + sin(polar[1]) * (max > radius ? (1 - ratio) * radius : max - i)
+					x - cos(polar[1]) * (max > radius ? (1 - ratio) * radius : max - i) * facing,
+					y - sin(polar[1]) * (max > radius ? (1 - ratio) * radius : max - i) * facing
 				],
 				radius: radius * ratio / 2 + phase * 2,
 				alpha: 1 - ratio

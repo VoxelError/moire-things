@@ -1,11 +1,10 @@
 import { stroke_curve2, stroke_line } from "../lib/draws"
 import { abs, cos, cos_wave, degrees, sin } from "../lib/math"
-import { width, height, count } from "./_main"
 
-export default (context) => {
+export default (context, count) => {
 	const axis = {
-		x: width / 2,
-		y: height / 2
+		x: window.innerWidth / 2,
+		y: window.innerHeight / 2
 	}
 
 	const point1 = { x: 300, y: 400 }

@@ -1,17 +1,16 @@
-import { fill_arc, stroke_arc, stroke_ellipse, stroke_line } from "../lib/draws"
-import { abs, cos, degrees, pi, sin, sin_wave, tau } from "../lib/math"
-import { count, height, width } from "./_main"
+import { stroke_arc, stroke_ellipse } from "../lib/draws"
+import { sin_wave } from "../lib/math"
 
-export default (context, points) => {
-	const axis = width / 5 + sin_wave(count, 10, 0, 0.05)
+export default (context, count) => {
+	const axis = window.innerWidth / 5 + sin_wave(count, 10, 0, 0.05)
 
 	const max = 15
 
 	for (let i = 0; i < max; i++) {
 		stroke_ellipse(context, {
 			center: [
-				width / 2,
-				height / 2
+				window.innerWidth / 2,
+				window.innerHeight / 2
 			],
 			radii: [
 				axis,
@@ -22,8 +21,8 @@ export default (context, points) => {
 
 		stroke_ellipse(context, {
 			center: [
-				width / 2,
-				height / 2
+				window.innerWidth / 2,
+				window.innerHeight / 2
 			],
 			radii: [
 				axis * i / max,
@@ -34,7 +33,7 @@ export default (context, points) => {
 	}
 
 	stroke_arc(context, {
-		center: [width / 2, height / 2],
+		center: [window.innerWidth / 2, window.innerHeight / 2],
 		radius: axis,
 		alpha: 0.15
 	})

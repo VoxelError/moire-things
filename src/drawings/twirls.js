@@ -3,8 +3,9 @@ import { cos, degrees, sin } from "../lib/math"
 
 export default (context, points) => {
 	points.forEach((point) => {
-		const [x, y, theta, length] = point
+		const [x, y, theta] = point
 		const motion = sin(theta)
+		const length = 150
 
 		point[2] += degrees(30)
 		// point[2] += sin(degrees(count)) / 2 + 0.6
@@ -19,7 +20,7 @@ export default (context, points) => {
 				// y + (length) - height / 2
 			],
 			width: 10,
-			stroke: "grey",
+			stroke: "gray",
 			// cap: "round",
 			// alpha: 0.25 * (sin(theta / sqrt(length * 0.15)) + 1),
 			// alpha: sin_wave(theta / sqrt(length * 0.15), 0.25, 0.35),
