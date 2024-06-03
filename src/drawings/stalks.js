@@ -7,10 +7,10 @@ const stalks = []
 export default (context, points, count) => {
 	// add_point(random() * window.innerWidth, random() * window.innerHeight)
 
-	points.forEach((point, index) => {
-		const [x, y, radius, angle] = point
+	// points.forEach((point, index) => {
+		// const [x, y, radius, angle] = point
 
-		const max = 20
+		// const max = 20
 
 		// for (let i = 0; i < max; i++) {
 		// 	fill_arc(context, {
@@ -21,7 +21,7 @@ export default (context, points, count) => {
 		// 	})
 		// }
 
-		points.splice(index, 1)
+		// points.splice(index, 1)
 
 		// point[2]++
 		// if (radius > 20) points.splice(index, 1)
@@ -32,7 +32,7 @@ export default (context, points, count) => {
 		// 	fill: `hsl(${count}, 100%, 50%)`,
 		// 	alpha: radius / 25
 		// })
-	})
+	// })
 
 	context.lineWidth = 0.2
 	context.globalCompositeOperation = 'destination-over'

@@ -73,8 +73,6 @@ const plot = () => {
 	// for (let i = 0; i < 66; i++) { add_point(width / 2, height / 2 + i * 5, 0, i * 5 + 150) }
 }
 
-window.pause = false
-
 export default () => {
 	!window.pause && add_count()
 	localStorage.setItem("count", JSON.stringify(count))
@@ -83,8 +81,8 @@ export default () => {
 	draw_points()
 
 	switch (drawing_mode) {
-		case "Pillar": break
-		case "Stalks": break
+		case "pillar": break
+		case "stalks": break
 		default: context.reset()
 	}
 
@@ -92,25 +90,25 @@ export default () => {
 	cursor.show && pointer(pointer_context)
 
 	switch (drawing_mode) {
-		case "Bounce": bounce(context, points); break
-		case "Circles": circles(context, points); break
-		case "Fins": fins(context, points, count); break
-		case "Heart": heart(context, count); break
-		case "Larva": larva(context, count); break
-		case "Legs": legs(context, points); break
-		case "Orbs": orbs(context, points); break
-		case "Pendulums": pendulums(context, points); break
-		case "Petals": petals(context, points); break
-		// case "Pillar": pillar(context, points); break
-		case "Snake": snake(context, points); break
-		case "Sphere": sphere(context, count); break
-		case "Spin": spin(context, points, count); break
-		case "Stalks": stalks(context, points, count); break
-		case "Squares": squares(context, points); break
-		case "Stare": stare(context, count); break
-		case "Sun": sun(context, points, count); break
-		case "Trails": trails(context, points, count); break
-		case "Tree": tree(context, count); break
-		case "Twirls": twirls(context, points); break
+		case "bounce": bounce(context, points); break
+		case "circles": circles(context, points); break
+		case "fins": fins(context, points, count); break
+		case "heart": heart(context, count); break
+		case "larva": larva(context, count); break
+		case "legs": legs(context, points); break
+		case "orbs": orbs(context, points); break
+		case "pendulums": pendulums(context, points); break
+		case "petals": petals(context, points); break
+		// case "pillar": pillar(context, points); break
+		case "snake": snake(context, points); break
+		case "sphere": sphere(context, count); break
+		case "spin": spin(context, points, count); break
+		case "stalks": stalks(context, points, count); break
+		case "squares": squares(context, points); break
+		case "stare": stare(context, count); break
+		case "sun": sun(context, points, count); break
+		case "trails": trails(context, points, count); break
+		case "tree": tree(context, count); break
+		case "twirls": twirls(context, points); break
 	}
 }

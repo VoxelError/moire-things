@@ -5,7 +5,7 @@ import { cos, degrees, sin } from "../lib/math"
 
 const plot_points = () => {
 	switch (drawing_mode) {
-		case "Fins": {
+		case "fins": {
 			const max = 60
 
 			for (let i = 0; i < max; i++) {
@@ -19,7 +19,7 @@ const plot_points = () => {
 			break
 		}
 
-		case "Spin": {
+		case "spin": {
 			for (let i = 0; i < window.innerHeight; i += window.innerHeight / 200) {
 				add_point(
 					window.innerWidth * 0.6,
@@ -31,7 +31,7 @@ const plot_points = () => {
 			break
 		}
 
-		case "Squares": {
+		case "squares": {
 			for (let i = 1; i <= 25; i++) {
 				add_point(0, 0, i / 50, i / 50)
 			}
@@ -39,7 +39,7 @@ const plot_points = () => {
 			break
 		}
 
-		case "Sun": {
+		case "sun": {
 			const max = 360
 
 			for (let i = 0; i < max; i++) {

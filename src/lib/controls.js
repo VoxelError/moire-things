@@ -1,7 +1,7 @@
 import { add_point } from "../drawings/_main"
 import { rng } from "./math"
 
-export let drawing_mode = JSON.parse(localStorage.getItem("drawing_mode")) ?? "Bounce"
+export let drawing_mode = JSON.parse(localStorage.getItem("drawing_mode")) ?? "bounce"
 export const set_drawing_mode = (value) => drawing_mode = value
 
 export const cursor = {
@@ -39,14 +39,14 @@ export const draw_points = () => {
 	if (!cursor.held) return
 	switch (drawing_mode) {
 		// case "Fins": add_point(cursor.x, cursor.y, 0, 150); break
-		case "Fins": add_point(cursor.x, cursor.y, 0, rng(100, 50)); break
-		case "Heart": break
-		case "Larva": break
-		case "Orbs": add_point(cursor.x, cursor.y + 150); break
-		case "Sphere": break
-		case "Squares": add_point(cursor.x, cursor.y, 1, 1); break
-		// case "Stalks": add_point(cursor.x, cursor.y, 0, rng(360)); break
-		case "Stare": break
+		case "fins": add_point(cursor.x, cursor.y, 0, rng(100, 50)); break
+		case "heart": break
+		case "larva": break
+		case "orbs": add_point(cursor.x, cursor.y + 150); break
+		case "sphere": break
+		case "squares": add_point(cursor.x, cursor.y, 1, 1); break
+		// case "stalks": add_point(cursor.x, cursor.y, 0, rng(360)); break
+		case "stare": break
 		default: add_point(cursor.x, cursor.y, 0, 0)
 	}
 }

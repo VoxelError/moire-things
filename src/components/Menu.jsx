@@ -6,7 +6,7 @@ import ResetButton from './ResetButton.jsx'
 import styled from 'styled-components'
 
 const Menu = styled.div`
-	margin: 16px;
+	padding: 16px;
 	position: fixed;
 	top: 0;
 	right: 0;

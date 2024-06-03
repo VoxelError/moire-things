@@ -2,7 +2,6 @@ body {
 	margin: 0px;
 	background-color: black;
 	display: flex;
-	// cursor: none;
 	user-select: none;
 }
 
@@ -10,6 +9,7 @@ canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
+	cursor: none;
 	// background: linear-gradient(15deg, #303346, #3241b4);
 	// filter: blur(10px) contrast(10px);
 }

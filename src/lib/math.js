@@ -1,4 +1,4 @@
-export const { PI: pi, sin, cos, abs, sqrt, random, floor } = Math
+export const { PI: pi, sin, cos, abs, sqrt, random, floor, sign } = Math
 export const tau = pi * 2
 
 export const rng = (range, offset) => random() * range + offset

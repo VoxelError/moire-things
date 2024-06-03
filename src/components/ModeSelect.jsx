@@ -1,56 +1,92 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { drawing_mode, set_drawing_mode } from "../lib/controls"
+import { sign } from "../lib/math"
+import { reset_canvas } from "../drawings/_main"
 
 const modes = [
-	"Bounce",
-	"Circles",
-	"Fins",
-	"Heart",
-	"Larva",
-	"Legs",
-	"Orbs",
-	"Pendulums",
-	"Petals",
-	// "Pillar",
-	"Snake",
-	"Sphere",
-	"Spin",
-	"Stalks",
-	"Squares",
-	"Stare",
-	"Sun",
-	"Trails",
-	"Tree",
-	"Twirls",
+	"bounce",
+	"circles",
+	"fins",
+	"heart",
+	"larva",
+	"legs",
+	"orbs",
+	"pendulums",
+	"petals",
+	// "pillar",
+	"snake",
+	"sphere",
+	"spin",
+	"stalks",
+	"squares",
+	"stare",
+	"sun",
+	"trails",
+	"tree",
+	"twirls",
 ]
+
+const can_draw = [
+	"bounce",
+	"circles",
+	"fins",
+	"legs",
+	"orbs",
+	"pendulums",
+	"petals",
+	"snake",
+	"spin",
+	"stalks",
+	"squares",
+	"sun",
+	"trails",
+	"twirls",
+]
+
+const handle_change = () => {
+	window.pause = false
+	reset_canvas()
+
+	const pause_button = document.getElementById("pause_button")
+	const can_pause = ["heart", "larva", "sphere", "stare", "sun", "tree"]
+	pause_button.style.color = can_pause.includes(drawing_mode) ? "white" : "gray"
+
+	const plot_button = document.getElementById("plot_button")
+	const can_plot = ["fins", "squares", "sun"]
+	plot_button.style.color = can_plot.includes(drawing_mode) ? "white" : "gray"
+}
 
 export default () => {
 	const [current_mode, set_mode] = useState(drawing_mode)
+	useEffect(handle_change)
 
 	return (
 		<select
 			id="drawing_mode"
 			className="menu-item"
 			value={current_mode}
+			style={{ color: can_draw.includes(current_mode) ? "#c4ffd2" : "#ffc4c4" }}
 			onWheel={(event) => {
-				const change = modes[modes.indexOf(current_mode) + (event.deltaY > 0 ? 1 : -1)]
-				set_mode(change)
-				set_drawing_mode(change)
+				const scroll = modes[modes.indexOf(current_mode) + sign(event.deltaY)]
+				set_mode(scroll)
+				set_drawing_mode(scroll)
+				handle_change()
 			}}
 			onChange={(event) => {
 				set_mode(event.target.value)
 				set_drawing_mode(event.target.value)
-
-				const plot_button = document.getElementById("plot_button")
-				switch (drawing_mode) {
-					case "Fins": plot_button.style.color = "white"; break
-					case "Squares": plot_button.style.color = "white"; break
-					case "Sun": plot_button.style.color = "white"; break
-					default: plot_button.style.color = "gray"; break
-				}
+				handle_change()
 			}}
 		>
-			{modes.map((e, i) => <option key={i} value={e}>{e}</option>)}
+			{modes.map((mode, index) => (
+				<option
+					key={index}
+					value={mode}
+					style={{ color: can_draw.includes(mode) ? "#c4ffd2" : "#ffc4c4" }}
+				>
+					{mode.charAt(0).toUpperCase() + mode.slice(1)}
+				</option>
+			))}
 		</select>
 	)
 }
