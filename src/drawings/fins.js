@@ -3,17 +3,18 @@ import { abs, cos, cos_wave, degrees, radians, rng, sin, sin_wave, sqrt, tau } f
 import { add_point } from "./_main"
 
 export default (context, points, count) => {
-	add_point(window.innerWidth / 2, window.innerHeight / 2, 0, rng(100, 50) + 200)
+	add_point(window.innerWidth / 2, window.innerHeight / 2)
 	// add_point(window.innerWidth / 2, window.innerHeight / 2, 0, window.innerHeight * 0.45)
 
 	points.forEach((point, index) => {
-		const [x, y, theta, length] = point
+		const [x, y, theta] = point
+		const length = 400
 		const unit = degrees(1)
 
 		if (theta > tau - unit) {
 			points.splice(index, 1)
 			return
-		} else point[2] += unit
+		} else { point[2] += unit }
 		// point[2] += sin(degrees(count)) / 2 + 0.6
 		// point[3] = (cos(theta) + 1) * 250
 
@@ -28,8 +29,8 @@ export default (context, points, count) => {
 			cap: "round",
 			// alpha: cos_wave(theta, 0.25, 0.25),
 			// alpha: 0.25,
-			// stroke: `hsl(${cos_wave(theta, count)}, 100%, 50%)`,
-			stroke: `hsl(${radians(theta + count / 200)}, 100%, 50%)`,
+			stroke: `hsl(${cos_wave(theta, count)}, 100%, 50%)`,
+			// stroke: `hsl(${radians(theta + count / 200)}, 100%, 50%)`,
 		})
 
 		fill_arc(context, {

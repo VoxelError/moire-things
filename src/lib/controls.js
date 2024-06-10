@@ -38,8 +38,7 @@ document.addEventListener("wheel", (event) => {
 export const draw_points = () => {
 	if (!cursor.held) return
 	switch (drawing_mode) {
-		// case "Fins": add_point(cursor.x, cursor.y, 0, 150); break
-		case "fins": add_point(cursor.x, cursor.y, 0, rng(100, 50)); break
+		// case "ball": add_point(cursor.x, cursor.y); break
 		case "heart": break
 		case "larva": break
 		case "orbs": add_point(cursor.x, cursor.y + 150); break
