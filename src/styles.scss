@@ -7,9 +7,7 @@ body {
 
 canvas {
 	position: absolute;
-	top: 0;
-	left: 0;
-	cursor: none;
+	cursor: crosshair;
 	// background: linear-gradient(15deg, #303346, #3241b4);
 	// filter: blur(10px) contrast(10px);
 }

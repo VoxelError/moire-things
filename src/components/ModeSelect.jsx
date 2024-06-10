@@ -4,6 +4,7 @@ import { sign } from "../lib/math"
 import { reset_canvas } from "../drawings/_main"
 
 const modes = [
+	"ball",
 	"bounce",
 	"circles",
 	"fins",
@@ -13,7 +14,7 @@ const modes = [
 	"orbs",
 	"pendulums",
 	"petals",
-	// "pillar",
+	"pillar",
 	"snake",
 	"sphere",
 	"spin",
@@ -26,21 +27,12 @@ const modes = [
 	"twirls",
 ]
 
-const can_draw = [
-	"bounce",
-	"circles",
-	"fins",
-	"legs",
-	"orbs",
-	"pendulums",
-	"petals",
-	"snake",
-	"spin",
-	"stalks",
-	"squares",
-	"sun",
-	"trails",
-	"twirls",
+const view_only = [
+	"heart",
+	"larva",
+	"sphere",
+	"stare",
+	"tree"
 ]
 
 const handle_change = () => {
@@ -65,7 +57,7 @@ export default () => {
 			id="drawing_mode"
 			className="menu-item"
 			value={current_mode}
-			style={{ color: can_draw.includes(current_mode) ? "#c4ffd2" : "#ffc4c4" }}
+			style={{ color: !view_only.includes(current_mode) ? "#c4ffd2" : "#ffc4c4" }}
 			onWheel={(event) => {
 				const scroll = modes[modes.indexOf(current_mode) + sign(event.deltaY)]
 				set_mode(scroll)
@@ -82,7 +74,7 @@ export default () => {
 				<option
 					key={index}
 					value={mode}
-					style={{ color: can_draw.includes(mode) ? "#c4ffd2" : "#ffc4c4" }}
+					style={{ color: !view_only.includes(mode) ? "#c4ffd2" : "#ffc4c4" }}
 				>
 					{mode.charAt(0).toUpperCase() + mode.slice(1)}
 				</option>

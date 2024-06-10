@@ -1,4 +1,5 @@
 import { cursor, draw_points, drawing_mode } from "../lib/controls.js"
+import ball from "./ball.js"
 
 import bounce from "./bounce.js"
 import circles from "./circles.js"
@@ -23,31 +24,24 @@ import tree from "./tree.js"
 import twirls from "./twirls.js"
 
 const canvas = document.getElementById("game_canvas")
-const pointer_canvas = document.getElementById("pointer")
-
 const context = canvas.getContext("2d")
-const pointer_context = pointer_canvas.getContext("2d", { willReadFrequently: true })
 
 const resize_canvas = () => {
-	canvas.width = pointer_canvas.width = window.innerWidth
-	canvas.height = pointer_canvas.height = window.innerHeight
+	canvas.width = window.innerWidth
+	canvas.height = window.innerHeight
 }
 window.addEventListener('resize', resize_canvas())
+canvas.addEventListener("contextmenu", (event) => event.preventDefault())
 
 let count = JSON.parse(localStorage.getItem("count")) ?? 0
 const points = JSON.parse(localStorage.getItem("points")) ?? []
 
 export const add_count = (value = 1) => count += value
-export const add_point = (x, y, theta = 0, length = 0) => { points.push([x, y, theta, length]) }
+export const add_point = (x, y, theta = 0, length = 0) => points.push([x, y, theta, length])
 
 export const reset_count = () => count = 0
 export const reset_points = () => points.length = 0
 export const reset_canvas = () => context.reset()
-export const reset_all = () => {
-	reset_count()
-	reset_points()
-	reset_canvas()
-}
 
 const fade = () => {
 	const image_data = context.getImageData(0, 0, window.innerWidth, window.innerHeight);
@@ -88,10 +82,8 @@ export default () => {
 		default: context.reset()
 	}
 
-	pointer_context.reset()
-	cursor.show && pointer(pointer_context)
-
 	switch (drawing_mode) {
+		case "ball": ball(context); break
 		case "bounce": bounce(context, points); break
 		case "circles": circles(context, points); break
 		case "fins": fins(context, points, count); break
@@ -101,7 +93,7 @@ export default () => {
 		case "orbs": orbs(context, points); break
 		case "pendulums": pendulums(context, points); break
 		case "petals": petals(context, points); break
-		// case "pillar": pillar(context, points); break
+		case "pillar": pillar(context, points, count); break
 		case "snake": snake(context, points); break
 		case "sphere": sphere(context, count); break
 		case "spin": spin(context, points, count); break
