@@ -1,4 +1,4 @@
-import { fill_arc, stroke_line } from "../lib/draws"
+import { draw_arc, stroke_line } from "../lib/draws"
 import { cos_wave, degrees, sin, sin_wave } from "../lib/math"
 
 export default (context, points, count) => {
@@ -24,13 +24,15 @@ export default (context, points, count) => {
 
 		point[2] += degrees(3)
 
-		fill_arc(context, {
+		draw_arc(context, {
 			center: [
 				motion,
 				y
 			],
 			radius: 15,
-			alpha: transparency,
+			fill: {
+				alpha: transparency,
+			}
 		})
 	})
 }

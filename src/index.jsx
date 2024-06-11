@@ -10,7 +10,7 @@ const App = () => {
 			render()
 			requestAnimationFrame(update)
 		}()
-	})
+	}, [])
 
 	return <Menu />
 }

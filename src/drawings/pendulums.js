@@ -1,4 +1,4 @@
-import { fill_arc, stroke_line } from "../lib/draws"
+import { draw_arc, stroke_line } from "../lib/draws"
 import { cos, degrees, sin, sqrt } from "../lib/math"
 
 export default (context, points) => {
@@ -25,13 +25,15 @@ export default (context, points) => {
 			alpha: 0.25,
 		})
 
-		fill_arc(context, {
+		draw_arc(context, {
 			center: [
 				x + (length * sin(motion)),
 				y + (length * cos(motion))
 			],
 			radius: 15,
-			// alpha: 0.5 * (sin(1 / sqrt(length / gravity) * theta) + 1),
+			fill: {
+				// alpha: 0.5 * (sin(1 / sqrt(length / gravity) * theta) + 1),
+			}
 		})
 	})
 }

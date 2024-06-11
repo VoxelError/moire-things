@@ -1,4 +1,4 @@
-import { fill_arc, stroke_arc, stroke_ellipse } from "../lib/draws"
+import { draw_arc, stroke_ellipse } from "../lib/draws"
 import { sin, tau } from "../lib/math"
 
 export default (context, points, count) => {
@@ -32,14 +32,16 @@ export default (context, points, count) => {
 		context.lineDashOffset = 0
 	})
 
-	fill_arc(context, {
+	draw_arc(context, {
 		center: [window.innerWidth / 2, window.innerHeight / 2],
-		radius: 1
+		radius: 1,
+		fill: {}
 	})
 
-	stroke_arc(context, {
+	draw_arc(context, {
 		center: [window.innerWidth / 2, window.innerHeight / 2],
-		radius: circumference
+		radius: circumference,
+		stroke: {}
 	})
 
 	context.fillStyle = "white"

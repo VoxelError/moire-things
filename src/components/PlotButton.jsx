@@ -1,10 +1,9 @@
-import React, { useEffect } from "react"
-import { drawing_mode } from "../lib/controls"
-import { add_point } from "../drawings/_main"
+import React, { useEffect, useState } from "react"
 import { cos, degrees, sin } from "../lib/math"
+import { add_point } from "../drawings/_main"
 
-const plot_points = () => {
-	switch (drawing_mode) {
+const plot_points = (mode) => {
+	switch (mode) {
 		case "fins": {
 			const max = 60
 
@@ -54,12 +53,20 @@ const plot_points = () => {
 	}
 }
 
-export default () => {
+export default ({ mode }) => {
+	const [color, set_color] = useState("gray")
+
+	useEffect(() => {
+		const can_plot = ["fins", "spin", "squares", "sun"]
+		set_color(can_plot.includes(mode) ? "white" : "gray")
+	}, [mode])
+
 	return (
 		<button
 			id="plot_button"
 			className="menu-item"
-			onClick={() => plot_points()}
+			style={{ color }}
+			onClick={() => plot_points(mode)}
 		>Plot</button >
 	)
 }

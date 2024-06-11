@@ -1,5 +1,5 @@
 import { drawing_mode } from "../lib/controls"
-import { abs, sign } from "../lib/math"
+import { abs, rng, sign } from "../lib/math"
 
 const ball_set = []
 const add_ball = (
@@ -32,7 +32,7 @@ document.addEventListener('mousedown', (event) => {
 				undefined,
 				undefined,
 				undefined,
-				0.9 - (i * 0.001),
+				0.7 + (i * 0.002),
 			)
 		}
 	}
@@ -46,7 +46,7 @@ document.addEventListener('mousedown', (event) => {
 document.addEventListener('mouseup', (event) => {
 	if (drawing_mode !== "ball") return
 
-	ball_set.forEach((ball) => {
+	ball_set.forEach((ball, i) => {
 		switch (event.button) {
 			case 0: {
 				ball.vx = event.pageX - window.innerWidth / 2 - ball.x
@@ -94,5 +94,4 @@ export default (context) => {
 		context.fillStyle = 'white'
 		context.fill()
 	})
-
 }

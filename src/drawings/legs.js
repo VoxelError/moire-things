@@ -1,4 +1,4 @@
-import { fill_arc } from "../lib/draws"
+import { draw_arc } from "../lib/draws"
 import { abs, cos, degrees, sin } from "../lib/math"
 import { cursor } from "../lib/controls"
 
@@ -13,14 +13,13 @@ export default (context, points) => {
 		const max = polar[0]
 
 		for (let i = unit; i <= max; i += unit) {
-			fill_arc(context, {
+			draw_arc(context, {
 				center: [
 					x - cos(polar[1]) * (polar[0] * i / max),
 					y - sin(polar[1]) * (polar[0] * i / max)
 				],
 				radius: 1 - phase * 0.75,
-				// alpha: 1 - phase,
-
+				fill: {}
 			})
 		}
 

@@ -1,40 +1,52 @@
-import { cursor } from "../lib/controls.js"
-import { fill_arc, stroke_arc } from "../lib/draws.js"
-import { sin, abs, degrees, tau, random } from "../lib/math.js"
+import { draw_arc } from "../lib/draws.js"
+import { abs, degrees, rng, sign } from "../lib/math.js"
+
+const half = {
+	x: window.innerWidth / 2,
+	y: window.innerHeight / 2
+}
+
+const pillar = {
+	x: 0,
+	y: 0,
+	vx: 5,
+	vy: 5,
+	radius: 100
+}
+
+document.addEventListener("mousedown", (event) => {
+	pillar.x = event.pageX - half.x
+	pillar.y = event.pageY - half.y
+})
 
 export default (context, points, count) => {
-	// if (!cursor.show) {
-	// add_point(random() * canvas_width, random() * window.innerHeight)
-	// }
+	context.translate(half.x, half.y)
 
-	// points.forEach((point, index) => {
-	// 	const [x, y, theta] = point
-	// 	point[2] += degrees(3)
+	if (abs(pillar.x) >= half.x - pillar.radius) {
+		pillar.vx *= -1
+		pillar.vy = rng(4, 1) * sign(pillar.vy)
+	}
 
-	// 	if (theta > tau) {
-	// 		points.splice(index, 1)
-	// 		return
-	// 	}
+	if (abs(pillar.y) >= half.y - pillar.radius) {
+		pillar.vy *= -1
+		pillar.vx = rng(4, 1) * sign(pillar.vx)
+	}
 
-	// 	fill_arc(context, {
-	// 		center: [x, y],
-	// 		radius: (1 - theta / tau) * 100,
-	// 		fill: `hsl(${degrees(count) * 10}, 100%, 50%)`,
-	// 		alpha: (1 - theta / tau) / 5,
-	// 	})
-	// })
+	pillar.x += pillar.vx
+	pillar.y += pillar.vy
 
-	points.forEach((point, index) => {
-		const [x, y, time] = point
-		point[2] += 1
-
-		fill_arc(context, {
-			center: [x, y],
-			radius: 50,
-			fill: `hsl(${degrees(count) * 10}, 100%, 50%)`
-		})
-		context.stroke()
-
-		points.splice(index, 1)
+	draw_arc(context, {
+		center: [pillar.x, pillar.y],
+		radius: pillar.radius,
+		fill: {
+			style: "black",
+			alpha: 0.01
+		},
+		stroke: {
+			width: 10,
+			style: `hsl(${degrees(count) * 10}, 100%, 50%)`
+		}
 	})
+
+	context.translate(-half.x, -half.y)
 }

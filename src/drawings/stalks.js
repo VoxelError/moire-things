@@ -1,133 +1,124 @@
 import { cursor } from "../lib/controls.js"
-import { fill_arc, stroke_arc } from "../lib/draws.js"
-import { sin, abs, degrees, tau, random, floor, cos } from "../lib/math.js"
+import { draw_arc } from "../lib/draws.js"
+import { sin, abs, degrees, tau, random, floor, cos, rng } from "../lib/math.js"
+import { add_point } from "./_main.js"
 
 const stalks = []
 
 export default (context, points, count) => {
-	// add_point(random() * window.innerWidth, random() * window.innerHeight)
+	add_point(rng(window.innerWidth), rng(window.innerHeight))
 
-	// points.forEach((point, index) => {
-		// const [x, y, radius, angle] = point
+	points.forEach((point, index) => {
+		const [x, y, radius, angle] = point
 
-		// const max = 20
+		const max = 20
 
-		// for (let i = 0; i < max; i++) {
-		// 	fill_arc(context, {
-		// 		center: [x + cos(angle) * i * 10, y + sin(angle) * i * 10],
-		// 		radius: max - i,
-		// 		fill: `hsl(${count}, 100%, 50%)`,
-		// 		alpha: i * 0.5 / max
-		// 	})
-		// }
+		for (let i = 0; i < max; i++) {
+			draw_arc(context, {
+				center: [
+					x + cos(angle) * i * 10,
+					y + sin(angle) * i * 10
+				],
+				radius: max - i,
+				fill: {
+					style: `hsl(${count}, 100%, 50%)`,
+					alpha: i * 0.5 / max
+				}
+			})
+		}
 
-		// points.splice(index, 1)
+		points.splice(index, 1)
 
-		// point[2]++
-		// if (radius > 20) points.splice(index, 1)
+		point[2]++
+		if (radius > 20) points.splice(index, 1)
 
-		// fill_arc(context, {
-		// 	center: [x + cos(angle) * radius * 10, y + sin(angle) * radius * 10],
-		// 	radius: 30 - radius,
-		// 	fill: `hsl(${count}, 100%, 50%)`,
-		// 	alpha: radius / 25
-		// })
+		draw_arc(context, {
+			center: [x + cos(angle) * radius * 10, y + sin(angle) * radius * 10],
+			radius: 30 - radius,
+			fill: {
+				style: `hsl(${count}, 100%, 50%)`,
+				alpha: radius / 25
+			}
+		})
+	})
+
+	// ==========================================================================================
+
+	// context.lineWidth = 0.2
+	// context.globalCompositeOperation = 'destination-over'
+
+	// cursor.held && stalks.push({
+	// 	x: cursor.x,
+	// 	y: cursor.y,
+	// 	speed_x: rng(4, -2),
+	// 	speed_y: rng(4, -2),
+
+	// 	size: 0,
+	// 	max_size: Math.random() * 7 + 20,
+	// 	size_rate: Math.random() * 0.2 + 0.5,
+
+	// 	angle: 0,
+	// 	angle_x: Math.random() * 6.2,
+	// 	angle_y: Math.random() * 6.2,
+
+	// 	ang_vel: Math.random() * 0.02 + 0.05,
+	// 	ang_vel_x: Math.random() * 0.6 - 0.3,
+	// 	ang_vel_y: Math.random() * 0.6 - 0.3,
+	// })
+	// stalks.forEach((stalk) => {
+	// 	stalk.x += stalk.speed_x + Math.sin(stalk.angle_x)
+	// 	stalk.y += stalk.speed_y + Math.sin(stalk.angle_y)
+	// 	stalk.size += stalk.size_rate
+	// 	stalk.angle_x += stalk.ang_vel_x
+	// 	stalk.angle_y += stalk.ang_vel_y
+	// 	stalk.angle += stalk.ang_vel
+
+	// 	if (stalk.size < stalk.max_size) {
+	// 		context.save()
+
+	// 		context.translate(stalk.x, stalk.y)
+	// 		context.rotate(stalk.angle)
+
+	// 		context.globalAlpha = 0.25
+
+	// 		context.fillStyle = "#FFF5DE"
+	// 		context.fillRect(0 - stalk.size / 2, 0 - stalk.size / 2, stalk.size, stalk.size)
+
+	// 		context.strokeStyle = '#3C5186'
+	// 		context.strokeRect(0 - stalk.size, 0 - stalk.size, stalk.size * 2, stalk.size * 2)
+
+	// 		context.strokeStyle = 'white'
+	// 		context.strokeRect(0 - stalk.size * 1.5, 0 - stalk.size * 1.5, stalk.size * 3, stalk.size * 3)
+
+	// 		context.restore()
+	// 	}
 	// })
 
-	context.lineWidth = 0.2
-	context.globalCompositeOperation = 'destination-over'
-	context.shadowOffsetX = 0
-	context.shadowOffsetY = 10
-	context.shadowBlur = 10
-	// context.shadowColor = 'rgba(0, 0, 0, 0.5)'
+	// ==========================================================================================
 
-	class Root {
-		constructor(x, y) {
-			this.x = x
-			this.y = y
-			this.speed_x = Math.random() * 4 - 2
-			this.speed_y = Math.random() * 4 - 2
+	// cursor.held && stalks.push({
+	// 	x: cursor.x,
+	// 	y: cursor.y,
+	// 	delta_x: rng(4, -2),
+	// 	delta_y: rng(4, -2),
+	// 	size: rng(1, 2),
+	// 	max_size: rng(5, 15),
+	// 	growth_rate: rng(0.2, 0.05),
+	// 	// angle_rate: rng(0.6, -0.3),
+	// 	angle_rate: degrees(3),
+	// 	angle: 0,
+	// })
 
-			this.size = 0
-			this.max_size = Math.random() * 7 + 20
-			this.size_rate = Math.random() * 0.2 + 0.5
-
-			this.angle = 0
-			this.angle_x = Math.random() * 6.2
-			this.angle_y = Math.random() * 6.2
-
-			this.ang_vel = Math.random() * 0.02 + 0.05
-			this.ang_vel_x = Math.random() * 0.6 - 0.3
-			this.ang_vel_y = Math.random() * 0.6 - 0.3
-		}
-		update() {
-			this.x += this.speed_x + Math.sin(this.angle_x)
-			this.y += this.speed_y + Math.sin(this.angle_y)
-			this.size += this.size_rate
-			this.angle_x += this.ang_vel_x
-			this.angle_y += this.ang_vel_y
-			this.angle += this.ang_vel
-
-			if (this.size < this.max_size) {
-				context.save()
-
-				context.translate(this.x, this.y)
-				context.rotate(this.angle)
-
-				context.fillStyle = "#FFF5DE"
-				context.fillRect(0 - this.size / 2, 0 - this.size / 2, this.size, this.size)
-
-				context.strokeStyle = '#3C5186'
-				context.strokeRect(0 - this.size, 0 - this.size, this.size * 2, this.size * 2)
-
-				context.strokeStyle = 'white'
-				context.strokeRect(0 - this.size * 1.5, 0 - this.size * 1.5, this.size * 3, this.size * 3)
-
-				context.restore()
-			}
-		}
-	}
-
-	cursor.held && stalks.push(new Root(cursor.x, cursor.y))
-	stalks.forEach(stalk => stalk.update())
-
-	// points.forEach((point, index) => {
-	// 	const [x, y] = point
-	// 	new Root(x, y).update()
-	// points.splice(index, 1)
+	// stalks.forEach((root) => {
+	// 	root.x += root.delta_x + cos(root.angle)
+	// 	root.y += root.delta_y + sin(root.angle)
+	// 	root.size += root.growth_rate
+	// 	root.angle += root.angle_rate
+	// 	if (root.size < root.max_size) {
+	// 		context.beginPath()
+	// 		context.arc(root.x, root.y, root.size, 0, tau)
+	// 		context.fillStyle = `hsl(${(1 - root.size / root.max_size) * 360}, 100%, 50%)`
+	// 		context.fill()
+	// 	}
 	// })
 }
-
-// class Root {
-// 	constructor(x, y) {
-// 		this.x = x
-// 		this.y = y
-// 		this.delta_x = rng(4, -2)
-// 		this.delta_y = rng(4, -2)
-// 		this.size = rng(1, 2)
-// 		this.max_size = rng(7, 5)
-// 		this.growth_rate = rng(0.2, 0.05)
-// 		this.angle_rate = rng(0.6, -0.3)
-// 		this.angle = 0
-// 	}
-
-// 	update() {
-// 		this.x += this.delta_x + sin(this.angle)
-// 		this.y += this.delta_y + sin(this.angle)
-// 		this.size += this.growth_rate
-// 		this.angle += this.angle_rate
-// 		if (this.size < this.max_size) {
-// 			context.beginPath()
-// 			context.arc(this.x, this.y, this.size, 0, tau)
-// 			context.fillStyle = "hsl(140, 100%, 50%)"
-// 			context.fill()
-// 			context.stroke()
-// 			requestAnimationFrame(this.update.bind(this))
-// 		}
-// 	}
-// }
-
-// window.addEventListener("mousemove", (event) => {
-// 	const root = new Root(event.x, event.y)
-// 	cursor.held && root.update()
-// })

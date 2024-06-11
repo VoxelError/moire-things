@@ -1,5 +1,5 @@
-import { fill_arc } from "../lib/draws"
-import { abs, cos_wave, degrees, sqrt, tau } from "../lib/math"
+import { draw_arc } from "../lib/draws"
+import { abs, cos_wave, sqrt } from "../lib/math"
 
 export default (context, points) => {
 	points.forEach((point) => {
@@ -12,24 +12,26 @@ export default (context, points) => {
 		// const motion = abs(cos(theta / sqrt(length * 0.15)) * y)
 		// const motion = height - abs(cos_wave(theta / sqrt(height - y / gravity), height - y))
 
-		if (y >= window.innerHeight - radius) {
+		if (y <= -radius) {
 			// point[2] *= -damping
 			// point[1] = window.innerHeight - radius
-			point[1] = 0
+			point[1] = window.innerHeight + radius
 		}
 
 		point[2] += gravity
 
-		point[1] += vel_y
+		point[1] -= 5
 
-		fill_arc(context, {
+		draw_arc(context, {
 			center: [
 				x,
 				y
 			],
 			radius: radius,
-			alpha: 0.5,
-			// fill: theta > tau * 2 ? "red" : "white"
+			fill: {
+				alpha: 0.25,
+				style: "red"
+			},
 		})
 	})
 }

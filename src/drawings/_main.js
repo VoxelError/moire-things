@@ -1,7 +1,7 @@
-import { cursor, draw_points, drawing_mode } from "../lib/controls.js"
+import { draw_points, drawing_mode } from "../lib/controls.js"
 import ball from "./ball.js"
-
 import bounce from "./bounce.js"
+import cells from "./cells.js"
 import circles from "./circles.js"
 import fins from "./fins.js"
 import heart from "./heart.js"
@@ -11,7 +11,6 @@ import orbs from "./orbs.js"
 import pendulums from "./pendulums.js"
 import petals from "./petals.js"
 import pillar from "./pillar.js"
-import pointer from "./pointer.js"
 import snake from "./snake.js"
 import sphere from "./sphere.js"
 import spin from "./spin.js"
@@ -43,17 +42,6 @@ export const reset_count = () => count = 0
 export const reset_points = () => points.length = 0
 export const reset_canvas = () => context.reset()
 
-const fade = () => {
-	const image_data = context.getImageData(0, 0, window.innerWidth, window.innerHeight);
-	const rgba_array = image_data.data;
-	for (let i = 0; i < rgba_array.length; i += 4) {
-		const unit = 16
-		rgba_array[i] -= unit
-		rgba_array[i + 3] -= unit
-	}
-	context.putImageData(image_data, 0, 0);
-}
-
 const plot = () => {
 	const skip = (frames) => !(count % frames)
 
@@ -75,16 +63,19 @@ export default () => {
 	localStorage.setItem("points", JSON.stringify(points))
 	localStorage.setItem("drawing_mode", JSON.stringify(drawing_mode))
 	draw_points()
+	// plot()
 
-	switch (drawing_mode) {
-		case "pillar": break
-		case "stalks": break
-		default: context.reset()
-	}
+	const no_erase = [
+		"cells",
+		"pillar",
+		"stalks",
+	]
+	!no_erase.includes(drawing_mode) && context.reset()
 
 	switch (drawing_mode) {
 		case "ball": ball(context); break
 		case "bounce": bounce(context, points); break
+		case "cells": cells(context, points, count); break
 		case "circles": circles(context, points); break
 		case "fins": fins(context, points, count); break
 		case "heart": heart(context, count); break
