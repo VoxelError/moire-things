@@ -1,7 +1,7 @@
 import { cursor } from "../lib/controls.js"
 import { draw_arc } from "../lib/draws.js"
 import { degrees, tau, random } from "../lib/math.js"
-import { add_point } from "./_main.js"
+import { add_point } from "../App.jsx"
 
 export default (context, points, count) => {
 	if (!cursor.show) {

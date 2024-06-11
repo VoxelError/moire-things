@@ -4,7 +4,7 @@ import PauseButton from './PauseButton.jsx'
 import PlotButton from './PlotButton.jsx'
 import ResetButton from './ResetButton.jsx'
 import styled from 'styled-components'
-import { reset_canvas } from '../drawings/_main.js'
+import { reset_canvas } from '../App.jsx'
 import { drawing_mode, set_drawing_mode } from '../lib/controls.js'
 
 const Menu = styled.div`
@@ -18,17 +18,11 @@ const Menu = styled.div`
 
 export default () => {
 	const [current_mode, set_mode] = useState(drawing_mode)
-	// const [is_paused, set_pause] = useState(window.pause)
 
 	useEffect(() => {
 		window.pause = false
 		reset_canvas()
 	}, [current_mode])
-
-	const handle_change = (mode) => {
-		set_mode(mode)
-		set_drawing_mode(mode)
-	}
 
 	return (
 		<Menu>
@@ -37,7 +31,10 @@ export default () => {
 			<PlotButton mode={current_mode} />
 			<ModeSelect
 				mode={current_mode}
-				handle_change={handle_change}
+				handle_change={(mode) => {
+					set_mode(mode)
+					set_drawing_mode(mode)
+				}}
 			/>
 		</Menu>
 	)

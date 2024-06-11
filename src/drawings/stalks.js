@@ -1,7 +1,7 @@
 import { cursor } from "../lib/controls.js"
 import { draw_arc } from "../lib/draws.js"
 import { sin, abs, degrees, tau, random, floor, cos, rng } from "../lib/math.js"
-import { add_point } from "./_main.js"
+import { add_point } from "../App.jsx"
 
 const stalks = []
 

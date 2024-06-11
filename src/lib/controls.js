@@ -1,5 +1,4 @@
-import { add_point } from "../drawings/_main"
-import { rng } from "./math"
+import { add_point } from "../App.jsx"
 
 export let drawing_mode = JSON.parse(localStorage.getItem("drawing_mode")) ?? "ball"
 export const set_drawing_mode = (value) => drawing_mode = value

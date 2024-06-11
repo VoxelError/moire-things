@@ -1,5 +1,5 @@
 import { degrees } from "../lib/math"
-import { height, width } from "./_main"
+import { height, width } from "../App.jsx"
 
 const { sin, cos, abs, sqrt, hypot } = Math
 

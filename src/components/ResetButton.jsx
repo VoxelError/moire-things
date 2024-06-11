@@ -1,5 +1,5 @@
 import React from "react"
-import { reset_canvas, reset_count, reset_points } from "../drawings/_main"
+import { reset_canvas, reset_count, reset_points } from "../App.jsx"
 
 export default () => {
 	return (

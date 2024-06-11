@@ -26,7 +26,6 @@ export default ({ mode }) => {
 
 	const handle_color = () => {
 		if (!can_pause.includes(mode)) return "gray"
-
 		return label == play_icon ? "#ffc4c4" : "#c4ffd2"
 	}
 

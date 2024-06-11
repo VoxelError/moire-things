@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { cos, degrees, sin } from "../lib/math"
-import { add_point } from "../drawings/_main"
+import { add_point } from "../App.jsx"
 
 const plot_points = (mode) => {
 	switch (mode) {
