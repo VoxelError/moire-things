@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { cos, degrees, sin } from "../lib/math"
+import { cos, degrees, sin, tau } from "../lib/math"
 import { add_point } from "../App.jsx"
 
 const plot_points = (mode) => {
@@ -8,10 +8,12 @@ const plot_points = (mode) => {
 			const max = 60
 
 			for (let i = 0; i < max; i++) {
+				const ratio = tau * i / max
+
 				add_point(
-					window.innerWidth / 2 + (250 * cos(degrees(i * 360 / max))),
-					window.innerHeight / 2 + (250 * sin(degrees(i * 360 / max))),
-					-degrees(i * 360 / max)
+					window.innerWidth / 2 + (250 * cos(ratio)),
+					window.innerHeight / 2 + (250 * sin(ratio)),
+					-ratio
 				)
 			}
 
@@ -43,8 +45,8 @@ const plot_points = (mode) => {
 
 			for (let i = 0; i < max; i++) {
 				add_point(
-					window.innerWidth / 2 - cos(degrees(i * 360 / max)),
-					window.innerHeight / 2 - sin(degrees(i * 360 / max))
+					window.innerWidth / 2 - cos(tau * i / max),
+					window.innerHeight / 2 - sin(tau * i / max)
 				)
 			}
 

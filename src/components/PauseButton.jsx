@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react"
 const can_pause = [
 	"heart",
 	"larva",
+	"radial",
 	"sphere",
 	"stare",
 	"sun",

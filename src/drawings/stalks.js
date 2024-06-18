@@ -8,39 +8,39 @@ const stalks = []
 export default (context, points, count) => {
 	add_point(rng(window.innerWidth), rng(window.innerHeight))
 
-	points.forEach((point, index) => {
-		const [x, y, radius, angle] = point
+	// points.forEach((point, index) => {
+	// 	const [x, y, radius, angle] = point
 
-		const max = 20
+	// 	const max = 20
 
-		for (let i = 0; i < max; i++) {
-			draw_arc(context, {
-				center: [
-					x + cos(angle) * i * 10,
-					y + sin(angle) * i * 10
-				],
-				radius: max - i,
-				fill: {
-					style: `hsl(${count}, 100%, 50%)`,
-					alpha: i * 0.5 / max
-				}
-			})
-		}
+	// 	for (let i = 0; i < max; i++) {
+	// 		draw_arc(context, {
+	// 			center: [
+	// 				x + cos(angle) * i * 10,
+	// 				y + sin(angle) * i * 10
+	// 			],
+	// 			radius: max - i,
+	// 			fill: {
+	// 				style: `hsl(${count}, 100%, 50%)`,
+	// 				alpha: i * 0.5 / max
+	// 			}
+	// 		})
+	// 	}
 
-		points.splice(index, 1)
+	// 	points.splice(index, 1)
 
-		point[2]++
-		if (radius > 20) points.splice(index, 1)
+	// 	point[2]++
+	// 	if (radius > 20) points.splice(index, 1)
 
-		draw_arc(context, {
-			center: [x + cos(angle) * radius * 10, y + sin(angle) * radius * 10],
-			radius: 30 - radius,
-			fill: {
-				style: `hsl(${count}, 100%, 50%)`,
-				alpha: radius / 25
-			}
-		})
-	})
+	// 	draw_arc(context, {
+	// 		center: [x + cos(angle) * radius * 10, y + sin(angle) * radius * 10],
+	// 		radius: 30 - radius,
+	// 		fill: {
+	// 			style: `hsl(${count}, 100%, 50%)`,
+	// 			alpha: radius / 25
+	// 		}
+	// 	})
+	// })
 
 	// ==========================================================================================
 
@@ -96,29 +96,33 @@ export default (context, points, count) => {
 
 	// ==========================================================================================
 
-	// cursor.held && stalks.push({
-	// 	x: cursor.x,
-	// 	y: cursor.y,
-	// 	delta_x: rng(4, -2),
-	// 	delta_y: rng(4, -2),
-	// 	size: rng(1, 2),
-	// 	max_size: rng(5, 15),
-	// 	growth_rate: rng(0.2, 0.05),
-	// 	// angle_rate: rng(0.6, -0.3),
-	// 	angle_rate: degrees(3),
-	// 	angle: 0,
-	// })
+	const Stalk = {
+		x: cursor.x,
+		y: cursor.y,
+		delta_x: rng(4, -2),
+		delta_y: rng(4, -2),
+		size: rng(1, 2),
+		max_size: rng(5, 15),
+		growth_rate: rng(0.2, 0.05),
+		// angle_rate: rng(0.6, -0.3),
+		angle_rate: degrees(3),
+		angle: 0,
+	}
 
-	// stalks.forEach((root) => {
-	// 	root.x += root.delta_x + cos(root.angle)
-	// 	root.y += root.delta_y + sin(root.angle)
-	// 	root.size += root.growth_rate
-	// 	root.angle += root.angle_rate
-	// 	if (root.size < root.max_size) {
-	// 		context.beginPath()
-	// 		context.arc(root.x, root.y, root.size, 0, tau)
-	// 		context.fillStyle = `hsl(${(1 - root.size / root.max_size) * 360}, 100%, 50%)`
-	// 		context.fill()
-	// 	}
-	// })
+	const update = (root) => {
+		root.x += root.delta_x + cos(root.angle)
+		root.y += root.delta_y + sin(root.angle)
+		root.size += root.growth_rate
+		root.angle += root.angle_rate
+		if (root.size < root.max_size) {
+			context.beginPath()
+			context.arc(root.x, root.y, root.size, 0, tau)
+			context.fillStyle = `hsl(${(1 - root.size / root.max_size) * 360}, 100%, 50%)`
+			context.fill()
+		}
+	}
+
+	cursor.held && stalks.push(Stalk)
+	
+	stalks.forEach(update)
 }

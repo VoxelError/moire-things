@@ -1,10 +1,14 @@
 import { pi, tau } from "./math"
 
-export const stroke_line = (context, { start, end, width, stroke, cap, alpha }) => {
+export const stroke_line = (context, params) => {
+	const { start, end, width, dash, offset, stroke, cap, alpha } = params
+
 	context.beginPath()
 	context.moveTo(start[0], start[1])
 	context.lineTo(end[0], end[1])
 	context.lineWidth = width ?? 1
+	context.setLineDash(dash ?? [])
+	context.lineDashOffset = offset ?? 0
 	context.strokeStyle = stroke ?? "white"
 	context.lineCap = cap ?? "butt"
 	context.globalAlpha = alpha ?? 1

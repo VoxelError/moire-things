@@ -6,18 +6,20 @@ const half = {
 	y: window.innerHeight / 2
 }
 
+const radius = 100
+
 const pillar = {
-	x: 0,
-	y: 0,
-	vx: 5,
-	vy: 5,
-	radius: 100
+	x: rng((half.x - radius) * 2, -(half.x - radius)),
+	y: rng((half.y - radius) * 2, -(half.y - radius)),
+	vx: rng(4, 1) * sign(rng(2, -1)),
+	vy: rng(4, 1) * sign(rng(2, -1)),
+	radius
 }
 
-document.addEventListener("mousedown", (event) => {
-	pillar.x = event.pageX - half.x
-	pillar.y = event.pageY - half.y
-})
+// document.addEventListener("mousedown", (event) => {
+// 	pillar.x = event.pageX - half.x
+// 	pillar.y = event.pageY - half.y
+// })
 
 export default (context, points, count) => {
 	context.translate(half.x, half.y)
@@ -47,6 +49,23 @@ export default (context, points, count) => {
 			style: `hsl(${degrees(count) * 10}, 100%, 50%)`
 		}
 	})
+
+	// points.forEach((point, index) => {
+	// 	draw_arc(context, {
+	// 		center: [point[0], point[1]],
+	// 		radius: 100,
+	// 		fill: {
+	// 			style: "black",
+	// 			alpha: 0.01
+	// 		},
+	// 		stroke: {
+	// 			width: 10,
+	// 			style: `hsl(${degrees(count) * 10}, 100%, 50%)`
+	// 		}
+	// 	})
+
+	// 	points.splice(index, 1)
+	// })
 
 	context.translate(-half.x, -half.y)
 }

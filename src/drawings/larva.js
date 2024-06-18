@@ -2,7 +2,9 @@ import { stroke_arc } from "../lib/draws"
 import { cos, degrees, sin } from "../lib/math"
 
 export default (context, count) => {
-	for (let i = 0; i < 5; i++) {
+	const larvae = 6
+
+	for (let i = 0; i < larvae; i++) {
 		const time = degrees(count) * (i + 1)
 		const theta = time / 100
 

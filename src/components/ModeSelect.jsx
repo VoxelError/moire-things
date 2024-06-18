@@ -14,6 +14,7 @@ const modes = [
 	"pendulums",
 	"petals",
 	"pillar",
+	"radial",
 	"snake",
 	// "speed",
 	"sphere",

@@ -1,14 +1,12 @@
 import { stroke_line } from "../lib/draws"
-import { cos, cos_wave, degrees, radians, sin, tau } from "../lib/math"
+import { cos, cos_wave, degrees, sin, tau } from "../lib/math"
 
 export default (context, points, count) => {
 	points.forEach((point, index) => {
 		const [x, y, theta] = point
 		const length = 200
-		const unit = degrees(2)
 
-		point[2] += unit
-		// theta > tau - unit && points.splice(index, 1)
+		point[2] += degrees(2)
 
 		stroke_line(context, {
 			start: [x, y],
@@ -19,7 +17,7 @@ export default (context, points, count) => {
 			width: 10,
 			cap: "round",
 			alpha: 0.5,
-			stroke: `hsl(${radians(theta)}, 100%, 50%)`,
+			stroke: `hsl(${theta * 360 / tau}, 100%, 50%)`,
 			// stroke: `hsl(${cos_wave(theta, count)}, 100%, 50%)`,
 		})
 	})

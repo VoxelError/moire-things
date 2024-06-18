@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { draw_points, drawing_mode } from "./lib/controls.js"
 import Menu from "./components/Menu.jsx"
 
@@ -24,6 +24,7 @@ import sun from "./drawings/sun.js"
 import trails from "./drawings/trails.js"
 import tree from "./drawings/tree.js"
 import twirls from "./drawings/twirls.js"
+import radial from "./drawings/radial.js"
 
 const canvas = document.getElementById("game_canvas")
 const context = canvas.getContext("2d")
@@ -89,6 +90,7 @@ export default () => {
 				case "pendulums": pendulums(context, points); break
 				case "petals": petals(context, points); break
 				case "pillar": pillar(context, points, count); break
+				case "radial": radial(context, points, count); break
 				case "snake": snake(context, points); break
 				case "sphere": sphere(context, count); break
 				case "spin": spin(context, points, count); break
