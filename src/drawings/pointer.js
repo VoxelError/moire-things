@@ -2,7 +2,7 @@ import { draw_arc, stroke_arc } from "../lib/draws"
 import { abs, degrees, sin_wave } from "../lib/math"
 import { cursor } from "../lib/controls"
 
-export default (context) => {
+export default (size, context) => {
 	cursor.delta += degrees(2.5)
 	context.setLineDash([5, 5])
 	stroke_arc(context, {

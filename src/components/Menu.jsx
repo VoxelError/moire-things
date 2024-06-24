@@ -16,7 +16,7 @@ const Menu = styled.div`
 	gap: 16px;
 `
 
-export default () => {
+export default ({ size }) => {
 	const [current_mode, set_mode] = useState(drawing_mode)
 
 	useEffect(() => {
@@ -30,7 +30,7 @@ export default () => {
 		<Menu>
 			<PauseButton mode={current_mode} />
 			<ResetButton />
-			<PlotButton mode={current_mode} />
+			<PlotButton mode={current_mode} size={size} />
 			<ModeSelect
 				mode={current_mode}
 				handle_change={(mode) => {

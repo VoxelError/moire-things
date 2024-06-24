@@ -20,16 +20,16 @@ canvas.addEventListener("mouseleave", () => {
 })
 canvas.addEventListener("mouseover", () => cursor.show = true)
 
-document.addEventListener("mousedown", (event) => {
+canvas.addEventListener("mousedown", (event) => {
 	if (event.target.id !== "game_canvas") return
 	event.button == 0 && (cursor.held = true)
 })
-document.addEventListener("mouseup", () => cursor.held = false)
-document.addEventListener("mousemove", (event) => {
-	cursor.x = event.pageX
-	cursor.y = event.pageY
+canvas.addEventListener("mouseup", () => cursor.held = false)
+canvas.addEventListener("mousemove", (event) => {
+	cursor.x = event.offsetX
+	cursor.y = event.offsetY
 })
-document.addEventListener("wheel", (event) => {
+canvas.addEventListener("wheel", (event) => {
 	// 	e.preventDefault()
 	// 	cursor.size += e.deltaY * 0.1
 })

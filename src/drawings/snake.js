@@ -1,7 +1,7 @@
 import { stroke_arc } from "../lib/draws"
 import { degrees, sin_wave, tau } from "../lib/math"
 
-export default (context, points) => {
+export default (size, context, points) => {
 	points.forEach((point) => {
 		const [x, y, theta] = point
 		const phase = sin_wave(2 * tau * theta, 0.5, 0.5)

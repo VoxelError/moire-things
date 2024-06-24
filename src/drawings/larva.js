@@ -1,7 +1,7 @@
 import { stroke_arc } from "../lib/draws"
 import { cos, degrees, sin } from "../lib/math"
 
-export default (context, count) => {
+export default (size, context, count) => {
 	const larvae = 6
 
 	for (let i = 0; i < larvae; i++) {
@@ -14,8 +14,8 @@ export default (context, count) => {
 		for (let i = unit; i <= max; i += unit) {
 			stroke_arc(context, {
 				center: [
-					window.innerWidth / 2 + cos(theta) * (max - i),
-					window.innerHeight / 2 - sin(theta) * (max - i)
+					size.x / 2 + cos(theta) * (max - i),
+					size.y / 2 - sin(theta) * (max - i)
 					// width / 2,
 					// height / 2
 				],

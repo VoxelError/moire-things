@@ -3,9 +3,9 @@ import { draw_arc } from "../lib/draws.js"
 import { degrees, tau, random } from "../lib/math.js"
 import { add_point } from "../App.jsx"
 
-export default (context, points, count) => {
+export default (size, context, points, count) => {
 	if (!cursor.show) {
-		add_point(random() * window.innerWidth, random() * window.innerHeight)
+		add_point(random() * size.x, random() * size.y)
 	}
 
 	points.forEach((point, index) => {

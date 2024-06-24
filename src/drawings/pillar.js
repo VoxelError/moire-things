@@ -1,27 +1,31 @@
 import { draw_arc } from "../lib/draws.js"
 import { abs, degrees, rng, sign } from "../lib/math.js"
 
-const half = {
-	x: window.innerWidth / 2,
-	y: window.innerHeight / 2
-}
-
 const radius = 100
 
-const pillar = {
-	x: rng((half.x - radius) * 2, -(half.x - radius)),
-	y: rng((half.y - radius) * 2, -(half.y - radius)),
+const init_pillar = (x, y) => ({
+	x: rng((x - radius) * 2, -(x - radius)),
+	y: rng((y - radius) * 2, -(y - radius)),
 	vx: rng(4, 1) * sign(rng(2, -1)),
 	vy: rng(4, 1) * sign(rng(2, -1)),
 	radius
-}
+})
 
 // document.addEventListener("mousedown", (event) => {
 // 	pillar.x = event.pageX - half.x
 // 	pillar.y = event.pageY - half.y
 // })
 
-export default (context, points, count) => {
+let pillar
+
+export default (size, context, points, count) => {
+	const half = {
+		x: size.x / 2,
+		y: size.y / 2
+	}
+
+	pillar ??= init_pillar(half.x, half.y)
+
 	context.translate(half.x, half.y)
 
 	if (abs(pillar.x) >= half.x - pillar.radius) {

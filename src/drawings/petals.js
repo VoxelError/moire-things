@@ -2,7 +2,7 @@ import { stroke_arc } from "../lib/draws"
 import { abs, cos, degrees, sin } from "../lib/math"
 import { cursor } from "../lib/controls"
 
-export default (context, points) => {
+export default (size, context, points) => {
 	points.forEach((point) => {
 		const [x, y] = point
 		const phase = abs(sin((point[2])))

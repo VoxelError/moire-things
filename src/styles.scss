@@ -1,12 +1,20 @@
+html,
+body {
+	height: 100%;
+}
+
 body {
 	margin: 0px;
-	background-color: black;
-	display: flex;
+	background-color: gray;
+	display: grid;
+	justify-content: center;
+	// align-content: center;
 	user-select: none;
 }
 
 canvas {
-	position: absolute;
+	// position: absolute;
+	background-color: black;
 	cursor: crosshair;
 	// background: linear-gradient(15deg, #303346, #3241b4);
 	// filter: blur(10px) contrast(10px);

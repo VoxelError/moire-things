@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { cos, degrees, sin, tau } from "../lib/math"
 import { add_point } from "../App.jsx"
 
-const plot_points = (mode) => {
+const plot_points = (mode, size) => {
 	switch (mode) {
 		case "fins": {
 			const max = 60
@@ -11,8 +11,8 @@ const plot_points = (mode) => {
 				const ratio = tau * i / max
 
 				add_point(
-					window.innerWidth / 2 + (250 * cos(ratio)),
-					window.innerHeight / 2 + (250 * sin(ratio)),
+					size.x / 2 + (250 * cos(ratio)),
+					size.y / 2 + (250 * sin(ratio)),
 					-ratio
 				)
 			}
@@ -21,9 +21,9 @@ const plot_points = (mode) => {
 		}
 
 		case "spin": {
-			for (let i = 0; i < window.innerHeight; i += window.innerHeight / 200) {
+			for (let i = 0; i < size.y; i += size.y / 200) {
 				add_point(
-					window.innerWidth * 0.6,
+					size.x * 0.6,
 					i,
 					degrees(i)
 				)
@@ -45,8 +45,8 @@ const plot_points = (mode) => {
 
 			for (let i = 0; i < max; i++) {
 				add_point(
-					window.innerWidth / 2 - cos(tau * i / max),
-					window.innerHeight / 2 - sin(tau * i / max)
+					size.x / 2 - cos(tau * i / max),
+					size.y / 2 - sin(tau * i / max)
 				)
 			}
 
@@ -55,7 +55,7 @@ const plot_points = (mode) => {
 	}
 }
 
-export default ({ mode }) => {
+export default ({ mode, size }) => {
 	const [color, set_color] = useState("gray")
 
 	useEffect(() => {
@@ -68,7 +68,7 @@ export default ({ mode }) => {
 			id="plot_button"
 			className="menu-item"
 			style={{ color }}
-			onClick={() => plot_points(mode)}
+			onClick={() => plot_points(mode, size)}
 		>Plot</button >
 	)
 }

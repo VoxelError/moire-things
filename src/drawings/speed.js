@@ -54,7 +54,7 @@ const move_actor = () => {
 	actor.y > height + actor.r && (actor.y = -actor.r)
 }
 
-export default (context) => {
+export default (size, context) => {
 	controls()
 	move_actor()
 

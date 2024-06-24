@@ -29,8 +29,12 @@ import radial from "./drawings/radial.js"
 const canvas = document.getElementById("game_canvas")
 const context = canvas.getContext("2d")
 
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
+const scale = 0.75
+const size = {
+	x: canvas.width = window.innerWidth * scale,
+	y: canvas.height = window.innerHeight * scale,
+}
+
 canvas.addEventListener("contextmenu", (event) => event.preventDefault())
 
 let count = JSON.parse(localStorage.getItem("count")) ?? 0
@@ -46,8 +50,8 @@ export const reset_canvas = () => context.reset()
 const plot = () => {
 	const skip = (frames) => !(count % frames)
 
-	// count < window.innerWidth / 10 && add_point(count * 10, window.innerHeight - (count ** 1.325))
-	count < window.innerHeight / 2 && skip(5) && add_point(window.innerWidth / 2, window.innerHeight * 0.75 - count)
+	// count < size.x / 10 && add_point(count * 10, size.y - (count ** 1.325))
+	count < size.y / 2 && skip(5) && add_point(size.x / 2, size.y * 0.75 - count)
 	// count < width / 4 && skip(5) && add_point(width - count * 4, 0)
 	// count < 200 && skip(10) && add_point(width / 2, height / 2)
 	// count < 100 && skip(10) && add_point(center.x, center.y - count, 0, count + 200)7
@@ -78,29 +82,29 @@ export default () => {
 			!no_erase.includes(drawing_mode) && context.reset()
 
 			switch (drawing_mode) {
-				case "ball": ball(context); break
-				case "bounce": bounce(context, points); break
-				case "cells": cells(context, points, count); break
-				case "circles": circles(context, points); break
-				case "fins": fins(context, points, count); break
-				case "heart": heart(context, count); break
-				case "larva": larva(context, count); break
-				case "legs": legs(context, points); break
-				case "orbs": orbs(context, points); break
-				case "pendulums": pendulums(context, points); break
-				case "petals": petals(context, points); break
-				case "pillar": pillar(context, points, count); break
-				case "radial": radial(context, points, count); break
-				case "snake": snake(context, points); break
-				case "sphere": sphere(context, count); break
-				case "spin": spin(context, points, count); break
-				case "stalks": stalks(context, points, count); break
-				case "squares": squares(context, points); break
-				case "stare": stare(context, count); break
-				case "sun": sun(context, points, count); break
-				case "trails": trails(context, points, count); break
-				case "tree": tree(context, count); break
-				case "twirls": twirls(context, points); break
+				case "ball": ball(size, context); break
+				case "bounce": bounce(size, context, points); break
+				case "cells": cells(size, context, points, count); break
+				case "circles": circles(size, context, points); break
+				case "fins": fins(size, context, points, count); break
+				case "heart": heart(size, context, count); break
+				case "larva": larva(size, context, count); break
+				case "legs": legs(size, context, points); break
+				case "orbs": orbs(size, context, points); break
+				case "pendulums": pendulums(size, context, points); break
+				case "petals": petals(size, context, points); break
+				case "pillar": pillar(size, context, points, count); break
+				case "radial": radial(size, context, points, count); break
+				case "snake": snake(size, context, points); break
+				case "sphere": sphere(size, context, count); break
+				case "spin": spin(size, context, points, count); break
+				case "stalks": stalks(size, context, points, count); break
+				case "squares": squares(size, context, points); break
+				case "stare": stare(size, context, count); break
+				case "sun": sun(size, context, points, count); break
+				case "trails": trails(size, context, points, count); break
+				case "tree": tree(size, context, count); break
+				case "twirls": twirls(size, context, points); break
 			}
 
 			requestAnimationFrame(update)
@@ -108,6 +112,6 @@ export default () => {
 	}, [])
 
 	return (
-		<Menu />
+		<Menu size={size} />
 	)
 }

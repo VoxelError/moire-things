@@ -1,7 +1,7 @@
 import { draw_arc, stroke_line } from "../lib/draws"
 import { cos, degrees, sin, sqrt } from "../lib/math"
 
-export default (context, points) => {
+export default (size, context, points) => {
 	const gravity = 9.82
 	const amplitude = degrees(45)
 
@@ -19,7 +19,7 @@ export default (context, points) => {
 				y + (length * cos(motion))
 			],
 			width: 8,
-			stroke: "gray",
+			style: "gray",
 			cap: "round",
 			// alpha: 0.5 * (sin(1 / sqrt(length / gravity) * theta) + 1),
 			alpha: 0.25,

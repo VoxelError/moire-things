@@ -1,24 +1,24 @@
 import { draw_arc, stroke_ellipse } from "../lib/draws"
 import { sin, tau } from "../lib/math"
 
-export default (context, points, count) => {
-	const circumference = window.innerWidth / 5 + sin(count / 25) * 50
+export default (size, context, points, count) => {
+	const circumference = size.x / 5 + sin(count / 25) * 50
 
 	points.forEach((point, index) => {
 		const [x, y] = point
-		const sun = Math.atan2(y - window.innerHeight / 2, x - window.innerWidth / 2)
+		const sun = Math.atan2(y - size.y / 2, x - size.x / 2)
 
 		context.setLineDash([100, 100])
 		context.lineDashOffset = count * 10
 
 		stroke_ellipse(context, {
 			center: [
-				window.innerWidth / 2,
-				window.innerHeight / 2,
+				size.x / 2,
+				size.y / 2,
 			],
 			radii: [
 				circumference,
-				(window.innerHeight / 10) * 0.5,
+				(size.y / 10) * 0.5,
 			],
 			rotation: sun,
 			arc: [
@@ -33,13 +33,13 @@ export default (context, points, count) => {
 	})
 
 	draw_arc(context, {
-		center: [window.innerWidth / 2, window.innerHeight / 2],
+		center: [size.x / 2, size.y / 2],
 		radius: 1,
 		fill: {}
 	})
 
 	draw_arc(context, {
-		center: [window.innerWidth / 2, window.innerHeight / 2],
+		center: [size.x / 2, size.y / 2],
 		radius: circumference,
 		stroke: {}
 	})

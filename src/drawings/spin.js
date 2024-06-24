@@ -1,13 +1,13 @@
 import { draw_arc, stroke_line } from "../lib/draws"
 import { cos_wave, degrees, sin, sin_wave } from "../lib/math"
 
-export default (context, points, count) => {
-	const mid = window.innerWidth / 2
+export default (size, context, points, count) => {
+	const mid = size.x / 2
 
 	stroke_line(context, {
 		start: [mid, 0],
-		end: [mid, window.innerHeight],
-		stroke: "gray",
+		end: [mid, size.y],
+		style: "gray",
 		alpha: 0.15 * sin(count * 0.08) + 0.5,
 	})
 

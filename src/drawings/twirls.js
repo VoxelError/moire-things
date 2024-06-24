@@ -1,21 +1,22 @@
 import { stroke_line } from "../lib/draws"
-import { cos, degrees, sin } from "../lib/math"
+import { cos, degrees, sin, tau } from "../lib/math"
 
-export default (context, points) => {
-	points.forEach((point) => {
+export default (size, context, points) => {
+	points.forEach((point, index) => {
 		const [x, y, theta] = point
-		const length = 100
+		const length = 200
+		const rotation = theta + (tau / 5) * index
 
-		point[2] += degrees(70)
+		point[2] += degrees(1)
 
 		stroke_line(context, {
 			start: [x, y],
 			end: [
-				x + (length * sin(theta)),
-				y + (length * cos(theta))
+				x + (length * sin(rotation)),
+				y + (length * cos(rotation))
 			],
 			width: 10,
-			stroke: "gray",
+			style: "gray",
 			cap: "round",
 			alpha: 0.25,
 		})

@@ -1,7 +1,7 @@
 import { draw_arc } from "../lib/draws"
 import { cos, degrees, sin, sqrt, tau } from "../lib/math"
 
-export default (context, points) => {
+export default (size, context, points) => {
 	const amplitude = degrees(30)
 
 	points.forEach((point) => {

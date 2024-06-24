@@ -5,8 +5,8 @@ import { add_point } from "../App.jsx"
 
 const stalks = []
 
-export default (context, points, count) => {
-	add_point(rng(window.innerWidth), rng(window.innerHeight))
+export default (size, context, points, count) => {
+	add_point(rng(size.x), rng(size.y))
 
 	// points.forEach((point, index) => {
 	// 	const [x, y, radius, angle] = point
