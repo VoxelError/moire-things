@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { cos, degrees, sin, tau } from "../lib/math"
+import { cos, degrees, sin, tau } from "../util/math.js"
 import { add_point } from "../App.jsx"
 
 const plot_points = (mode, size) => {

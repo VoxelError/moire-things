@@ -1,5 +1,5 @@
-import { stroke_line } from "../lib/draws"
-import { cos, cos_wave, pi, sin, tau } from "../lib/math"
+import { stroke_line } from "../util/draws"
+import { cos, cos_wave, pi, sin, tau } from "../util/math"
 
 const counter = {
 	value: 0,

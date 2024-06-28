@@ -1,5 +1,5 @@
-import { stroke_line } from "../lib/draws"
-import { cos, cos_wave, degrees, sin, tau } from "../lib/math"
+import { stroke_line } from "../util/draws"
+import { cos, cos_wave, degrees, sin, tau } from "../util/math"
 
 export default (size, context, points, count) => {
 	points.forEach((point, index) => {

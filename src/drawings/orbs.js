@@ -1,7 +1,7 @@
-import { draw_arc } from "../lib/draws"
-import { cos, degrees, sin, sqrt, tau } from "../lib/math"
+import { draw_arc } from "../util/draws"
+import { cos, degrees, sin, sqrt, tau } from "../util/math"
 
-export default (size, context, points) => {
+export default (size, context, points, count) => {
 	const amplitude = degrees(30)
 
 	points.forEach((point) => {
@@ -14,12 +14,12 @@ export default (size, context, points) => {
 		draw_arc(context, {
 			center: [
 				x + (length * sin(motion)),
-				y - (length * cos(motion))
+				y - (length * cos(motion)) + length
 			],
 			radius: 15,
 			fill: {
 				// alpha: 0.25 * (cos(theta / sqrt(length * 0.15)) + 1.1),
-				style: `hsl(${(theta * 360 / tau) * 0.2} ,100%, 50%)`
+				style: `hsl(${(theta * 360 / tau) * 0.2}, 100%, 50%)`
 			},
 			stroke: { alpha: 0.5 }
 		})

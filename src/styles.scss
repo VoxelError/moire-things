@@ -5,11 +5,15 @@ body {
 
 body {
 	margin: 0px;
-	background-color: gray;
+	background-color: rgb(10, 10, 10);
 	display: grid;
 	justify-content: center;
-	// align-content: center;
+	align-content: center;
 	user-select: none;
+}
+
+#root {
+	display: grid;
 }
 
 canvas {

@@ -1,7 +1,7 @@
-import { draw_arc, stroke_line } from "../lib/draws"
-import { cos, degrees, sin, sqrt } from "../lib/math"
+import { draw_arc, stroke_line } from "../util/draws"
+import { cos, degrees, sin, sqrt } from "../util/math"
 
-export default (size, context, points) => {
+export default (size, context, points, count) => {
 	const gravity = 9.82
 	const amplitude = degrees(45)
 

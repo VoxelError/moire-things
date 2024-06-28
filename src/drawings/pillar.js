@@ -1,9 +1,7 @@
-import { draw_arc } from "../lib/draws.js"
-import { abs, degrees, rng, sign } from "../lib/math.js"
+import { draw_arc } from "../util/draws.js"
+import { abs, degrees, rng, sign, tau } from "../util/math.js"
 
-const radius = 100
-
-const init_pillar = (x, y) => ({
+const init_pillar = (x, y, radius) => ({
 	x: rng((x - radius) * 2, -(x - radius)),
 	y: rng((y - radius) * 2, -(y - radius)),
 	vx: rng(4, 1) * sign(rng(2, -1)),
@@ -11,31 +9,30 @@ const init_pillar = (x, y) => ({
 	radius
 })
 
-// document.addEventListener("mousedown", (event) => {
-// 	pillar.x = event.pageX - half.x
-// 	pillar.y = event.pageY - half.y
-// })
-
 let pillar
+let hue = 0
 
 export default (size, context, points, count) => {
+	const radius = size.y * 0.1
 	const half = {
 		x: size.x / 2,
 		y: size.y / 2
 	}
 
-	pillar ??= init_pillar(half.x, half.y)
+	pillar ??= init_pillar(size.x / 2, size.y / 2, radius)
 
-	context.translate(half.x, half.y)
+	context.translate(size.x / 2, size.y / 2)
 
-	if (abs(pillar.x) >= half.x - pillar.radius) {
+	if (abs(pillar.x) >= size.x / 2 - pillar.radius) {
 		pillar.vx *= -1
-		pillar.vy = rng(4, 1) * sign(pillar.vy)
+		pillar.vy = rng(4, 4) * sign(pillar.vy)
+		hue += 10
 	}
 
-	if (abs(pillar.y) >= half.y - pillar.radius) {
+	if (abs(pillar.y) >= size.y / 2 - pillar.radius) {
 		pillar.vy *= -1
-		pillar.vx = rng(4, 1) * sign(pillar.vx)
+		pillar.vx = rng(4, 4) * sign(pillar.vx)
+		hue += 10
 	}
 
 	pillar.x += pillar.vx
@@ -44,13 +41,25 @@ export default (size, context, points, count) => {
 	draw_arc(context, {
 		center: [pillar.x, pillar.y],
 		radius: pillar.radius,
-		fill: {
-			style: "black",
-			alpha: 0.01
-		},
 		stroke: {
 			width: 10,
-			style: `hsl(${degrees(count) * 10}, 100%, 50%)`
+			style: `hsl(${count * 0.2 + hue}, 100%, 50%)`
+		},
+		fill: {
+			style: `hsl(${count * 0.2 + hue}, 75%, 50%)`
+		}
+	})
+
+	draw_arc(context, {
+		center: [pillar.x, pillar.y],
+		radius: pillar.radius,
+		stroke: {
+			width: 10,
+			cap: "round",
+			style: "black",
+			dash: [radius * tau / 16],
+			offset: count * 10,
+			alpha: 0.5
 		}
 	})
 
@@ -71,5 +80,5 @@ export default (size, context, points, count) => {
 	// 	points.splice(index, 1)
 	// })
 
-	context.translate(-half.x, -half.y)
+	context.translate(-size.x / 2, -size.y / 2)
 }

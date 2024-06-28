@@ -1,13 +1,10 @@
-import { degrees } from "../lib/math"
-import { height, width } from "../App.jsx"
+import { degrees, rng, tau } from "../util/math"
 
-const { sin, cos, abs, sqrt, hypot } = Math
+const { sin, cos, hypot } = Math
 
 let actor = {
-	x: width / 2,
-	y: height / 2,
-	r: 30,
-	a: degrees(90),
+	r: 100,
+	a: rng(tau),
 	x_thrust: 0,
 	y_thrust: 0,
 }
@@ -42,7 +39,7 @@ const controls = () => {
 	}
 }
 
-const move_actor = () => {
+const move_actor = (width, height) => {
 	actor.x += actor.x_thrust
 	actor.y += actor.y_thrust
 
@@ -54,9 +51,14 @@ const move_actor = () => {
 	actor.y > height + actor.r && (actor.y = -actor.r)
 }
 
-export default (size, context) => {
+export default (size, context, points, count) => {
+	actor.x ??= size.x / 2
+	actor.y ??= size.y / 2
+
+	actor.a = rng(tau)
+
 	controls()
-	move_actor()
+	move_actor(size.x, size.y)
 
 	const { x, y, r, a } = actor
 	context.beginPath()

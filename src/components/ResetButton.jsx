@@ -1,7 +1,6 @@
 import React from "react"
-import { reset_canvas, reset_count, reset_points } from "../App.jsx"
 
-export default () => {
+export default ({ reset_count, reset_points, reset_canvas }) => {
 	return (
 		<button
 			id="reset_button"

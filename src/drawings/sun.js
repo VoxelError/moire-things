@@ -1,5 +1,5 @@
-import { draw_arc, stroke_ellipse } from "../lib/draws"
-import { sin, tau } from "../lib/math"
+import { draw_arc, stroke_ellipse } from "../util/draws"
+import { sin, tau } from "../util/math"
 
 export default (size, context, points, count) => {
 	const circumference = size.x / 5 + sin(count / 25) * 50

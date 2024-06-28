@@ -1,37 +1,14 @@
 import React from "react"
-import { sign } from "../lib/math"
+import { sign } from "../util/math"
+import { entries } from "../util/modes"
 
-const modes = [
-	"ball",
-	"bounce",
-	"cells",
-	"circles",
-	"fins",
-	"heart",
-	"larva",
-	"legs",
-	"orbs",
-	"pendulums",
-	"petals",
-	"pillar",
-	"radial",
-	"snake",
-	// "speed",
-	"sphere",
-	"spin",
-	"squares",
-	"stalks",
-	"stare",
-	// "stereo",
-	"sun",
-	"trails",
-	"tree",
-	"twirls",
-]
+const options = Object.keys(entries)
 
 const view_only = [
 	"heart",
 	"larva",
+	"pillar",
+	"radial",
 	"sphere",
 	"stare",
 	"tree"
@@ -45,9 +22,9 @@ export default ({ mode, handle_change }) => {
 			value={mode}
 			style={{ color: !view_only.includes(mode) ? "#c4ffd2" : "#ffc4c4" }}
 			onChange={(event) => handle_change(event.target.value)}
-			onWheel={(event) => handle_change(modes[modes.indexOf(mode) + sign(event.deltaY)])}
+			onWheel={(event) => handle_change(options.at((options.indexOf(mode) + sign(event.deltaY)) % options.length))}
 		>
-			{modes.map((mode, index) => (
+			{options.map((mode, index) => (
 				<option
 					key={index}
 					value={mode}

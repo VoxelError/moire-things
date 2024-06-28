@@ -1,8 +1,10 @@
-import { draw_arc, stroke_line } from "../lib/draws"
-import { cos_wave, degrees, sin, sin_wave } from "../lib/math"
+import { draw_arc, stroke_line } from "../util/draws"
+import { cos_wave, degrees, sin, sin_wave } from "../util/math"
 
 export default (size, context, points, count) => {
 	const mid = size.x / 2
+
+	// implement z-axis
 
 	stroke_line(context, {
 		start: [mid, 0],

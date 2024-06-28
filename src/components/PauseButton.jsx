@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 
 const can_pause = [
+	"cells",
 	"heart",
 	"larva",
 	"radial",
@@ -10,34 +11,41 @@ const can_pause = [
 	"tree",
 ]
 
-const pause_icon = "| |"
-const play_icon = "▶"
+const icons = {
+	pause: {
+		label: "| |",
+		color: "#c4ffd2"
+	},
+	play: {
+		label: "▶",
+		color: "#ffc4c4"
+	}
+}
+
+const check = () => !window.pause ? "pause" : "play"
 
 export default ({ mode }) => {
-	const [label, set_label] = useState(pause_icon)
+	const [label, set_label] = useState(icons.pause.label)
 
-	useEffect(() => set_label(pause_icon), [mode])
+	useEffect(() => {
+		set_label(icons[check()].label)
+	}, [])
 
 	const handle_pause = () => {
 		if (!can_pause.includes(mode)) return
 
 		window.pause = !window.pause
-		set_label(window.pause ? play_icon : pause_icon)
-	}
-
-	const handle_color = () => {
-		if (!can_pause.includes(mode)) return "gray"
-		return label == play_icon ? "#ffc4c4" : "#c4ffd2"
+		set_label(icons[check()].label)
 	}
 
 	return (
 		<button
 			id="pause_button"
 			className="menu-item"
-			style={{ color: handle_color() }}
+			style={{ color: can_pause.includes(mode) ? icons[check()].color : "gray" }}
 			onClick={handle_pause}
 		>
-			{label}
+			{can_pause.includes(mode) ? label : icons.pause.label}
 		</button >
 	)
 }

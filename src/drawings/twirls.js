@@ -1,7 +1,7 @@
-import { stroke_line } from "../lib/draws"
-import { cos, degrees, sin, tau } from "../lib/math"
+import { stroke_line } from "../util/draws"
+import { cos, degrees, sin, tau } from "../util/math"
 
-export default (size, context, points) => {
+export default (size, context, points, count) => {
 	points.forEach((point, index) => {
 		const [x, y, theta] = point
 		const length = 200

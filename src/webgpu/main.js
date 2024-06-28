@@ -1,15 +1,16 @@
 import "../styles.scss"
-import compute from "./wgsl/compute.wgsl?raw"
-import shader from "./wgsl/shader.wgsl?raw"
+import compute from "./shaders/compute.wgsl?raw"
+import shader from "./shaders/shader.wgsl?raw"
 
 // SETUP
 
-const grid_size = 80
-
 const canvas = document.createElement("canvas")
-canvas.width = window.innerHeight
+canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 document.body.append(canvas)
+
+const grid_width = canvas.width
+const grid_height = canvas.height
 
 const adapter = await navigator.gpu.requestAdapter()
 const device = await adapter.requestDevice()
@@ -78,13 +79,13 @@ const vertex_buffer = create_buffer(48, GPUBufferUsage.VERTEX | GPUBufferUsage.C
 device.queue.writeBuffer(vertex_buffer, 0, vertices)
 
 const uniform_buffer = create_buffer(8, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST)
-device.queue.writeBuffer(uniform_buffer, 0, new Float32Array([grid_size, grid_size]))
+device.queue.writeBuffer(uniform_buffer, 0, new Float32Array([grid_width, grid_height]))
 
-const cell_state_array = new Uint32Array(grid_size ** 2).map(e => e = Math.random() > 0.55 ? 1 : 0)
+const cell_state_array = new Uint32Array(grid_width * grid_height).map(e => e = Math.random() > 0.55 ? 1 : 0)
 const cell_state_storage = create_storage(cell_state_array)
 device.queue.writeBuffer(cell_state_storage[0], 0, cell_state_array)
 
-const cell_neighbor_array = new Uint32Array(grid_size ** 2)
+const cell_neighbor_array = new Uint32Array(grid_width * grid_height)
 const cell_neighbor_storage = create_storage(cell_neighbor_array)
 device.queue.writeBuffer(cell_neighbor_storage[0], 0, cell_neighbor_array)
 
@@ -114,7 +115,6 @@ const bind_groups = [
 // RENDER
 
 let step = 0
-const workgroup_count = Math.ceil(grid_size / 8)
 
 const update = () => {
 	const encoder = device.createCommandEncoder()
@@ -122,7 +122,7 @@ const update = () => {
 	const compute_pass = encoder.beginComputePass()
 	compute_pass.setPipeline(compute_pipeline)
 	compute_pass.setBindGroup(0, bind_groups[step % 2])
-	compute_pass.dispatchWorkgroups(workgroup_count, workgroup_count)
+	compute_pass.dispatchWorkgroups(Math.ceil(grid_width / 8), Math.ceil(grid_height / 8))
 	compute_pass.end()
 
 	const colorAttachments = [{
@@ -136,7 +136,7 @@ const update = () => {
 	render_pass.setPipeline(render_pipeline)
 	render_pass.setBindGroup(0, bind_groups[step % 2])
 	render_pass.setVertexBuffer(0, vertex_buffer)
-	render_pass.draw(vertices.length / 2, grid_size ** 2)
+	render_pass.draw(vertices.length / 2, grid_width * grid_height)
 	render_pass.end()
 
 	device.queue.submit([encoder.finish()])

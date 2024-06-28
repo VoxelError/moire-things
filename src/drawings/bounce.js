@@ -1,7 +1,7 @@
-import { draw_arc } from "../lib/draws"
-import { abs, cos_wave, sqrt } from "../lib/math"
+import { draw_arc } from "../util/draws"
+import { abs, cos_wave, sqrt } from "../util/math"
 
-export default (size, context, points) => {
+export default (size, context, points, count) => {
 	points.forEach((point) => {
 		const [x, y, vel_y, height] = point
 

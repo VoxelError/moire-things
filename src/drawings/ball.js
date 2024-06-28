@@ -1,5 +1,4 @@
-import { drawing_mode } from "../lib/controls"
-import { abs, sign } from "../lib/math"
+import { abs, sign } from "../util/math"
 
 const ball_array = []
 
@@ -21,8 +20,6 @@ const pin = {
 }
 
 document.addEventListener('mousedown', (event) => {
-	if (drawing_mode !== "ball") return
-
 	if (event.button == 0) {
 		ball_array.length = 0
 		for (let i = 0; i < 100; i++) {
@@ -42,8 +39,6 @@ document.addEventListener('mousedown', (event) => {
 })
 
 document.addEventListener('mouseup', (event) => {
-	if (drawing_mode !== "ball") return
-
 	ball_array.forEach((ball, i) => {
 		switch (event.button) {
 			case 0: {
@@ -61,7 +56,7 @@ document.addEventListener('mouseup', (event) => {
 	})
 })
 
-export default (size, context) => {
+export default (size, context, points, count) => {
 	context.translate(size.x / 2, size.y / 2)
 
 	ball_array.forEach((ball) => {
