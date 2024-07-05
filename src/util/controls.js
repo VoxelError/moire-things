@@ -1,8 +1,3 @@
-export let drawing_mode = JSON.parse(localStorage.getItem("drawing_mode")) ?? "ball"
-export const set_drawing_mode = (value) => drawing_mode = value
-
-export const add_point = (x, y, z = 0, w = 0) => window.points.push([x, y, z, w])
-
 export const cursor = {
 	x: -100,
 	y: -100,
