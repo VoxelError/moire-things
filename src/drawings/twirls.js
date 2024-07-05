@@ -1,21 +1,22 @@
+import { cursor } from "../util/controls"
 import { stroke_line } from "../util/draws"
 import { cos, degrees, sin, tau } from "../util/math"
 
 export default (size, context, points, count) => {
-	points.forEach((point, index) => {
-		const [x, y, theta] = point
-		const length = 200
-		const rotation = theta + (tau / 5) * index
+	cursor.held && points.push({ x: cursor.x, y: cursor.y, theta: 0, length: size.y / 10 })
 
-		point[2] += degrees(1)
+	points.forEach((point, index) => {
+		const rotation = point.theta + (tau / 5) * index
+
+		point.theta += degrees(1)
 
 		stroke_line(context, {
-			start: [x, y],
+			start: [point.x, point.y],
 			end: [
-				x + (length * sin(rotation)),
-				y + (length * cos(rotation))
+				point.x + (point.length * sin(rotation)),
+				point.y + (point.length * cos(rotation))
 			],
-			width: 10,
+			width: 5,
 			style: "gray",
 			cap: "round",
 			alpha: 0.25,

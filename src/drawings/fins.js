@@ -1,25 +1,31 @@
-import { stroke_line } from "../util/draws"
+import { cursor } from "../util/controls"
+import { draw_arc, stroke_line } from "../util/draws"
 import { cos, cos_wave, degrees, sin, tau } from "../util/math"
 
 export default (size, context, points, count) => {
-	points.forEach((point, index) => {
-		const [x, y, theta] = point
-		const length = 200
-		const rotation = theta + (tau / 5) * index
+	cursor.held && points.push({
+		x: cursor.x,
+		y: cursor.y,
+		theta: 0,
+		length: size.y / 10
+	})
 
-		point[2] += degrees(1)
+	points.forEach((fin, index) => {
+		fin.theta += degrees(3)
 
 		stroke_line(context, {
-			start: [x, y],
-			end: [
-				x + (length * cos(rotation)),
-				y + (length * sin(rotation)),
+			start: [
+				fin.x - (fin.length * cos(fin.theta)),
+				fin.y - (fin.length * sin(fin.theta)),
 			],
-			width: 10,
+			end: [
+				fin.x + (fin.length * cos(fin.theta)),
+				fin.y + (fin.length * sin(fin.theta)),
+			],
+			width: 8,
 			cap: "round",
 			alpha: 0.25,
-			style: `hsl(${cos_wave(theta, 360, 0, 0.25)}, 100%, 50%)`,
-			// stroke: `hsl(${cos_wave(theta, count)}, 100%, 50%)`,
+			style: `hsl(${cos_wave(fin.theta, 360, 0, 0.25)}, 100%, 25%)`,
 		})
 	})
 }

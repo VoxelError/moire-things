@@ -3,15 +3,20 @@ import { abs, cos, cos_wave, degrees, pi, sin, tau } from "../util/math"
 import { cursor } from "../util/controls"
 
 export default (size, context, points, count) => {
-	points.forEach((point) => {
-		const [x, y, theta] = point
+	cursor.held && points.push({
+		x: cursor.x,
+		y: cursor.y,
+		theta: 0,
+	})
+
+	points.forEach((leg) => {
 		// const phase = abs(sin(point[2]))
 		// const phase = cos(point[2]) * 0.5 + 0.5
 		// const phase = cos_wave(point[2], 0.5, 0.5)
-		point[2] += degrees(3)
+		leg.theta += degrees(3)
 		const polar = [
-			Math.hypot(x - cursor.x, y - cursor.y),
-			Math.atan2(y - cursor.y, x - cursor.x)
+			Math.hypot(leg.x - cursor.x, leg.y - cursor.y),
+			Math.atan2(leg.y - cursor.y, leg.x - cursor.x)
 		]
 
 		// const unit = 50 + phase * 10
@@ -23,8 +28,8 @@ export default (size, context, points, count) => {
 		for (let i = phase; i <= max; i += unit) {
 			draw_arc(context, {
 				center: [
-					x - cos(polar[1]) * (max - i),
-					y - sin(polar[1]) * (max - i)
+					leg.x - cos(polar[1]) * (max - i),
+					leg.y - sin(polar[1]) * (max - i)
 				],
 				radius: 1,
 				fill: { alpha: (1 - i / max) * 0.5 }
@@ -32,7 +37,7 @@ export default (size, context, points, count) => {
 		}
 
 		stroke_line(context, {
-			start: [x, y],
+			start: [leg.x, leg.y],
 			end: [
 				cursor.x,
 				cursor.y

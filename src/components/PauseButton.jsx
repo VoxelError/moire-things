@@ -32,7 +32,7 @@ export default ({ mode }) => {
 	}, [])
 
 	const handle_pause = () => {
-		if (!can_pause.includes(mode)) return
+		// if (!can_pause.includes(mode)) return
 
 		window.pause = !window.pause
 		set_label(icons[check()].label)
@@ -42,10 +42,12 @@ export default ({ mode }) => {
 		<button
 			id="pause_button"
 			className="menu-item"
-			style={{ color: can_pause.includes(mode) ? icons[check()].color : "gray" }}
+			// style={{ color: can_pause.includes(mode) ? icons[check()].color : "gray" }}
+			style={{ color: icons[check()].color }}
 			onClick={handle_pause}
 		>
-			{can_pause.includes(mode) ? label : icons.pause.label}
+			{/* {can_pause.includes(mode) ? label : icons.pause.label} */}
+			{label}
 		</button >
 	)
 }

@@ -1,18 +1,26 @@
+import { cursor } from "../util/controls"
 import { stroke_rect, stroke_square } from "../util/draws"
 
 export default (size, context, points, count) => {
-	points.forEach((point) => {
+	cursor.held && points.push({
+		x: cursor.x,
+		y: cursor.y,
+		vx: 1,
+		vy: 1,
+	})
+
+	points.forEach((square) => {
 		const side = size.y * 0.1
 		const speed = size.y * 0.01
 
-		if (point[0] > size.x - side || point[0] < 0) { point[2] *= -1 }
-		if (point[1] > size.y - side || point[1] < 0) { point[3] *= -1 }
+		if (square.x > size.x - side || square.x < 0) { square.vx *= -1 }
+		if (square.y > size.y - side || square.y < 0) { square.vy *= -1 }
 
-		point[0] += point[2] * speed
-		point[1] += point[3] * speed
+		square.x += square.vx * speed
+		square.y += square.vy * speed
 
 		stroke_rect(context, {
-			start: [point[0], point[1]],
+			start: [square.x, square.y],
 			dims: [side, side],
 			alpha: 0.25
 		})

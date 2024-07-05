@@ -1,7 +1,14 @@
 import { draw_arc, stroke_line } from "../util/draws"
 import { cos_wave, degrees, sin, sin_wave } from "../util/math"
+import { cursor } from "../util/controls"
 
 export default (size, context, points, count) => {
+	cursor.held && points.push({
+		x: cursor.x,
+		y: cursor.y,
+		theta: 0,
+	})
+
 	const mid = size.x / 2
 
 	// implement z-axis
@@ -14,27 +21,21 @@ export default (size, context, points, count) => {
 	})
 
 	points.forEach((point) => {
-		const [x, y, theta] = point
-		const motion = cos_wave(theta, x - mid, mid)
+		const motion = cos_wave(point.theta, point.x - mid, mid)
 		const rotation = () => {
-			if (x < mid) return -theta
-			if (x > mid) return theta
-			if (x == mid) return 1
+			if (point.x < mid) return -point.theta
+			if (point.x > mid) return point.theta
+			if (point.x == mid) return 1
 		}
 		// const transparency = sin_wave(theta, 0.5, 0.5)
 		const transparency = sin_wave(rotation(), 0.5, 0.5)
 
-		point[2] += degrees(3)
+		point.theta += degrees(3)
 
 		draw_arc(context, {
-			center: [
-				motion,
-				y
-			],
+			center: [motion, point.y],
 			radius: 15,
-			fill: {
-				alpha: transparency,
-			}
+			fill: { alpha: transparency }
 		})
 	})
 }

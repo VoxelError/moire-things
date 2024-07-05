@@ -36,6 +36,10 @@ export default ({ size, reset_count, reset_points, reset_canvas }) => {
 				handle_change={(mode) => {
 					set_mode(mode)
 					set_drawing_mode(mode)
+
+					reset_count()
+					reset_points()
+					// window.pause = false
 				}}
 			/>
 		</Menu>

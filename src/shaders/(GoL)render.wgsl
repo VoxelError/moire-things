@@ -44,6 +44,6 @@ fn fragment_main(input: VertexOutput) -> @location(0) vec4f {
     let ratio = f32(neighbors) / 8;
     let color = vec3f(ratio, 0, 0);
 
-    return vec4f(color, 1);
-	// return vec4f(f32(alive), f32(alive), f32(alive), 1);
+    // return vec4f(color, 1);
+	return vec4f(f32(alive), f32(alive), f32(alive), 1);
 }

@@ -14,8 +14,8 @@ export default (size, context, points, count) => {
 		for (let i = unit; i <= max; i += unit) {
 			draw_arc(context, {
 				center: [
-					(size.x / 2) + cos(theta) * (max - i) * 0.75,
-					(size.y / 2) - sin(theta) * (max - i) * 0.75,
+					(size.x / 2) + cos(theta) * (max - i),
+					(size.y / 2) - sin(theta) * (max - i),
 					// width / 2,
 					// height / 2
 				],

@@ -1,12 +1,17 @@
+import { cursor } from "../util/controls"
 import { draw_arc, stroke_ellipse } from "../util/draws"
 import { sin, tau } from "../util/math"
 
 export default (size, context, points, count) => {
+	cursor.held && points.push({
+		x: cursor.x,
+		y: cursor.y,
+	})
+
 	const circumference = size.x / 5 + sin(count / 25) * 50
 
-	points.forEach((point, index) => {
-		const [x, y] = point
-		const sun = Math.atan2(y - size.y / 2, x - size.x / 2)
+	points.forEach((point) => {
+		const sun = Math.atan2(point.y - size.y / 2, point.x - size.x / 2)
 
 		context.setLineDash([100, 100])
 		context.lineDashOffset = count * 10
@@ -21,10 +26,7 @@ export default (size, context, points, count) => {
 				(size.y / 10) * 0.5,
 			],
 			rotation: sun,
-			arc: [
-				0,
-				tau,
-			],
+			arc: [0, tau],
 			stroke: "gray",
 		})
 

@@ -1,6 +1,6 @@
 import "../styles.scss"
-import compute from "./wgsl/compute.wgsl?raw"
-import shader from "./wgsl/shader.wgsl?raw"
+import compute from "../shaders/(GoL)compute.wgsl?raw"
+import shader from "../shaders/(GoL)render.wgsl?raw"
 
 // SETUP
 

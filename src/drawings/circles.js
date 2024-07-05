@@ -1,14 +1,20 @@
+import { cursor } from "../util/controls.js"
 import { draw_arc } from "../util/draws.js"
 import { sin, abs, degrees } from "../util/math.js"
 
 export default (size, context, points, count) => {
-	points.forEach((point) => {
-		const [x, y] = point
-		const phase = abs(sin((point[2])))
-		point[2] += degrees(3)
+	cursor.held && points.push({
+		x: cursor.x,
+		y: cursor.y,
+		theta: 0,
+	})
+
+	points.forEach((circle) => {
+		const phase = abs(sin((circle.theta)))
+		circle.theta += degrees(3)
 
 		draw_arc(context, {
-			center: [x, y],
+			center: [circle.x, circle.y],
 			radius: phase * size.y * 0.1,
 			stroke: {
 				// alpha: 1 - phase,
