@@ -19,10 +19,9 @@ context.configure({ device, format })
 
 const buffers = [
 	{
-		arrayStride: 20,
+		arrayStride: 8,
 		attributes: [
 			{ shaderLocation: 0, offset: 0, format: 'float32x2' },
-			{ shaderLocation: 4, offset: 8, format: 'float32x3' },
 		]
 	},
 	{
@@ -33,6 +32,12 @@ const buffers = [
 			{ shaderLocation: 2, offset: 16, format: 'float32x2' },
 			{ shaderLocation: 3, offset: 24, format: 'float32x2' },
 		],
+	},
+	{
+		arrayStride: 4,
+		attributes: [
+			{ shaderLocation: 4, offset: 0, format: 'unorm8x4' },
+		]
 	},
 ]
 
@@ -49,16 +54,21 @@ const pipeline = device.createRenderPipeline({
 
 function circle_vertices({ radius = 1, inner_radius = 0, sectors = 24 }) {
 	const vertices = sectors * 6
-	const vertex_data = new Float32Array(vertices * 5)
-	// const color_data = new Uint8Array(vertex_data.buffer)
+	const vertex_data = new Float32Array(vertices * 2)
+	const color_data = new Uint8Array(vertices * 4)
 
 	let offset = 0
 	const add_vertex = (v, r, color) => {
-		vertex_data[offset++] = cos(v * tau / sectors) * r
-		vertex_data[offset++] = sin(v * tau / sectors) * r
-		vertex_data[offset++] = color[0]
-		vertex_data[offset++] = color[1]
-		vertex_data[offset++] = color[2]
+		vertex_data.set([
+			cos(v * tau / sectors) * r,
+			sin(v * tau / sectors) * r,
+		], offset * 2)
+		color_data.set([
+			color[0] * 255,
+			color[1] * 255,
+			color[2] * 255,
+		], offset * 4)
+		offset++
 	}
 
 	for (let i = 0; i < sectors; ++i) {
@@ -75,15 +85,26 @@ function circle_vertices({ radius = 1, inner_radius = 0, sectors = 24 }) {
 		add_vertex(k, inner_radius, inner)
 	}
 
-	return { vertices, vertex_data }
+	return {
+		vertices,
+		vertex_data,
+		color_data,
+	}
 }
 
-const { vertices, vertex_data } = circle_vertices({ radius: 0.5, inner_radius: 0.3 })
+const { vertices, vertex_data, color_data } = circle_vertices({ radius: 0.5, inner_radius: 0.3 })
+
 const vertex_buffer = device.createBuffer({
 	size: vertex_data.byteLength,
 	usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
 })
 device.queue.writeBuffer(vertex_buffer, 0, vertex_data)
+
+const vertex_color_buffer = device.createBuffer({
+	size: color_data.byteLength,
+	usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+})
+device.queue.writeBuffer(vertex_color_buffer, 0, color_data)
 
 const generate_instances = (instances) => {
 	const instance_values = new Float32Array(8 * instances)
@@ -126,6 +147,7 @@ const update = () => {
 	render_pass.setPipeline(pipeline)
 	render_pass.setVertexBuffer(0, vertex_buffer)
 	render_pass.setVertexBuffer(1, vertex_props_buffer)
+	render_pass.setVertexBuffer(2, vertex_color_buffer)
 	render_pass.draw(vertices, instances)
 	render_pass.end()
 
