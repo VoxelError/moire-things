@@ -1,16 +1,24 @@
 export const cursor = {
-	x: -100,
-	y: -100,
-	r: 0,
-	delta: 0,
+	x: 0,
+	y: 0,
+	button: "",
+	click: () => { },
 	held: false,
 	show: true,
-	size: 66,
 }
 
 export const listen = (canvas) => {
-	canvas.addEventListener("mousedown", (event) => event.button == 0 && (cursor.held = true))
-	canvas.addEventListener("mouseup", () => cursor.held = false)
+	canvas.addEventListener("mousedown", (event) => {
+		if (event.button == 0) { cursor.button = "left" }
+		if (event.button == 1) { cursor.button = "middle" }
+		if (event.button == 2) { cursor.button = "right" }
+		cursor.held = true
+		cursor.click()
+	})
+	canvas.addEventListener("mouseup", () => {
+		cursor.button = ""
+		cursor.held = false
+	})
 	canvas.addEventListener("mousemove", (event) => {
 		cursor.x = event.offsetX
 		cursor.y = event.offsetY

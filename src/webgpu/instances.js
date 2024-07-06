@@ -1,5 +1,5 @@
 import "../styles.scss"
-import { rng } from "../util/math.js"
+import { cos, rng, sin, tau } from "../util/math.js"
 import shader from "../shaders/instances.wgsl?raw"
 import { cursor, listen } from "../util/controls.js"
 
@@ -17,25 +17,86 @@ const format = navigator.gpu.getPreferredCanvasFormat()
 const context = canvas.getContext("webgpu")
 context.configure({ device, format })
 
+const buffers = [
+	{
+		arrayStride: 20,
+		attributes: [
+			{ shaderLocation: 0, offset: 0, format: 'float32x2' },
+			{ shaderLocation: 4, offset: 8, format: 'float32x3' },
+		]
+	},
+	{
+		arrayStride: 32,
+		stepMode: 'instance',
+		attributes: [
+			{ shaderLocation: 1, offset: 0, format: 'float32x4' },
+			{ shaderLocation: 2, offset: 16, format: 'float32x2' },
+			{ shaderLocation: 3, offset: 24, format: 'float32x2' },
+		],
+	},
+]
+
 const module = device.createShaderModule({ code: shader })
 const pipeline = device.createRenderPipeline({
 	layout: "auto",
-	vertex: { module },
-	fragment: { module, targets: [{ format }] }
+	vertex: {
+		module,
+		buffers
+	},
+	fragment: { module, targets: [{ format }] },
+	// primitive: { topology: "line-list" },
 })
 
-const generate_instances = (max) => {
-	const instance_values = new Float32Array(8 * max)
-	const storage_buffer = device.createBuffer({
-		size: 32 * max,
-		usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+function circle_vertices({ radius = 1, inner_radius = 0, sectors = 24 }) {
+	const vertices = sectors * 6
+	const vertex_data = new Float32Array(vertices * 5)
+	// const color_data = new Uint8Array(vertex_data.buffer)
+
+	let offset = 0
+	const add_vertex = (v, r, color) => {
+		vertex_data[offset++] = cos(v * tau / sectors) * r
+		vertex_data[offset++] = sin(v * tau / sectors) * r
+		vertex_data[offset++] = color[0]
+		vertex_data[offset++] = color[1]
+		vertex_data[offset++] = color[2]
+	}
+
+	for (let i = 0; i < sectors; ++i) {
+		const k = i + 1
+		const inner = Array(3).fill(0.25)
+		const outer = Array(3).fill(1)
+
+		add_vertex(i, radius, outer)
+		add_vertex(k, radius, outer)
+		add_vertex(i, inner_radius, inner)
+
+		add_vertex(i, inner_radius, inner)
+		add_vertex(k, radius, outer)
+		add_vertex(k, inner_radius, inner)
+	}
+
+	return { vertices, vertex_data }
+}
+
+const { vertices, vertex_data } = circle_vertices({ radius: 0.5, inner_radius: 0.3 })
+const vertex_buffer = device.createBuffer({
+	size: vertex_data.byteLength,
+	usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+})
+device.queue.writeBuffer(vertex_buffer, 0, vertex_data)
+
+const generate_instances = (instances) => {
+	const instance_values = new Float32Array(8 * instances)
+	const vertex_props_buffer = device.createBuffer({
+		size: 32 * instances,
+		usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
 	})
 
-	for (let i = 0; i < max; ++i) {
-		const scale = rng(0.01, 0.01)
+	for (let i = 0; i < instances; ++i) {
+		const scale = rng(0.15, 0.15)
 		const offset = {
-			x: (2 * cursor.x / canvas.width - 1) + rng(0.4, -0.2),
-			y: (-2 * cursor.y / canvas.height + 1) + rng(0.4, -0.2) * 1.8,
+			x: rng(1.6, -0.8),
+			y: rng(1.6, -0.8),
 		}
 
 		instance_values.set([rng(), rng(), rng(), 1], 0 + 8 * i)
@@ -43,35 +104,43 @@ const generate_instances = (max) => {
 		instance_values.set([scale / aspect, scale], 6 + 8 * i)
 	}
 
-	device.queue.writeBuffer(storage_buffer, 0, instance_values)
+	device.queue.writeBuffer(vertex_props_buffer, 0, instance_values)
 
-	return device.createBindGroup({
-		layout: pipeline.getBindGroupLayout(0),
-		entries: [{ binding: 0, resource: { buffer: storage_buffer } }],
-	})
+	return vertex_props_buffer
 }
 
 const update = () => {
-	const max = 100
-	const bind_group = generate_instances(max)
+	const instances = 100
+	const vertex_props_buffer = generate_instances(instances)
 
 	const encoder = device.createCommandEncoder()
 
 	const render_pass = encoder.beginRenderPass({
 		colorAttachments: [{
 			view: context.getCurrentTexture().createView(),
-			clearValue: [0, 0, 0, 1],
+			clearValue: [0.2, 0.2, 0.2, 1],
 			loadOp: "clear",
 			storeOp: "store",
 		}]
 	})
 	render_pass.setPipeline(pipeline)
-	render_pass.setBindGroup(0, bind_group)
-	render_pass.draw(6, max)
+	render_pass.setVertexBuffer(0, vertex_buffer)
+	render_pass.setVertexBuffer(1, vertex_props_buffer)
+	render_pass.draw(vertices, instances)
 	render_pass.end()
 
 	device.queue.submit([encoder.finish()])
 }
 
-update()
-document.addEventListener("mousedown", () => update())
+let count = 0
+
+!function render() {
+	const delay = 100
+
+	count++
+	count == 1 && update()
+	cursor.held && cursor.button == "right" && update()
+	setTimeout(() => requestAnimationFrame(render), delay)
+}()
+
+cursor.click = update
