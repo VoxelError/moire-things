@@ -54,6 +54,7 @@ const pipeline = device.createRenderPipeline({
 
 function circle_vertices({ radius = 1, inner_radius = 0, sectors = 24 }) {
 	const vertices = sectors * 6
+	const index_data = new Uint32Array(sectors * 6)
 	const vertex_data = new Float32Array(vertices * 2)
 	const color_data = new Uint8Array(vertices * 4)
 
@@ -71,28 +72,28 @@ function circle_vertices({ radius = 1, inner_radius = 0, sectors = 24 }) {
 		offset++
 	}
 
-	for (let i = 0; i < sectors; ++i) {
-		const k = i + 1
+	for (let i = 0; i <= sectors; i++) {
 		const inner = Array(3).fill(0.25)
 		const outer = Array(3).fill(1)
 
-		add_vertex(i, radius, outer)
-		add_vertex(k, radius, outer)
-		add_vertex(i, inner_radius, inner)
+		add_vertex(i, radius, inner)
+		add_vertex(i, inner_radius, outer)
+	}
 
-		add_vertex(i, inner_radius, inner)
-		add_vertex(k, radius, outer)
-		add_vertex(k, inner_radius, inner)
+	for (let i = 0; i < sectors; i++) {
+		const indices = [0, 1, 2, 2, 1, 3]
+		index_data.set(indices.map(e => e + i * 2), i * 6)
 	}
 
 	return {
 		vertices,
+		index_data,
 		vertex_data,
 		color_data,
 	}
 }
 
-const { vertices, vertex_data, color_data } = circle_vertices({ radius: 0.5, inner_radius: 0.3 })
+const { vertices, index_data, vertex_data, color_data } = circle_vertices({ radius: 0.5, inner_radius: 0.3, sectors: 5 })
 
 const vertex_buffer = device.createBuffer({
 	size: vertex_data.byteLength,
@@ -106,6 +107,12 @@ const vertex_color_buffer = device.createBuffer({
 })
 device.queue.writeBuffer(vertex_color_buffer, 0, color_data)
 
+const index_buffer = device.createBuffer({
+	size: index_data.byteLength,
+	usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST,
+})
+device.queue.writeBuffer(index_buffer, 0, index_data)
+
 const generate_instances = (instances) => {
 	const instance_values = new Float32Array(8 * instances)
 	const vertex_props_buffer = device.createBuffer({
@@ -113,7 +120,7 @@ const generate_instances = (instances) => {
 		usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
 	})
 
-	for (let i = 0; i < instances; ++i) {
+	for (let i = 0; i < instances; i++) {
 		const scale = rng(0.15, 0.15)
 		const offset = {
 			x: rng(1.6, -0.8),
@@ -148,7 +155,8 @@ const update = () => {
 	render_pass.setVertexBuffer(0, vertex_buffer)
 	render_pass.setVertexBuffer(1, vertex_props_buffer)
 	render_pass.setVertexBuffer(2, vertex_color_buffer)
-	render_pass.draw(vertices, instances)
+	render_pass.setIndexBuffer(index_buffer, 'uint32')
+	render_pass.drawIndexed(vertices, instances)
 	render_pass.end()
 
 	device.queue.submit([encoder.finish()])
