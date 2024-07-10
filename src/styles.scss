@@ -12,35 +12,10 @@ body {
 	user-select: none;
 }
 
-#root {
-	display: grid;
-}
-
 canvas {
-	background-color: black;
 	cursor: crosshair;
-	// position: absolute;
+	background-color: black;
 	// background: linear-gradient(15deg, #303346, #3241b4);
 	// filter: blur(10px) contrast(10px);
-}
-
-.menu-item {
-	width: 100px;
-	height: 25px;
-	// border-radius: 4px;
-	background-color: black;
-	color: white;
-	text-align: center;
-
-	&:hover {
-		border-color: white;
-	}
-}
-
-button.menu-item {
-	border-color: gray;
-}
-
-select:focus {
-	outline: none;
+	// filter: hue-rotate(90deg);
 }

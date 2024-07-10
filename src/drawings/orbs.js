@@ -24,9 +24,10 @@ export default (size, context, points, count) => {
 			radius: 15,
 			fill: {
 				// alpha: 0.25 * (cos(theta / sqrt(length * 0.15)) + 1.1),
-				style: `hsl(${(orb.theta * 360 / tau) * 0.2}, 100%, 50%)`
+				style: `hsl(${(orb.theta * 360 / tau) * 0.2}, 100%, 50%)`,
+				alpha: 0.5,
 			},
-			stroke: { alpha: 0.5 }
+			// stroke: { alpha: 0.5 }
 		})
 	})
 }

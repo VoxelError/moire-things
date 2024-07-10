@@ -10,6 +10,13 @@ export default (size, context, points, count) => {
 		length: 150,
 	})
 
+	cursor.right_click = () => points.push({
+		x: cursor.x,
+		y: cursor.y,
+		theta: 0,
+		length: 150,
+	})
+
 	const gravity = 9.82
 	const amplitude = degrees(45)
 

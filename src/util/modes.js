@@ -26,38 +26,32 @@ import trails from "../drawings/trails.js"
 import tree from "../drawings/tree.js"
 import twirls from "../drawings/twirls.js"
 
-export const entries = {
-	ball: ball,
-	bounce: bounce,
-	cells: cells,
-	circles: circles,
-	fins: fins,
-	heart: heart,
-	larva: larva,
-	legs: legs,
-	lines: lines,
-	orbs: orbs,
-	pendulums: pendulums,
-	petals: petals,
-	pillar: pillar,
-	pointer: pointer,
-	radial: radial,
-	snake: snake,
-	speed: speed,
-	sphere: sphere,
-	spin: spin,
-	stalks: stalks,
-	squares: squares,
-	stare: stare,
-	// stereo: stereo,
-	sun: sun,
-	trails: trails,
-	tree: tree,
-	twirls: twirls,
-}
-
-export default (mode) => {
-	for (const entry in entries) {
-		if (mode == entry) return entries[entry]
-	}
+export default {
+	ball,
+	bounce,
+	cells,
+	circles,
+	fins,
+	heart,
+	larva,
+	legs,
+	lines,
+	orbs,
+	pendulums,
+	petals,
+	pillar,
+	pointer,
+	radial,
+	snake,
+	speed,
+	sphere,
+	spin,
+	stalks,
+	squares,
+	stare,
+	// stereo,
+	sun,
+	trails,
+	tree,
+	twirls,
 }
