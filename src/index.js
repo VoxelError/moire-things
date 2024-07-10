@@ -1,2 +1,5 @@
-import './webgpu/instances.js'
+// import './webgpu/instances.js'
 // import './webgpu/rainbow.js'
+// import './webgpu/basic_render.js'
+import './webgpu/hall.js'
+// import './webgpu/textures.js'
