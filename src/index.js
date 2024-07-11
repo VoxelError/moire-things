@@ -69,15 +69,16 @@ list.domElement.addEventListener("wheel", (event) => {
 // ==================================================== //
 
 !function update() {
-	settings.pause || props.count++
-	set_storage("count", props.count)
-	set_storage("points", props.points)
-	set_storage("mode", props.mode)
+	if (!settings.pause) {
+		props.count++
+		["pillar", "stalks"].includes(props.mode) || context.reset()
+		// context.globalCompositeOperation = settings.compositing
+		modes[props.mode](props.size, context, props.points, props.count) // fix args order
 
-	if (!["pillar", "stalks"].includes(props.mode)) context.reset()
+		set_storage("count", props.count)
+		set_storage("points", props.points)
+		set_storage("mode", props.mode)
+	}
 
-	// context.globalCompositeOperation = settings.compositing
-
-	modes[props.mode](props.size, context, props.points, props.count) // fix this :s
 	requestAnimationFrame(update)
 }()
