@@ -1,17 +1,25 @@
-import { stroke_arc } from "../lib/draws.js"
-import { sin, abs, degrees } from "../lib/math.js"
+import { cursor } from "../util/controls.js"
+import { draw_arc } from "../util/draws.js"
+import { sin, abs, degrees } from "../util/math.js"
 
-export default (context, points) => {
-	points.forEach((point) => {
-		const [x, y] = point
-		const phase = abs(sin((point[2])))
-		point[2] += degrees(3)
+export default (size, context, points, count) => {
+	cursor.held && points.push({
+		x: cursor.x,
+		y: cursor.y,
+		theta: 0,
+	})
 
-		stroke_arc(context, {
-			center: [x, y],
-			radius: phase * window.innerHeight * 0.1,
-			// alpha: 1 - phase,
-			alpha: phase * 0.5,
+	points.forEach((circle) => {
+		const phase = abs(sin((circle.theta)))
+		circle.theta += degrees(3)
+
+		draw_arc(context, {
+			center: [circle.x, circle.y],
+			radius: phase * size.y * 0.1,
+			stroke: {
+				// alpha: 1 - phase,
+				alpha: phase * 0.25,
+			}
 
 		})
 	})

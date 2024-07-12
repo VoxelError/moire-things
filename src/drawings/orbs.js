@@ -1,24 +1,33 @@
-import { fill_arc } from "../lib/draws"
-import { cos, degrees, sin, sqrt } from "../lib/math"
+import { cursor } from "../util/controls"
+import { draw_arc } from "../util/draws"
+import { cos, degrees, rng, sin, sqrt, tau } from "../util/math"
 
-export default (context, points) => {
-	const amplitude = degrees(30)
+export default (size, context, points, count) => {
+	cursor.held && points.push({
+		x: cursor.x,
+		y: cursor.y,
+		theta: 0,
+		amp: degrees(30),
+		length: 150,
+	})
 
-	points.forEach((point) => {
-		const [x, y, theta] = point
-		const length = 150
-		const motion = sin(theta / sqrt(length * 0.15)) * amplitude
+	points.forEach((orb) => {
+		const motion = sin(orb.theta / sqrt(orb.length * 0.15)) * orb.amp
 
-		point[2] += degrees(15)
+		orb.theta += degrees(15)
 
-		fill_arc(context, {
+		draw_arc(context, {
 			center: [
-				x + (length * sin(motion)),
-				y - (length * cos(motion))
+				orb.x + (orb.length * sin(motion)),
+				orb.y - (orb.length * cos(motion)) + orb.length
 			],
 			radius: 15,
-			alpha: 0.25 * (cos(theta / sqrt(length * 0.15)) + 1.1),
-			// alpha: 0.5,
+			fill: {
+				// alpha: 0.25 * (cos(theta / sqrt(length * 0.15)) + 1.1),
+				style: `hsl(${(orb.theta * 360 / tau) * 0.2}, 100%, 50%)`,
+				alpha: 0.5,
+			},
+			// stroke: { alpha: 0.5 }
 		})
 	})
 }

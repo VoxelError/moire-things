@@ -1,53 +1,64 @@
-import { stroke_line } from "../lib/draws"
-import { degrees } from "../lib/math"
+import { draw_text, stroke_line } from "../util/draws"
+import { ticks } from "../util/math"
 
 const init = {
-	root: {
-		x: window.innerWidth / 2,
-		y: window.innerHeight - 160
-	},
-	length: 160,
+	root: { x: null, y: null },
+	length: null,
 	angle: 0,
 	width: 15,
-	alpha: 1
+	alpha: 1,
+	style: 0,
+	depth: 1,
 }
 
-const draw_tree = (context, count, args = init) => {
-	const { root, length, angle, width, alpha } = args
-	const start = 36096
+const hue = (value) => `hsl(${value}, 100%, 50%)`
 
-	if (length < 10) return
+const draw_tree = (size, context, points, count, args = init) => {
+	let { root, length, angle, width, alpha, style, depth } = args
 
-	context.save()
+	root.x ??= size.x / 2
+	root.y ??= size.y
+	length ??= size.y * 0.2
 
-	context.translate(root.x, root.y)
-	context.rotate(degrees(angle))
+	depth < 2 && (style = -count * 2)
 
-	stroke_line(context, {
-		start: [0, 0],
-		end: [0, -length],
-		width,
-		cap: "round",
-		alpha,
-	})
+	if (depth <= 11) {
+		context.save()
 
-	draw_tree(context, count, {
-		root: { x: 0, y: -length },
-		length: length * 0.8,
-		angle: angle + degrees(count),
-		width: width * 0.69,
-		alpha: 1
-	})
+		context.translate(root.x, root.y)
+		context.rotate(angle)
 
-	draw_tree(context, count, {
-		root: { x: 0, y: -length },
-		length: length * 0.8,
-		angle: angle - degrees(count),
-		width: width * 0.69,
-		alpha: 1
-	})
+		stroke_line(context, {
+			start: [0, 0],
+			end: [0, -length],
+			width,
+			cap: "round",
+			style: hue(style),
+			alpha,
+		})
 
-	context.restore()
+		draw_tree(size, context, points, count, {
+			root: { x: 0, y: -length },
+			length: length * 0.8,
+			angle: angle + count * ticks(18000),
+			width: width * 0.69,
+			style: style + 10,
+			alpha: 1,
+			depth: depth + 1,
+		})
+
+		draw_tree(size, context, points, count, {
+			root: { x: 0, y: -length },
+			length: length * 0.8,
+			angle: angle - count * ticks(18000),
+			width: width * 0.69,
+			style: style + 10,
+			alpha: 1,
+			depth: depth + 1,
+		})
+
+		context.restore()
+	}
 }
 
 export default draw_tree

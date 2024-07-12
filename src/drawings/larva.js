@@ -1,27 +1,30 @@
-import { stroke_arc } from "../lib/draws"
-import { cos, degrees, sin } from "../lib/math"
+import { draw_arc } from "../util/draws"
+import { cos, cos_wave, degrees, sin, tau } from "../util/math"
 
-export default (context, count) => {
-	for (let i = 0; i < 5; i++) {
-		const time = degrees(count) * (i + 1)
-		const theta = time / 100
+export default (size, context, points, count) => {
+	const larvae = 7
 
-		const unit = 2
-		const max = 500
+	for (let l = 0; l < larvae; l++) {
+		const time = degrees(count) * l
+		const theta = time * 0.1
 
-		for (let i = unit; i <= max; i += unit) {
-			stroke_arc(context, {
+		const layers = size.y * 0.45
+		const gap = 4
+
+		for (let i = gap; i <= layers; i += gap) {
+			draw_arc(context, {
 				center: [
-					window.innerWidth / 2 + cos(theta) * (max - i),
-					window.innerHeight / 2 - sin(theta) * (max - i)
+					(size.x / 2) + cos(theta) * (layers - i),
+					(size.y / 2) - sin(theta) * (layers - i),
 					// width / 2,
 					// height / 2
 				],
 				radius: i,
-				alpha: 0.8 - i / max,
-				// alpha: 0.25,
-				stroke: "red"
-
+				stroke: {
+					style: "red",
+					alpha: 1 / larvae,
+					// alpha: 0.8 - i / max,
+				}
 			})
 		}
 	}

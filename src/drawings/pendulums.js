@@ -1,37 +1,52 @@
-import { fill_arc, stroke_line } from "../lib/draws"
-import { cos, degrees, sin, sqrt } from "../lib/math"
+import { cursor } from "../util/controls"
+import { draw_arc, stroke_line } from "../util/draws"
+import { cos, degrees, sin, sqrt } from "../util/math"
 
-export default (context, points) => {
+export default (size, context, points, count) => {
+	cursor.held && points.push({
+		x: cursor.x,
+		y: cursor.y,
+		theta: 0,
+		length: 150,
+	})
+
+	cursor.right_click = () => points.push({
+		x: cursor.x,
+		y: cursor.y,
+		theta: 0,
+		length: 150,
+	})
+
 	const gravity = 9.82
 	const amplitude = degrees(45)
 
-	points.forEach((point) => {
-		const [x, y, theta] = point
-		const length = 150
-		const motion = cos(1 / sqrt(length / gravity) * theta) * amplitude
+	points.forEach((pendulum) => {
+		const motion = cos(1 / sqrt(pendulum.length / gravity) * pendulum.theta) * amplitude
 
-		point[2] += degrees(15)
+		pendulum.theta += degrees(10)
 
 		stroke_line(context, {
-			start: [x, y],
+			start: [pendulum.x, pendulum.y],
 			end: [
-				x + (length * sin(motion)),
-				y + (length * cos(motion))
+				pendulum.x + (pendulum.length * sin(motion)),
+				pendulum.y + (pendulum.length * cos(motion))
 			],
 			width: 8,
-			stroke: "gray",
+			style: "gray",
 			cap: "round",
-			// alpha: 0.5 * (sin(1 / sqrt(length / gravity) * theta) + 1),
+			// alpha: 0.5 * (sin(1 / sqrt(pendulum.length / gravity) * theta) + 1),
 			alpha: 0.25,
 		})
 
-		fill_arc(context, {
+		draw_arc(context, {
 			center: [
-				x + (length * sin(motion)),
-				y + (length * cos(motion))
+				pendulum.x + (pendulum.length * sin(motion)),
+				pendulum.y + (pendulum.length * cos(motion))
 			],
 			radius: 15,
-			// alpha: 0.5 * (sin(1 / sqrt(length / gravity) * theta) + 1),
+			fill: {
+				// alpha: 0.5 * (sin(1 / sqrt(pendulum.length / gravity) * theta) + 1),
+			}
 		})
 	})
 }

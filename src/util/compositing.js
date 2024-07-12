@@ -1,6 +1,4 @@
-import React from "react"
-
-const operations = [
+export default [
 	"source-over",
 	"source-in",
 	"source-out",
@@ -28,21 +26,3 @@ const operations = [
 	"color",
 	"luminosity"
 ]
-
-export default () => {
-	return (
-		<select
-			id=""
-			className="menu-item"
-			// onChange={(event) => set_drawing_mode(event.target.value)}
-			// defaultValue={drawing_mode}
-		>
-			{operations.map((e, i) =>
-				<option
-					key={i}
-					value={e}
-				>{e}</option>
-			)}
-		</select>
-	)
-}

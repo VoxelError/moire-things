@@ -1,14 +1,71 @@
 import { pi, tau } from "./math"
 
-export const stroke_line = (context, { start, end, width, stroke, cap, alpha }) => {
+export const stroke_line = (context, { start, end, width, dash, offset, style, cap, alpha }) => {
 	context.beginPath()
 	context.moveTo(start[0], start[1])
 	context.lineTo(end[0], end[1])
 	context.lineWidth = width ?? 1
-	context.strokeStyle = stroke ?? "white"
+	context.setLineDash(dash ?? [])
+	context.lineDashOffset = offset ?? 0
+	context.strokeStyle = style ?? "white"
 	context.lineCap = cap ?? "butt"
 	context.globalAlpha = alpha ?? 1
 	context.stroke()
+}
+
+export const draw_text = (context, { pos, font, content, fill, stroke }) => {
+	context.font = font
+
+	if (fill) {
+		const { alpha, style } = fill
+
+		context.globalAlpha = alpha ?? 1
+		context.fillStyle = style ?? "white"
+		context.fillText(content, pos.x, pos.y)
+	}
+
+	if (stroke) {
+		const { dash, offset, width, alpha, style, cap } = stroke
+
+		context.setLineDash(dash ?? [])
+		context.lineDashOffset = offset ?? 0
+		context.lineCap = cap ?? "butt"
+		context.lineWidth = width ?? 1
+		context.globalAlpha = alpha ?? 1
+		context.strokeStyle = style ?? "white"
+		context.strokeText(content, pos.x, pos.y)
+	}
+}
+
+export const draw_arc = (context, { center, radius, fill, stroke }) => {
+	context.beginPath()
+	context.arc(
+		center[0],
+		center[1],
+		radius,
+		0,
+		2 * pi
+	)
+
+	if (fill) {
+		const { alpha, style } = fill
+
+		context.globalAlpha = alpha ?? 1
+		context.fillStyle = style ?? "white"
+		context.fill()
+	}
+
+	if (stroke) {
+		const { dash, offset, width, alpha, style, cap } = stroke
+
+		context.setLineDash(dash ?? [])
+		context.lineDashOffset = offset ?? 0
+		context.lineCap = cap ?? "butt"
+		context.lineWidth = width ?? 1
+		context.globalAlpha = alpha ?? 1
+		context.strokeStyle = style ?? "white"
+		context.stroke()
+	}
 }
 
 export const stroke_arc = (context, { center, radius, width, stroke, alpha }) => {
@@ -91,18 +148,4 @@ export const stroke_curve2 = (context, { start, end, control, width, stroke, cap
 	context.lineCap = cap ?? "butt"
 	context.globalAlpha = alpha ?? 1
 	context.stroke()
-}
-
-export const fill_arc = (context, { center, radius, fill, alpha }) => {
-	context.beginPath()
-	context.arc(
-		center[0],
-		center[1],
-		radius,
-		0,
-		2 * Math.PI
-	)
-	context.fillStyle = fill ?? "white"
-	context.globalAlpha = alpha ?? 1
-	context.fill()
 }

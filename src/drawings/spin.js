@@ -1,36 +1,34 @@
-import { fill_arc, stroke_line } from "../lib/draws"
-import { cos_wave, degrees, sin, sin_wave } from "../lib/math"
+import { draw_arc, stroke_line } from "../util/draws"
+import { cos, cos_wave, degrees, pi, sign, sin, sin_wave, tau } from "../util/math"
+import { cursor } from "../util/controls"
 
-export default (context, points, count) => {
-	const mid = window.innerWidth / 2
+export default (size, context, points, count) => {
+	cursor.held && points.push({
+		x: cursor.x - size.x / 2,
+		y: cursor.y,
+		delta: count,
+	})
+
+	context.translate(size.x / 2, 0)
 
 	stroke_line(context, {
-		start: [mid, 0],
-		end: [mid, window.innerHeight],
-		stroke: "gray",
-		alpha: 0.15 * sin(count * 0.08) + 0.5,
+		start: [0, 0],
+		end: [0, size.y],
+		style: "gray",
+		alpha: sin_wave(count, 0.15, 0.5, 0.04),
 	})
 
 	points.forEach((point) => {
-		const [x, y, theta] = point
-		const motion = cos_wave(theta, x - mid, mid)
-		const rotation = () => {
-			if (x < mid) return -theta
-			if (x > mid) return theta
-			if (x == mid) return 1
-		}
-		// const transparency = sin_wave(theta, 0.5, 0.5)
-		const transparency = sin_wave(rotation(), 0.5, 0.5)
+		const theta = degrees((count - point.delta) * 3) * sign(point.x)
+		const transparency = sin_wave(theta, 0.25, 0.25)
 
-		point[2] += degrees(3)
-
-		fill_arc(context, {
+		draw_arc(context, {
 			center: [
-				motion,
-				y
+				cos_wave(theta, point.x, 0),
+				point.y
 			],
 			radius: 15,
-			alpha: transparency,
+			fill: { alpha: transparency }
 		})
 	})
 }

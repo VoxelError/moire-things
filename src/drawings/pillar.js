@@ -1,40 +1,84 @@
-import { cursor } from "../lib/controls.js"
-import { fill_arc, stroke_arc } from "../lib/draws.js"
-import { sin, abs, degrees, tau, random } from "../lib/math.js"
+import { draw_arc } from "../util/draws.js"
+import { abs, degrees, rng, sign, tau } from "../util/math.js"
 
-export default (context, points, count) => {
-	// if (!cursor.show) {
-	// add_point(random() * canvas_width, random() * window.innerHeight)
-	// }
+const init_pillar = (x, y, radius) => ({
+	x: rng((x - radius) * 2, -(x - radius)),
+	y: rng((y - radius) * 2, -(y - radius)),
+	vx: rng(4, 1) * sign(rng(2, -1)),
+	vy: rng(4, 1) * sign(rng(2, -1)),
+	radius
+})
+
+let pillar
+let hue = 0
+
+export default (size, context, points, count) => {
+	const radius = size.y * 0.1
+	const half = {
+		x: size.x / 2,
+		y: size.y / 2
+	}
+
+	pillar ??= init_pillar(size.x / 2, size.y / 2, radius)
+
+	context.translate(size.x / 2, size.y / 2)
+
+	if (abs(pillar.x) >= size.x / 2 - pillar.radius) {
+		pillar.vx *= -1
+		pillar.vy = rng(4, 4) * sign(pillar.vy)
+		hue += 10
+	}
+
+	if (abs(pillar.y) >= size.y / 2 - pillar.radius) {
+		pillar.vy *= -1
+		pillar.vx = rng(4, 4) * sign(pillar.vx)
+		hue += 10
+	}
+
+	pillar.x += pillar.vx
+	pillar.y += pillar.vy
+
+	draw_arc(context, {
+		center: [pillar.x, pillar.y],
+		radius: pillar.radius,
+		stroke: {
+			width: 10,
+			style: `hsl(${count * 0.2 + hue}, 100%, 50%)`
+		},
+		fill: {
+			style: `hsl(${count * 0.2 + hue}, 75%, 50%)`
+		}
+	})
+
+	draw_arc(context, {
+		center: [pillar.x, pillar.y],
+		radius: pillar.radius,
+		stroke: {
+			width: 10,
+			cap: "round",
+			style: "black",
+			dash: [radius * tau / 16],
+			offset: count * 10,
+			alpha: 0.5
+		}
+	})
 
 	// points.forEach((point, index) => {
-	// 	const [x, y, theta] = point
-	// 	point[2] += degrees(3)
-
-	// 	if (theta > tau) {
-	// 		points.splice(index, 1)
-	// 		return
-	// 	}
-
-	// 	fill_arc(context, {
-	// 		center: [x, y],
-	// 		radius: (1 - theta / tau) * 100,
-	// 		fill: `hsl(${degrees(count) * 10}, 100%, 50%)`,
-	// 		alpha: (1 - theta / tau) / 5,
+	// 	draw_arc(context, {
+	// 		center: [point[0], point[1]],
+	// 		radius: 100,
+	// 		fill: {
+	// 			style: "black",
+	// 			alpha: 0.01
+	// 		},
+	// 		stroke: {
+	// 			width: 10,
+	// 			style: `hsl(${degrees(count) * 10}, 100%, 50%)`
+	// 		}
 	// 	})
+
+	// 	points.splice(index, 1)
 	// })
 
-	points.forEach((point, index) => {
-		const [x, y, time] = point
-		point[2] += 1
-
-		fill_arc(context, {
-			center: [x, y],
-			radius: 50,
-			fill: `hsl(${degrees(count) * 10}, 100%, 50%)`
-		})
-		context.stroke()
-
-		points.splice(index, 1)
-	})
+	context.translate(-size.x / 2, -size.y / 2)
 }

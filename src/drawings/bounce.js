@@ -1,35 +1,42 @@
-import { fill_arc } from "../lib/draws"
-import { abs, cos_wave, degrees, sqrt, tau } from "../lib/math"
+import { cursor } from "../util/controls"
+import { draw_arc } from "../util/draws"
+import { abs, sign } from "../util/math"
 
-export default (context, points) => {
-	points.forEach((point) => {
-		const [x, y, vel_y, height] = point
+export default (size, context, points, count) => {
+	cursor.held && points.push({
+		x: cursor.x - size.x / 2,
+		y: cursor.y - size.y / 2,
+		vx: 5,
+		vy: 5,
+		r: 15,
+	})
 
-		const radius = 15
-		const gravity = 0.982
-		const damping = 0.9
-		// const motion = window.innerHeight - abs(cos_wave(vel_y, height, 0, 1 / sqrt(height / gravity)))
-		// const motion = abs(cos(theta / sqrt(length * 0.15)) * y)
-		// const motion = height - abs(cos_wave(theta / sqrt(height - y / gravity), height - y))
+	context.translate(size.x / 2, size.y / 2)
 
-		if (y >= window.innerHeight - radius) {
-			// point[2] *= -damping
-			// point[1] = window.innerHeight - radius
-			point[1] = 0
+	points.forEach((bounce) => {
+		if (abs(bounce.x) >= size.x / 2 - bounce.r) {
+			bounce.x = (size.x / 2 - bounce.r) * sign(bounce.x)
+			bounce.vx *= -1
 		}
 
-		point[2] += gravity
+		if (abs(bounce.y) >= size.y / 2 - bounce.r) {
+			bounce.y = (size.y / 2 - bounce.r) * sign(bounce.y)
+			bounce.vy *= -1
+		}
 
-		point[1] += vel_y
+		bounce.x += bounce.vx
+		bounce.y += bounce.vy
 
-		fill_arc(context, {
+		draw_arc(context, {
 			center: [
-				x,
-				y
+				bounce.x,
+				bounce.y,
 			],
-			radius: radius,
-			alpha: 0.5,
-			// fill: theta > tau * 2 ? "red" : "white"
+			radius: bounce.r,
+			stroke: {
+				alpha: 0.25,
+				style: `hsl(${bounce.y * 180 / size.y}, 100%, 50%)`
+			},
 		})
 	})
 }

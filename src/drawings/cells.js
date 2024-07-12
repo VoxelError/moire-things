@@ -1,18 +1,30 @@
-import { stroke_arc } from "../lib/draws"
-import { abs, sin_wave } from "../lib/math"
-import { cursor } from "../lib/controls"
+import { draw_arc } from "../util/draws"
+import { abs, cos_wave, degrees, pi, sin_wave, tau } from "../util/math"
+import { cursor } from "../util/controls"
 
-export default (context) => {
-	// cursor.delta += degrees(2.5)
+export default (size, context, points, count) => {
+	const max = 200
 
-	context.setLineDash([5, 5])
+	for (let i = 1; i <= max; i++) {
+		// const radius = sin_wave(degrees(count + i * 4), max, max)
+		const radius = i * 2
+		const mouse = (cursor.x / size.x) * 10
+		const slices = 16
 
-	stroke_arc(context, {
-		center: [
-			cursor.x,
-			cursor.y
-		],
-		// radius: abs(sin(cursor.delta) * cursor.size / 5)
-		radius: abs(sin_wave(cursor.delta, cursor.size))
-	})
+		draw_arc(context, {
+			center: [
+				size.x / 2,
+				size.y / 2
+			],
+			radius,
+			stroke: {
+				dash: [
+					tau * radius / (slices * 2),
+					tau * radius / (slices * 2),
+				],
+				offset: radius * degrees(count / 100) * (max / 2 - i),
+				alpha: 1 - i / max,
+			}
+		})
+	}
 }

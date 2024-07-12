@@ -1,10 +1,10 @@
-import { fill_arc, stroke_arc, stroke_curve1, stroke_curve2, stroke_line } from "../lib/draws"
-import { abs, cos, cos_wave, degrees, pi, sin, sin_wave } from "../lib/math"
+import { stroke_arc, stroke_curve1, stroke_curve2, stroke_line } from "../util/draws"
+import { abs, cos, cos_wave, degrees, pi, sin, sin_wave } from "../util/math"
 
-export default (context, count) => {
+export default (size, context, points, count) => {
 	const axis = {
-		x: window.innerWidth / 2,
-		y: window.innerHeight / 2
+		x: size.x / 2,
+		y: size.y / 2
 	}
 
 	const control = 300 + sin_wave(degrees(count), 10, 10)

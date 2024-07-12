@@ -1,30 +1,32 @@
-import { fill_arc, stroke_arc, stroke_ellipse } from "../lib/draws"
-import { sin, tau } from "../lib/math"
+import { cursor } from "../util/controls"
+import { draw_arc, stroke_ellipse } from "../util/draws"
+import { sin, tau } from "../util/math"
 
-export default (context, points, count) => {
-	const circumference = window.innerWidth / 5 + sin(count / 25) * 50
+export default (size, context, points, count) => {
+	cursor.held && points.push({
+		x: cursor.x,
+		y: cursor.y,
+	})
 
-	points.forEach((point, index) => {
-		const [x, y] = point
-		const sun = Math.atan2(y - window.innerHeight / 2, x - window.innerWidth / 2)
+	const circumference = size.x / 5 + sin(count / 25) * 50
+
+	points.forEach((point) => {
+		const sun = Math.atan2(point.y - size.y / 2, point.x - size.x / 2)
 
 		context.setLineDash([100, 100])
 		context.lineDashOffset = count * 10
 
 		stroke_ellipse(context, {
 			center: [
-				window.innerWidth / 2,
-				window.innerHeight / 2,
+				size.x / 2,
+				size.y / 2,
 			],
 			radii: [
 				circumference,
-				(window.innerHeight / 10) * 0.5,
+				(size.y / 10) * 0.5,
 			],
 			rotation: sun,
-			arc: [
-				0,
-				tau,
-			],
+			arc: [0, tau],
 			stroke: "gray",
 		})
 
@@ -32,14 +34,16 @@ export default (context, points, count) => {
 		context.lineDashOffset = 0
 	})
 
-	fill_arc(context, {
-		center: [window.innerWidth / 2, window.innerHeight / 2],
-		radius: 1
+	draw_arc(context, {
+		center: [size.x / 2, size.y / 2],
+		radius: 1,
+		fill: {}
 	})
 
-	stroke_arc(context, {
-		center: [window.innerWidth / 2, window.innerHeight / 2],
-		radius: circumference
+	draw_arc(context, {
+		center: [size.x / 2, size.y / 2],
+		radius: circumference,
+		stroke: {}
 	})
 
 	context.fillStyle = "white"
