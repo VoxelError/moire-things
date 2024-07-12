@@ -2,7 +2,7 @@ import "../styles.scss"
 import { mat4 } from 'https://webgpufundamentals.org/3rdparty/wgpu-matrix.module.js'
 import { cursor, listen } from "../util/controls"
 import shader from "../shaders/hall.wgsl?raw"
-import { createBlendedMipmap, createCheckedMipmap, createTextureWithMips } from "./mip"
+import { blended_mipmap, checked_mipmap, texture_with_mips } from "./mip2"
 import { tau } from "../util/math"
 
 const adapter = await navigator.gpu?.requestAdapter()
@@ -26,8 +26,8 @@ const pipeline = device.createRenderPipeline({
 })
 
 const textures = [
-	createTextureWithMips(createBlendedMipmap(), device),
-	createTextureWithMips(createCheckedMipmap(), device),
+	texture_with_mips(blended_mipmap(), device),
+	texture_with_mips(checked_mipmap(), device),
 ]
 
 const objectInfos = []

@@ -1,8 +1,8 @@
 import "../styles.scss"
-import { sin } from "../util/math"
+import { sin, sin_wave } from "../util/math"
 import shader from "../shaders/textures.wgsl?raw"
-import GUI from 'https://muigui.org/dist/0.x/muigui.module.js'
-import { generateMips } from "./mip"
+import { GUI } from "dat.gui"
+import { gen_mips } from "./mip"
 
 const adapter = await navigator.gpu?.requestAdapter()
 const device = await adapter?.requestDevice()
@@ -20,9 +20,7 @@ context.configure({ device, format })
 
 const tex_width = 8
 const tex_height = 8
-const r = [0, 0, 255, 255]
 const g = [0, 255, 0, 255]
-const b = [255, 0, 0, 255]
 const x = [0, 0, 0, 255]
 export const creeper = new Uint8Array([
 	g, g, g, g, g, g, g, g,
@@ -35,7 +33,7 @@ export const creeper = new Uint8Array([
 	g, g, g, g, g, g, g, g,
 ].flat())
 
-const mips = generateMips(creeper, tex_width)
+const mips = gen_mips(creeper, tex_width)
 
 const texture = device.createTexture({
 	size: [mips[0].width, mips[0].height],
@@ -76,16 +74,12 @@ const settings = {
 	scale: 6,
 }
 
-const gui = new GUI()
+const gui = new GUI({ closeOnTop: true })
 gui.add(settings, 'addressModeU', ['repeat', 'clamp-to-edge'])
 gui.add(settings, 'addressModeV', ['repeat', 'clamp-to-edge'])
 gui.add(settings, 'magFilter', ['nearest', 'linear'])
 gui.add(settings, 'minFilter', ['nearest', 'linear'])
 gui.add(settings, 'scale', 0.5, 6)
-
-const style = gui.domElement.style
-style.right = `0px`
-style.top = `0px`
 
 const bind_groups = []
 
@@ -109,11 +103,13 @@ for (let i = 0; i < 16; ++i) {
 	bind_groups.push(bind_group)
 }
 
+console.log(canvas.height)
+
 function update(time) {
-	time /= 1000
+	const theta = sin_wave(time, 0.15, -0.34, 0.0005)
 
 	uniform_values.set([4 / canvas.width * settings.scale, 4 / canvas.height * settings.scale])
-	uniform_values.set([sin(time) * 0.8, -0.8], 2)
+	uniform_values.set([theta, -1], 2)
 
 	device.queue.writeBuffer(uniform_buffer, 0, uniform_values)
 
