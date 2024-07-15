@@ -7,9 +7,9 @@ const counter = {
 }
 
 export default (size, context, points, count) => {
-	const range = (min, max) => cos_wave(count, max / 2, max / 2 + min, 0.001, pi)
+	const range = (min, max) => cos_wave(count, max / 2, max / 2 + min, 0.005, pi)
 
-	counter.value = range(1, 1000)
+	counter.value = range(1, 250)
 
 	const max = counter.value
 	const x = size.x / 2
@@ -19,8 +19,7 @@ export default (size, context, points, count) => {
 	context.globalCompositeOperation = "difference"
 
 	for (let i = 0; i < max; i++) {
-		const length = (size.x) * (1 - 0.2 * i / max)
-
+		const length = (size.y * 0.45)
 		theta += tau / max
 
 		stroke_line(context, {

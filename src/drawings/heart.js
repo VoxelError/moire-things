@@ -7,47 +7,62 @@ export default (size, context, points, count) => {
 		y: size.y / 2
 	}
 
-	const point1 = { x: 300, y: 400 }
-	const point2 = { x: 400, y: 0 }
+	const point1 = { x: 3, y: 4 }
+	const point2 = { x: 4, y: 0 }
 
 	context.save()
-	context.translate(axis.x, axis.y)
+	context.translate(size.x / 2, size.y / 2)
 	context.scale(1, -1)
 
 	// stroke_line(context, { start: [-axis.x, 0], end: [axis.x, 0], alpha: 0.1 })
 	// stroke_line(context, { start: [0, -axis.y], end: [0, axis.y], alpha: 0.1 })
 
 	const max = 100
+	const scale = size.y / 8
 
 	for (let i = 0; i < max; i++) {
+		const transparency = i * 8 / max
+
 		stroke_curve2(context, {
-			start: [0, 200],
-			end: [0, -200],
-			control: [
-				point1.x,
-				point1.y,
-				point2.x,
-				point2.y
+			start: [
+				0 * scale,
+				2 * scale,
 			],
-			alpha: i * 5 / max,
+			end: [
+				0 * scale,
+				-2 * scale,
+			],
+			control: [
+				point1.x * scale,
+				point1.y * scale,
+				point2.x * scale,
+				point2.y * scale,
+			],
+			alpha: transparency,
 			stroke: "red"
 		})
 
 		stroke_curve2(context, {
-			start: [0, 200],
-			end: [0, -200],
-			control: [
-				-point1.x,
-				point1.y,
-				-point2.x,
-				point2.y
+			start: [
+				0 * scale,
+				2 * scale,
 			],
-			alpha: i * 5 / max,
+			end: [
+				0 * scale,
+				-2 * scale,
+			],
+			control: [
+				-point1.x * scale,
+				point1.y * scale,
+				-point2.x * scale,
+				point2.y * scale,
+			],
+			alpha: transparency,
 			stroke: "red"
 		})
 
 		// const motion = 1 - abs(cos(degrees(count / 4))) / max * 2
-		const motion = 1 - abs(cos_wave(degrees(count), 1, 0)) / max * 3
+		const motion = 1 - abs(cos_wave(degrees(count), 1, 0)) / max * 4
 
 		context.scale(motion, motion)
 	}

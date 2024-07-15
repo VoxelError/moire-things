@@ -27,16 +27,19 @@ key_listen("ArrowRight")
 key_listen("ArrowLeft")
 
 const controls = () => {
-	keybinds.ArrowRight && (actor.a -= degrees(5))
-	keybinds.ArrowLeft && (actor.a += degrees(5))
+	// keybinds.ArrowRight && (actor.a -= degrees(5))
+	// keybinds.ArrowLeft && (actor.a += degrees(5))
 
-	if (keybinds.ArrowUp) {
-		actor.x_thrust += cos(actor.a) * 0.2
-		actor.y_thrust -= sin(actor.a) * 0.2
-	} else {
-		actor.x_thrust *= keybinds.ArrowDown ? 0.96 : 0.99
-		actor.y_thrust *= keybinds.ArrowDown ? 0.96 : 0.99
-	}
+	actor.x_thrust += cos(actor.a) * 0.2
+	actor.y_thrust -= sin(actor.a) * 0.2
+
+	// if (keybinds.ArrowUp) {
+	// 	actor.x_thrust += cos(actor.a) * 0.2
+	// 	actor.y_thrust -= sin(actor.a) * 0.2
+	// } else {
+	// 	actor.x_thrust *= keybinds.ArrowDown ? 0.96 : 0.99
+	// 	actor.y_thrust *= keybinds.ArrowDown ? 0.96 : 0.99
+	// }
 }
 
 const move_actor = (width, height) => {
@@ -52,6 +55,13 @@ const move_actor = (width, height) => {
 }
 
 export default (size, context, points, count) => {
+	points[0] = {
+		x: size.x,
+		y: size.y,
+		theta: 0,
+		speed: true,
+	}
+
 	actor.x ??= size.x / 2
 	actor.y ??= size.y / 2
 

@@ -1,7 +1,7 @@
 import ball from "../drawings/ball.js"
 import bounce from "../drawings/bounce.js"
+import bubbles from "../drawings/bubbles.js"
 import cells from "../drawings/cells.js"
-import circles from "../drawings/circles.js"
 import fins from "../drawings/fins.js"
 import heart from "../drawings/heart.js"
 import larva from "../drawings/larva.js"
@@ -29,8 +29,8 @@ import twirls from "../drawings/twirls.js"
 export default {
 	ball,
 	bounce,
+	bubbles,
 	cells,
-	circles,
 	fins,
 	heart,
 	larva,
