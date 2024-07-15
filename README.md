@@ -8,7 +8,7 @@ Please note that this project is in an alpha state. It is recommended to try it 
 # Overview
 Upon entering the site, you will be greeted with a blank canvas, and a user interface on the upper-right of the screen.
 
-In summary:
+_**In summary:**_
 - Draw modes are like special paint brushes (with some exceptions), and can be changed using the "mode" dropdown.
 - Most draw modes are animated in some way, and can be paused using the "pause" toggle.
 - A number of draw modes use the mouse to draw points. Some modes have a predefined set of points that you can add, using the "plot" button.
