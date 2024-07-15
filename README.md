@@ -26,18 +26,19 @@ A more in-depth explanation of each mode can be read below.
 
   A set of 100 balls that simulate gravity, damping, and traction. The set has a uniform distribution of damping values between 0.7 and 0.9 (smaller value = less bouncy).
   
-  <i>Left click</i> to drop the set of balls where you clicked. Hold left click, drag in a direction, and release left click to launch the set in the direction of your mouse. The farther your mouse, the faster the launch.
+  <u>Left click</u> to drop the set of balls where you clicked. <u>Hold</u> left click, <u>drag</u> in a direction, and <u>release</u> left click to launch the set in the direction of your mouse. The farther your mouse, the faster the launch.
   
-  Right click to momentarily halt the momentum of every ball. Hold, drag, and release right click to launch all balls in the direction of the mouse, but relative to where they are. For instance, dragging up will launch all balls upwards (not towards the mouse). The distance of the drag matters here, too.
+  <u>Right click</u> to momentarily halt the momentum of every ball. <u>Hold, drag, and release</u> right click to launch all balls in the direction of the mouse, but relative to where they are. For instance, dragging up will launch all balls straight and upwards. The distance of the drag matters here, too.
 
   Note that clicking anywhere on the gui panel will drop the whole set from the center of the screen.
 </details>
 
 <details>
-  <summary><b>Bounce</b></summary>
-  <b>Plot:</b> ❌
-
-  ...
+  <summary><h3>Bounce</h3></summary>
+  
+  <b>Plot:</b> ❌<br>
+   
+  <u>Hold left click</u> to draw slow-moving circles. These move diagonally, and will travel down and right initially. Upon colliding with a wall, a circle will <u>bounce</u> in the perpendicular direction.
 </details>
 
 # Remarks
