@@ -8,6 +8,7 @@ Please note that this project is in an alpha state. It is recommended to try it 
 # Overview
 Upon entering the site, you will be greeted with a blank canvas, and a user interface on the upper-right of the screen.
 
+<br>
 
 **In summary:**
 - Draw modes are like special paint brushes (with some exceptions), and can be changed using the "mode" dropdown.
