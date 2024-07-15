@@ -17,8 +17,8 @@ In summary:
 # Modes
 A more in-depth explanation of each mode can be read below.
 
+## Ball
 <details>
-  <summary>## Ball</summary>
   _Plot:_ ❌ 
 
   A set of 100 balls that simulate gravity, damping, and traction. The set has a uniform distribution of damping values between 0.7 and 0.9 (smaller value = less bouncy).
