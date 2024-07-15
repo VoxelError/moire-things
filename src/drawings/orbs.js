@@ -2,7 +2,7 @@ import { cursor } from "../util/controls"
 import { draw_arc } from "../util/draws"
 import { cos, degrees, rng, sin, sqrt, tau } from "../util/math"
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	cursor.held && points.push({
 		x: cursor.x,
 		y: cursor.y,

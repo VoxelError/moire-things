@@ -73,7 +73,7 @@ list.domElement.addEventListener("wheel", (event) => {
 
 	["pillar", "stalks"].includes(props.mode) || context.reset()
 	// context.globalCompositeOperation = settings.compositing
-	modes[props.mode](props.size, context, props.points, props.count) // fix args order
+	modes[props.mode](context, props.count, props.points, props.size)
 
 	set_storage("count", props.count)
 	set_storage("points", props.points)

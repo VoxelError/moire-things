@@ -1,7 +1,7 @@
 import { stroke_arc, stroke_ellipse } from "../util/draws"
 import { sin_wave } from "../util/math"
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	const axis = size.x / 5 + sin_wave(count, 10, 0, 0.05)
 
 	const max = 15

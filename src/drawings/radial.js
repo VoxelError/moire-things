@@ -6,7 +6,7 @@ const counter = {
 	delta: 1
 }
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	const range = (min, max) => cos_wave(count, max / 2, max / 2 + min, 0.005, pi)
 
 	counter.value = range(1, 250)

@@ -2,7 +2,7 @@ import { draw_arc } from "../util/draws"
 import { abs, cos_wave, degrees, pi, sin_wave, tau } from "../util/math"
 import { cursor } from "../util/controls"
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	const max = 200
 
 	for (let i = 1; i <= max; i++) {

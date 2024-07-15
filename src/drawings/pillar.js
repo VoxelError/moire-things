@@ -12,7 +12,7 @@ const init_pillar = (x, y, radius) => ({
 let pillar
 let hue = 0
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	const radius = size.y * 0.1
 	const half = {
 		x: size.x / 2,

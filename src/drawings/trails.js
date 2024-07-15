@@ -2,7 +2,7 @@ import { cursor } from "../util/controls.js"
 import { draw_arc } from "../util/draws.js"
 import { degrees, tau, rng } from "../util/math.js"
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	cursor.held && points.push({
 		x: cursor.x,
 		y: cursor.y,

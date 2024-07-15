@@ -1,3 +1,3 @@
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	return
 }

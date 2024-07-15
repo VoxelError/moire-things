@@ -5,7 +5,7 @@ import { cursor } from "../util/controls"
 const pos = {}
 let delta = 0
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	pos.x ??= size.x / 2
 	pos.y ??= size.y / 2
 

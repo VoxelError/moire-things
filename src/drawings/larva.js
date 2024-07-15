@@ -1,7 +1,7 @@
 import { draw_arc } from "../util/draws"
 import { cos, cos_wave, degrees, sin, tau } from "../util/math"
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	const larvae = 3
 
 	for (let l = 1; l <= larvae; l++) {

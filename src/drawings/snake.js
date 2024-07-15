@@ -2,7 +2,7 @@ import { stroke_arc } from "../util/draws"
 import { degrees, sin_wave, tau } from "../util/math"
 import { cursor } from "../util/controls"
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	cursor.held && points.push({
 		x: cursor.x,
 		y: cursor.y,

@@ -56,7 +56,7 @@ document.addEventListener('mouseup', (event) => {
 	})
 })
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	context.translate(size.x / 2, size.y / 2)
 
 	ball_array.forEach((ball) => {

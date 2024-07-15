@@ -2,7 +2,7 @@ import { draw_arc, stroke_line } from "../util/draws"
 import { cos, cos_wave, degrees, pi, sign, sin, sin_wave, tau } from "../util/math"
 import { cursor } from "../util/controls"
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	cursor.held && points.push({
 		x: cursor.x - size.x / 2,
 		y: cursor.y,

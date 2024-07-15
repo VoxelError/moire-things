@@ -1,7 +1,7 @@
 import { cursor } from "../util/controls.js"
 import { sin, degrees, tau, cos, rng } from "../util/math.js"
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	context.lineWidth = 0.2
 	context.globalCompositeOperation = 'destination-over'
 

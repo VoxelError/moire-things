@@ -54,7 +54,7 @@ const move_actor = (width, height) => {
 	actor.y > height + actor.r && (actor.y = -actor.r)
 }
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	points[0] = {
 		x: size.x,
 		y: size.y,

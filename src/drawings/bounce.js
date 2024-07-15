@@ -2,13 +2,13 @@ import { cursor } from "../util/controls"
 import { draw_arc } from "../util/draws"
 import { abs, sign } from "../util/math"
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	cursor.held && points.push({
 		x: cursor.x - size.x / 2,
 		y: cursor.y - size.y / 2,
 		vx: 5,
 		vy: 5,
-		r: 15,
+		r: 50,
 	})
 
 	context.translate(size.x / 2, size.y / 2)

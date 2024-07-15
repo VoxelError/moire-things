@@ -13,7 +13,7 @@ const init = {
 
 const hue = (value) => `hsl(${value}, 100%, 50%)`
 
-const draw_tree = (size, context, points, count, args = init) => {
+const draw_tree = (context, count, points, size, args = init) => {
 	let { root, length, angle, width, alpha, style, depth } = args
 
 	root.x ??= size.x / 2
@@ -37,7 +37,7 @@ const draw_tree = (size, context, points, count, args = init) => {
 			alpha,
 		})
 
-		draw_tree(size, context, points, count, {
+		draw_tree(context, count, points, size, {
 			root: { x: 0, y: -length },
 			length: length * 0.8,
 			angle: angle + count * ticks(18000),
@@ -47,7 +47,7 @@ const draw_tree = (size, context, points, count, args = init) => {
 			depth: depth + 1,
 		})
 
-		draw_tree(size, context, points, count, {
+		draw_tree(context, count, points, size, {
 			root: { x: 0, y: -length },
 			length: length * 0.8,
 			angle: angle - count * ticks(18000),

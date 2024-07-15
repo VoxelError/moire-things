@@ -1,7 +1,7 @@
 import { cursor } from "../util/controls"
 import { stroke_rect, stroke_square } from "../util/draws"
 
-export default (size, context, points, count) => {
+export default (context, count, points, size) => {
 	cursor.held && points.push({
 		x: cursor.x,
 		y: cursor.y,
