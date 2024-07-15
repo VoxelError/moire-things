@@ -20,9 +20,9 @@ Upon entering the site, you will be greeted with a blank canvas, and a user inte
 A more in-depth explanation of each mode can be read below.
 
 <details>
-  <summary><h3>Ball</h3></summary>
+  <summary><b>Ball</b></summary>
   
-  <b>Plot:</b> ❌<br>
+  <br><b>Plot:</b> ❌<br>
 
   A set of 100 balls that simulate gravity, damping, and traction. The set has a uniform distribution of damping values between 0.7 and 0.9 (smaller value = less bouncy).
   
@@ -34,9 +34,9 @@ A more in-depth explanation of each mode can be read below.
 </details>
 
 <details>
-  <summary><h3>Bounce</h3></summary>
+  <summary><b>Bounce</b></summary>
   
-  <b>Plot:</b> ❌<br>
+  <br><b>Plot:</b> ❌<br>
    
   <u>Hold left click</u> to draw slow-moving circles. These move diagonally, and will travel down and right initially. Upon colliding with a wall, a circle will <u>bounce</u> in the perpendicular direction.
 </details>
