@@ -23,6 +23,7 @@ A more in-depth explanation of each mode can be read below:
   <summary><b>Ball</b></summary>
   
   > Plot: ❌
+  <br>
   > Interactive: ✔
 
   > A set of 100 balls that simulate gravity, damping, and traction. The set has a uniform distribution of damping values between 0.7 and 0.9 (smaller value = less bouncy).
@@ -38,6 +39,7 @@ A more in-depth explanation of each mode can be read below:
   <summary><b>Bounce</b></summary>
   
   > Plot: ❌
+  <br>
   > Interactive: ✔
    
   > <b>Hold left click</b> to draw slow-moving circles. These move diagonally, and will travel down and right initially. Upon colliding with a wall, a circle will <b>bounce</b> in the perpendicular direction.
@@ -47,6 +49,7 @@ A more in-depth explanation of each mode can be read below:
   <summary><b>Cells</b></summary>
   
   > Plot: ❌
+  <br>
   > Interactive: ❌
    
   > A large set of tightly-packed, concentric rings. These rings are drawn with dashed lines, and display harmonic properties by modulating the offsets of these lines.
