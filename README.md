@@ -17,12 +17,13 @@ Upon entering the site, you will be greeted with a blank canvas, and a user inte
 - Finally, the "reset" button will clear the canvas, reset time, and erase all points.
 
 # Modes
-A more in-depth explanation of each mode can be read below.
+A more in-depth explanation of each mode can be read below:
 
 <details>
   <summary><b>Ball</b></summary>
   
   > Plot: ❌
+  > Interactive: ✔
 
   > A set of 100 balls that simulate gravity, damping, and traction. The set has a uniform distribution of damping values between 0.7 and 0.9 (smaller value = less bouncy).
   
@@ -37,10 +38,21 @@ A more in-depth explanation of each mode can be read below.
   <summary><b>Bounce</b></summary>
   
   > Plot: ❌
+  > Interactive: ✔
    
   > <b>Hold left click</b> to draw slow-moving circles. These move diagonally, and will travel down and right initially. Upon colliding with a wall, a circle will <b>bounce</b> in the perpendicular direction.
+</details>
+
+<details>
+  <summary><b>Cells</b></summary>
+  
+  > Plot: ❌
+  > Interactive: ❌
+   
+  > A large set of tightly-packed, concentric rings. These rings are drawn with dashed lines, and display harmonic properties by modulating the offsets of these lines.
 </details>
 
 # Remarks
 - While hovering the mouse over the closed mode dropdown, you can use the scroll wheel to scroll through different modes.
 - Note that everything is reset when switching modes, just as if you pressed the "reset" button. This feature prevents incredibly glitchy behavior when transferring points to different modes.
+- Some modes are computationally heavy, and have not been fully optimized yet. As well, there is currently no limit to how many points you can add. I am currently working on re-implementing the app using the WebGPU API, which could drastically improve performance.
