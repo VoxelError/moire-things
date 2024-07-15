@@ -1,5 +1,5 @@
 # Introduction
-A showcasing of various simulations using the HTML5 Canvas API. Hosted over on https://moire-things.netlify.app
+A showcasing of various simulations using the HTML5 Canvas API. Hosted over on [moire-things.netlify.app](https://moire-things.netlify.app).
 
 Please note that this project is in an alpha state. It is recommended to try it out on Google Chrome, or a browser that uses Chromium.
 
@@ -24,7 +24,7 @@ A more in-depth explanation of each mode can be read below.
   
   <br>Plot: ❌<br>
 
-  A set of 100 balls that simulate gravity, damping, and traction. The set has a uniform distribution of damping values between 0.7 and 0.9 (smaller value = less bouncy).
+  > A set of 100 balls that simulate gravity, damping, and traction. The set has a uniform distribution of damping values between 0.7 and 0.9 (smaller value = less bouncy).
   
   <b>Left click</b> to drop the set of balls where you clicked. <b>Hold</b> left click, <b>drag</b> in a direction, and <b>release</b> left click to launch the set in the direction of your mouse. The farther your mouse, the faster the launch.
   
