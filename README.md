@@ -143,7 +143,7 @@ A more in-depth explanation of each mode can be read below.
 > Interactive: ❌ <br>
 > Performance Impact: 🟡
 
-A thing.
+> A thing.
 
 ### Radial
 
