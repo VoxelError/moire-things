@@ -143,7 +143,7 @@ A more in-depth explanation of each mode can be read below.
 > Interactive: ❌ <br>
 > Performance Impact: 🟡
 
-A thing.
+> A thing.
 
 ### Radial
 
@@ -183,7 +183,7 @@ A thing.
 > Interactive: ✅ <br>
 > Performance Impact: 🟡
 
-> <b>Hold left click</b> to draw orbs that rotate clockwise around and along the y-axis and z-axis, respectively.
+> <b>Hold left click</b> to draw orbs that rotate clockwise around the y-axis, and and along the z-axis.
 
 ### Stalks
 
@@ -223,13 +223,13 @@ A thing.
 > Interactive: ✅ <br>
 > Performance Impact: 🟡
 
-> <b>Hold left click</b> to draw translucent orbs, that shrink and fade over time. Moving the cursor oustide of the window will draw points randomly to the screen.
+> <b>Hold left click</b> to draw translucent orbs, that shrink and fade over time. Moving the cursor outside of the window will draw points randomly to the screen.
 
 ### Tree
 
 > Plot: ❌ <br>
 > Interactive: ❌ <br>
-> Performance Impact: 🟡
+> Performance Impact: 🔴🔴🔴
 
 > A variant of the Pythagoras tree fractal, with a simulation depth of 11. Segments shift their hues sequentially over time. Fully looping.
 
