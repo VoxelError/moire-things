@@ -1,4 +1,3 @@
-import "../styles.scss"
 import shader from "../shaders/rainbow.wgsl?raw"
 
 const canvas = document.createElement('canvas')

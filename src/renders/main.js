@@ -1,4 +1,3 @@
-import "../styles.scss"
 import compute from "../shaders/main_compute.wgsl?raw"
 import render from "../shaders/main_fragment.wgsl?raw"
 

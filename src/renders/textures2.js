@@ -1,53 +1,45 @@
-import { sin, sin_wave } from "../util/math"
 import shader from "../shaders/textures.wgsl?raw"
 import { GUI } from "dat.gui"
-import { gen_mips } from "./mip"
+import image from "../resources/images/f-texture.png"
 
 const adapter = await navigator.gpu?.requestAdapter()
 const device = await adapter?.requestDevice()
 !device && alert("Your browser does not support WebGPU")
 
 const canvas = document.createElement('canvas')
-canvas.width = window.innerWidth / 64
-canvas.height = window.innerHeight / 64
-canvas.style.imageRendering = "pixelated"
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
 document.body.append(canvas)
 
 const context = canvas.getContext('webgpu')
 const format = navigator.gpu.getPreferredCanvasFormat()
 context.configure({ device, format })
 
-const tex_width = 8
-const tex_height = 8
-const g = [0, 255, 0, 255]
-const x = [0, 0, 0, 255]
-export const creeper = new Uint8Array([
-	g, g, g, g, g, g, g, g,
-	g, x, x, g, g, x, x, g,
-	g, x, x, g, g, x, x, g,
-	g, g, g, x, x, g, g, g,
-	g, g, x, x, x, x, g, g,
-	g, g, x, x, x, x, g, g,
-	g, g, x, g, g, x, g, g,
-	g, g, g, g, g, g, g, g,
-].flat())
+async function load_image_bitmap(url) {
+	const result = await fetch(url)
+	const blob = await result.blob()
+	return await createImageBitmap(blob, { colorSpaceConversion: 'none' })
+}
 
-const mips = gen_mips(creeper, tex_width)
+const num_mip_levels = (...sizes) => {
+	const max_size = Math.max(...sizes)
+	return 1 + Math.log2(max_size) | 0
+}
 
+const url = image
+const source = await load_image_bitmap(url)
 const texture = device.createTexture({
-	size: [mips[0].width, mips[0].height],
-	mipLevelCount: mips.length,
+	label: url,
 	format: 'rgba8unorm',
-	usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
+	mipLevelCount: num_mip_levels(source.width, source.height),
+	size: [source.width, source.height],
+	usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT
 })
-mips.forEach(({ data, width, height }, mipLevel) => {
-	device.queue.writeTexture(
-		{ texture, mipLevel },
-		data,
-		{ bytesPerRow: width * 4 },
-		{ width, height }
-	)
-})
+device.queue.copyExternalImageToTexture(
+	{ source },
+	{ texture },
+	{ width: source.width, height: source.height },
+)
 
 const module = device.createShaderModule({ code: shader })
 
@@ -60,17 +52,14 @@ const pipeline = device.createRenderPipeline({
 })
 
 const uniform_values = new Float32Array(4)
-const uniform_buffer = device.createBuffer({
-	size: 16,
-	usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
-})
+const uniform_buffer = device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST })
 
 const settings = {
 	addressModeU: 'clamp-to-edge',
 	addressModeV: 'clamp-to-edge',
 	magFilter: 'linear',
 	minFilter: 'linear',
-	scale: 6,
+	scale: 100,
 }
 
 const gui = new GUI({ closeOnTop: true })
@@ -78,7 +67,7 @@ gui.add(settings, 'addressModeU', ['repeat', 'clamp-to-edge'])
 gui.add(settings, 'addressModeV', ['repeat', 'clamp-to-edge'])
 gui.add(settings, 'magFilter', ['nearest', 'linear'])
 gui.add(settings, 'minFilter', ['nearest', 'linear'])
-gui.add(settings, 'scale', 0.5, 6)
+gui.add(settings, 'scale', 1, 500)
 
 const bind_groups = []
 
@@ -102,14 +91,9 @@ for (let i = 0; i < 16; ++i) {
 	bind_groups.push(bind_group)
 }
 
-console.log(canvas.height)
-
-function update(time) {
-	const theta = sin_wave(time, 0.15, -0.34, 0.0005)
-
+function update() {
 	uniform_values.set([4 / canvas.width * settings.scale, 4 / canvas.height * settings.scale])
-	uniform_values.set([theta, -1], 2)
-
+	uniform_values.set([0, 0], 2)
 	device.queue.writeBuffer(uniform_buffer, 0, uniform_values)
 
 	const bind_group = bind_groups[(
@@ -137,7 +121,7 @@ function update(time) {
 	device.queue.submit([encoder.finish()])
 }
 
-!function render(time) {
-	update(time)
+!function render() {
+	update()
 	requestAnimationFrame(render)
 }()

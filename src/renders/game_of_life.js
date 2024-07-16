@@ -1,4 +1,3 @@
-import "../styles.scss"
 import compute from "../shaders/(GoL)compute.wgsl?raw"
 import shader from "../shaders/(GoL)render.wgsl?raw"
 

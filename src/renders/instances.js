@@ -1,4 +1,3 @@
-import "../styles.scss"
 import { cos, rng, sin, tau } from "../util/math.js"
 import shader from "../shaders/instances.wgsl?raw"
 import { cursor, listen } from "../util/controls.js"

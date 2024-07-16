@@ -1,4 +1,3 @@
-import "../styles.scss"
 import { mat4 } from 'https://webgpufundamentals.org/3rdparty/wgpu-matrix.module.js'
 import { cursor, listen } from "../util/controls"
 import shader from "../shaders/hall.wgsl?raw"
