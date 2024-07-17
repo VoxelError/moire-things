@@ -3,6 +3,7 @@ import { cursor, listen } from "../util/controls"
 import shader from "../shaders/hall.wgsl?raw"
 import { blended_mipmap, checked_mipmap, texture_with_mips } from "./mip2"
 import { tau } from "../util/math"
+import image from "../resources/images/f-texture.png"
 
 const adapter = await navigator.gpu?.requestAdapter()
 const device = await adapter?.requestDevice()
@@ -24,8 +25,34 @@ const pipeline = device.createRenderPipeline({
 	fragment: { module, targets: [{ format }] },
 })
 
+async function load_image_bitmap(url) {
+	const result = await fetch(url)
+	const blob = await result.blob()
+	return await createImageBitmap(blob, { colorSpaceConversion: 'none' })
+}
+
+const num_mip_levels = (...sizes) => {
+	const max_size = Math.max(...sizes)
+	return 1 + Math.log2(max_size) | 0
+}
+
+const url = image
+const source = await load_image_bitmap(url)
+const texture = device.createTexture({
+	label: url,
+	format: 'rgba8unorm',
+	mipLevelCount: num_mip_levels(source.width, source.height),
+	size: [source.width, source.height],
+	usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT
+})
+device.queue.copyExternalImageToTexture(
+	{ source },
+	{ texture },
+	{ width: source.width, height: source.height },
+)
+
 const textures = [
-	texture_with_mips(blended_mipmap(), device),
+	texture,
 	texture_with_mips(checked_mipmap(), device),
 ]
 

@@ -1,14 +1,14 @@
 const size = 512
 const half = size / 2
 
-const ctx = document.createElement('canvas').getContext('2d')
-ctx.canvas.width = size
-ctx.canvas.height = size
-document.body.append(ctx.canvas)
+export const canvas2 = document.createElement('canvas')
+const ctx = canvas2.getContext('2d')
+canvas2.width = size
+canvas2.height = size
 
 const hsl = (h, s, l) => `hsl(${h * 360 | 0}, ${s * 100}%, ${l * 100 | 0}%)`
 
-export function update(time) {
+export function update_canvas2(time) {
 	ctx.reset()
 	ctx.translate(half, half)
 
