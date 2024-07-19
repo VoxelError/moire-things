@@ -2,6 +2,7 @@ import { mat4 } from 'https://webgpufundamentals.org/3rdparty/wgpu-matrix.module
 import shader from "../shaders/textures3.wgsl?raw"
 import shader2 from "../shaders/textures4.wgsl?raw"
 import { canvas2, update_canvas2 } from './mip3'
+import { tau } from "../util/math"
 
 const adapter = await navigator.gpu?.requestAdapter()
 const device = await adapter?.requestDevice()
@@ -154,22 +155,22 @@ const urls = [
 const texture = createTextureFromSource(device, canvas2, { mips: true })
 const textures = [texture]
 
-const objectInfos = [];
+const objectInfos = []
 for (let i = 0; i < 8; ++i) {
 	const sampler = device.createSampler({
 		addressModeU: 'repeat',
 		addressModeV: 'repeat',
-		magFilter: (i & 1) ? 'linear' : 'nearest',
-		minFilter: (i & 2) ? 'linear' : 'nearest',
-		mipmapFilter: (i & 4) ? 'linear' : 'nearest',
-	});
+		magFilter: 'linear',
+		minFilter: 'linear',
+		mipmapFilter: 'linear',
+	})
 
 	const uniformBufferSize = 16 * 4
 	const uniformBuffer = device.createBuffer({
 		label: 'uniforms for quad',
 		size: uniformBufferSize,
 		usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-	});
+	})
 
 	// create a typedarray to hold the values for the uniforms in JavaScript
 	const uniformValues = new Float32Array(uniformBufferSize / 4);
@@ -210,17 +211,17 @@ let tex_index = 0;
 	update_canvas2(time)
 	copySourceToTexture(device, texture, canvas2)
 
-	const fov = 60 * Math.PI / 180;  // 60 degrees in radians
-	const aspect = canvas.clientWidth / canvas.clientHeight;
-	const zNear = 1;
-	const zFar = 2000;
-	const projectionMatrix = mat4.perspective(fov, aspect, zNear, zFar);
+	const fov = tau * 0.16
+	const aspect = canvas.clientWidth / canvas.clientHeight
+	const zNear = 1
+	const zFar = 2000
+	const projectionMatrix = mat4.perspective(fov, aspect, zNear, zFar)
 
-	const cameraPosition = [0, 0, 2];
-	const up = [0, 1, 0];
-	const target = [0, 0, 0];
-	const viewMatrix = mat4.lookAt(cameraPosition, target, up);
-	const viewProjectionMatrix = mat4.multiply(projectionMatrix, viewMatrix);
+	const cameraPosition = [0, 0, 2]
+	const up = [0, 1, 0]
+	const target = [0, 0, 0]
+	const viewMatrix = mat4.lookAt(cameraPosition, target, up)
+	const viewProjectionMatrix = mat4.multiply(projectionMatrix, viewMatrix)
 
 	renderPassDescriptor.colorAttachments[0].view = context.getCurrentTexture().createView()
 
@@ -231,7 +232,7 @@ let tex_index = 0;
 	objectInfos.forEach(({ bindGroups, matrix, uniformBuffer, uniformValues }, i) => {
 		const bindGroup = bindGroups[tex_index]
 
-		const xSpacing = 1.2
+		const xSpacing = 1
 		const ySpacing = 0.7
 		const zDepth = 50
 
@@ -256,8 +257,3 @@ let tex_index = 0;
 
 	requestAnimationFrame(render)
 }()
-
-// canvas.addEventListener("click", () => {
-// 	tex_index = (tex_index + 1) % textures.length
-// 	render()
-// })

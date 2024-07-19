@@ -15,7 +15,7 @@ struct VertexOut {
 @vertex
 fn vertex_main(in: VertexIn) -> VertexOut {
     var out: VertexOut;
-    out.pos = vec4f(in.pos * in.scale + in.offset, 0.0, 1.0);
+    out.pos = vec4f(in.pos * in.scale + in.offset, 0, 1);
     out.color = in.color * in.vertex_color;
     return out;
 }
