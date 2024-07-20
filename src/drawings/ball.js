@@ -1,8 +1,9 @@
-import { abs, sign } from "../util/math"
+import { draw_arc } from "../util/draws"
+import { abs, cos, rng, sign, sin, tau } from "../util/math"
 
 const ball_array = []
 
-const ball_init = {
+const new_ball = {
 	x: 0,
 	y: 0,
 	vx: 0,
@@ -21,14 +22,15 @@ const pin = {
 
 document.addEventListener('mousedown', (event) => {
 	if (event.button == 0) {
-		ball_array.length = 0
 		for (let i = 0; i < 100; i++) {
-			ball_array.push({
-				...ball_init,
-				x: event.offsetX - event.target.clientWidth / 2,
-				y: event.offsetY - event.target.clientHeight / 2,
-				damping: 0.7 + (i * 0.002),
-			})
+			const theta = i * tau / 100
+
+			ball_array[i] = {
+				...new_ball,
+				x: (event.offsetX - event.target.clientWidth / 2) + cos(theta) * 10,
+				y: (event.offsetY - event.target.clientHeight / 2) + sin(theta) * 10,
+				damping: 0.8 + rng(0.1)
+			}
 		}
 	}
 
@@ -39,19 +41,16 @@ document.addEventListener('mousedown', (event) => {
 })
 
 document.addEventListener('mouseup', (event) => {
-	ball_array.forEach((ball, i) => {
-		switch (event.button) {
-			case 0: {
-				ball.vx = event.offsetX - event.target.clientWidth / 2 - ball.x
-				ball.vy = event.offsetY - event.target.clientHeight / 2 - ball.y
-				ball.frozen = false
-				break
-			}
-			case 2: {
-				ball.vx = event.offsetX - pin.x
-				ball.vy = event.offsetY - pin.y
-				break
-			}
+	ball_array.forEach((ball) => {
+		if (event.button == 0) {
+			ball.vx = event.offsetX - event.target.clientWidth / 2 - ball.x
+			ball.vy = event.offsetY - event.target.clientHeight / 2 - ball.y
+			ball.frozen = false
+		}
+
+		if (event.button == 2) {
+			ball.vx = event.offsetX - pin.x
+			ball.vy = event.offsetY - pin.y
 		}
 	})
 })
@@ -59,8 +58,12 @@ document.addEventListener('mouseup', (event) => {
 export default (context, count, points, size) => {
 	context.translate(size.x / 2, size.y / 2)
 
-	ball_array.forEach((ball) => {
+	ball_array.forEach((ball, index) => {
 		if (!ball.frozen) {
+			if (Math.hypot(ball.x, ball.y)) {
+
+			}
+
 			if (abs(ball.x) > size.x / 2 - ball.radius) {
 				ball.vx *= -ball.damping
 				ball.x = (size.x / 2 - ball.radius) * sign(ball.x)
@@ -69,10 +72,11 @@ export default (context, count, points, size) => {
 			if (abs(ball.y) > size.y / 2 - ball.radius) {
 				ball.vy *= -ball.damping
 				ball.y = (size.y / 2 - ball.radius) * sign(ball.y)
+
 				if (sign(ball.y) == 1) ball.vx *= ball.traction
 			}
 
-			ball.vy += ball.gravity
+			// ball.vy += ball.gravity
 
 			// ball.vx *= ball.traction
 			// ball.vy *= ball.traction
@@ -81,10 +85,19 @@ export default (context, count, points, size) => {
 			ball.y += ball.vy
 		}
 
-		context.beginPath()
-		context.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI, false)
-		context.globalAlpha = 0.25
-		context.fillStyle = 'white'
-		context.fill()
+		draw_arc(context, {
+			center: [ball.x, ball.y],
+			radius: ball.radius,
+			fill: {
+				alpha: 0.25,
+				style: `hsl(${index * 360 / ball_array.length}, 100%, 50%)`,
+			}
+		})
+
+		// context.beginPath()
+		// context.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI, false)
+		// context.globalAlpha = 0.25
+		// context.fillStyle = 'white'
+		// context.fill()
 	})
 }
