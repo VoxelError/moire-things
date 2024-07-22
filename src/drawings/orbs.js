@@ -3,7 +3,7 @@ import { draw_arc } from "../util/draws"
 import { cos, degrees, rng, sin, sqrt, tau } from "../util/math"
 
 export default (context, count, points, size) => {
-	cursor.held && points.push({
+	cursor.held_left && points.push({
 		x: cursor.x,
 		y: cursor.y,
 		theta: 0,
