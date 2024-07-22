@@ -3,7 +3,7 @@ import { cos, cos_wave, degrees, pi, sign, sin, sin_wave, tau } from "../util/ma
 import { cursor } from "../util/controls"
 
 export default (context, count, points, size) => {
-	cursor.held_left && points.push({
+	cursor.held && points.push({
 		x: cursor.x - size.x / 2,
 		y: cursor.y,
 		delta: count,

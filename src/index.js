@@ -1,3 +1,4 @@
+import compositing from "./util/compositing.js"
 import modes from "./util/modes.js"
 import { listen } from "./util/controls.js"
 import { sign } from "./util/math.js"
@@ -9,7 +10,6 @@ import './styles.scss'
 // ==================================================== //
 
 const canvas = document.createElement("canvas")
-canvas.id = "html_canvas"
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 document.body.append(canvas)
@@ -38,6 +38,7 @@ const settings = {
 	},
 	plot: () => plot_points(props.mode, props.size, props.points, props.count),
 	pause: false,
+	compositing: "source-over",
 	mode: props.mode,
 }
 
@@ -45,8 +46,9 @@ const gui = new GUI({ closeOnTop: true })
 gui.add(settings, "reset")
 gui.add(settings, "plot")
 gui.add(settings, "pause")
+// gui.add(settings, "compositing", compositing)
 
-const list = new GUI({ closeOnTop: true }).add(settings, "mode", Object.keys(modes))
+const list = gui.add(settings, "mode", Object.keys(modes))
 
 const handle_change = (value) => {
 	props.mode = value
@@ -70,7 +72,8 @@ list.domElement.addEventListener("wheel", (event) => {
 	!settings.pause && props.count++
 
 	["pillar", "stalks"].includes(props.mode) || context.reset()
-	modes[props.mode](context, props.count, props.points, props.size, gui)
+	// context.globalCompositeOperation = settings.compositing
+	modes[props.mode](context, props.count, props.points, props.size)
 
 	set_storage("count", props.count)
 	set_storage("points", props.points)

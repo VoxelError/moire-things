@@ -3,7 +3,7 @@ import { draw_arc, stroke_ellipse } from "../util/draws"
 import { sin, tau } from "../util/math"
 
 export default (context, count, points, size) => {
-	cursor.held_left && points.push({
+	cursor.held && points.push({
 		x: cursor.x,
 		y: cursor.y,
 	})
