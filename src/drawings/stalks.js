@@ -83,6 +83,6 @@ export default (context, count, points, size) => {
 		}
 	}
 
-	cursor.held && points.push(new Scube(cursor.x, cursor.y))
+	cursor.held_left && points.push(new Scube(cursor.x, cursor.y))
 	points.forEach((stalk) => stalk.update())
 }

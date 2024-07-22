@@ -9,6 +9,7 @@ import './styles.scss'
 // ==================================================== //
 
 const canvas = document.createElement("canvas")
+canvas.id = "html_canvas"
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 document.body.append(canvas)
@@ -45,7 +46,7 @@ gui.add(settings, "reset")
 gui.add(settings, "plot")
 gui.add(settings, "pause")
 
-const list = gui.add(settings, "mode", Object.keys(modes))
+const list = new GUI({ closeOnTop: true }).add(settings, "mode", Object.keys(modes))
 
 const handle_change = (value) => {
 	props.mode = value
@@ -69,7 +70,7 @@ list.domElement.addEventListener("wheel", (event) => {
 	!settings.pause && props.count++
 
 	["pillar", "stalks"].includes(props.mode) || context.reset()
-	modes[props.mode](context, props.count, props.points, props.size)
+	modes[props.mode](context, props.count, props.points, props.size, gui)
 
 	set_storage("count", props.count)
 	set_storage("points", props.points)

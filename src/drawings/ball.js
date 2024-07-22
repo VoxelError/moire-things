@@ -1,14 +1,13 @@
+import { cursor } from "../util/controls"
 import { draw_arc } from "../util/draws"
 import { abs, cos, rng, sign, sin, tau } from "../util/math"
-
-const ball_array = []
 
 const new_ball = {
 	x: 0,
 	y: 0,
 	vx: 0,
 	vy: 0,
-	radius: 10,
+	radius: 7,
 	gravity: 0.98,
 	damping: 0.9,
 	traction: 0.8,
@@ -20,53 +19,63 @@ const pin = {
 	y: 0,
 }
 
-document.addEventListener('mousedown', (event) => {
-	if (event.button == 0) {
-		for (let i = 0; i < 100; i++) {
-			const theta = i * tau / 100
+const max = 250
 
-			ball_array[i] = {
+let counter = 0
+const settings = { screen_wrap: false }
+
+export default (context, count, points, size, gui) => {
+	if (counter < 1) {
+		gui.add(settings, "screen_wrap")
+		counter++
+	}
+
+	cursor.left_click = () => {
+		for (let i = 0; i < max; i++) {
+			const theta = i * tau / max
+
+			points[i] = {
 				...new_ball,
-				x: (event.offsetX - event.target.clientWidth / 2) + cos(theta) * 10,
-				y: (event.offsetY - event.target.clientHeight / 2) + sin(theta) * 10,
+				x: (cursor.x - size.x / 2) + cos(theta) * 2.5,
+				y: (cursor.y - size.y / 2) + sin(theta) * 2.5,
 				damping: 0.8 + rng(0.1)
 			}
 		}
 	}
+	cursor.left_up = () => {
+		for (let i = 0; i < max; i++) {
+			const ball = points[i]
 
-	if (event.button == 2) {
-		pin.x = event.offsetX
-		pin.y = event.offsetY
-	}
-})
-
-document.addEventListener('mouseup', (event) => {
-	ball_array.forEach((ball) => {
-		if (event.button == 0) {
-			ball.vx = event.offsetX - event.target.clientWidth / 2 - ball.x
-			ball.vy = event.offsetY - event.target.clientHeight / 2 - ball.y
+			ball.vx = cursor.x - size.x / 2 - ball.x
+			ball.vy = cursor.y - size.y / 2 - ball.y
 			ball.frozen = false
 		}
+	}
 
-		if (event.button == 2) {
-			ball.vx = event.offsetX - pin.x
-			ball.vy = event.offsetY - pin.y
+	cursor.right_click = () => {
+		pin.x = cursor.x
+		pin.y = cursor.y
+	}
+	cursor.right_up = () => {
+		for (let i = 0; i < max; i++) {
+			const ball = points[i]
+
+			ball.vx = cursor.x - pin.x
+			ball.vy = cursor.y - pin.y
 		}
-	})
-})
+	}
 
-export default (context, count, points, size) => {
 	context.translate(size.x / 2, size.y / 2)
 
-	ball_array.forEach((ball, index) => {
+	points.forEach((ball, index) => {
 		if (!ball.frozen) {
-			if (Math.hypot(ball.x, ball.y)) {
-
-			}
-
 			if (abs(ball.x) > size.x / 2 - ball.radius) {
-				ball.vx *= -ball.damping
-				ball.x = (size.x / 2 - ball.radius) * sign(ball.x)
+				if (settings.screen_wrap) {
+					ball.x = (size.x / 2 - ball.radius) * -sign(ball.x)
+				} else {
+					ball.vx *= -ball.damping
+					ball.x = (size.x / 2 - ball.radius) * sign(ball.x)
+				}
 			}
 
 			if (abs(ball.y) > size.y / 2 - ball.radius) {
@@ -76,7 +85,7 @@ export default (context, count, points, size) => {
 				if (sign(ball.y) == 1) ball.vx *= ball.traction
 			}
 
-			// ball.vy += ball.gravity
+			ball.vy += ball.gravity
 
 			// ball.vx *= ball.traction
 			// ball.vy *= ball.traction
@@ -90,7 +99,7 @@ export default (context, count, points, size) => {
 			radius: ball.radius,
 			fill: {
 				alpha: 0.25,
-				style: `hsl(${index * 360 / ball_array.length}, 100%, 50%)`,
+				style: `hsl(${index * 360 / points.length}, 100%, 50%)`,
 			}
 		})
 

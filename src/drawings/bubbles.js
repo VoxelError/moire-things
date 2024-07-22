@@ -3,7 +3,7 @@ import { draw_arc } from "../util/draws.js"
 import { sin, abs, degrees } from "../util/math.js"
 
 export default (context, count, points, size) => {
-	cursor.held && points.push({
+	cursor.held_left && points.push({
 		x: cursor.x,
 		y: cursor.y,
 		theta: 0,
