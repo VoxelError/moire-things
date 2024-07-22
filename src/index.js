@@ -1,6 +1,6 @@
 import "./styles.scss"
 
-import './renders/instances.js'
+import './renders/polybubbles/index.js'
 // import './renders/rainbow.js'
 // import './renders/basic_render.js'
 // import './renders/hall.js'
