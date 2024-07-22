@@ -3,7 +3,7 @@ import { stroke_line } from "../util/draws"
 import { cos, degrees, sin, tau } from "../util/math"
 
 export default (context, count, points, size) => {
-	cursor.held_left && points.push({ x: cursor.x, y: cursor.y, theta: 0, length: size.y / 10 })
+	cursor.held && points.push({ x: cursor.x, y: cursor.y, theta: 0, length: size.y / 10 })
 
 	points.forEach((point, index) => {
 		const rotation = point.theta + (tau / 5) * index

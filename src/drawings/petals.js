@@ -3,7 +3,7 @@ import { abs, cos, degrees, sin } from "../util/math"
 import { cursor } from "../util/controls"
 
 export default (context, count, points, size) => {
-	cursor.held_left && points.push({
+	cursor.held && points.push({
 		x: cursor.x,
 		y: cursor.y,
 		theta: 0,

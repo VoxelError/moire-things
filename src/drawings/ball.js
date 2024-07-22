@@ -1,13 +1,13 @@
-import { cursor } from "../util/controls"
-import { draw_arc } from "../util/draws"
-import { abs, cos, rng, sign, sin, tau } from "../util/math"
+import { abs, sign } from "../util/math"
 
-const new_ball = {
+const ball_array = []
+
+const ball_init = {
 	x: 0,
 	y: 0,
 	vx: 0,
 	vy: 0,
-	radius: 7,
+	radius: 10,
 	gravity: 0.98,
 	damping: 0.9,
 	traction: 0.8,
@@ -19,69 +19,56 @@ const pin = {
 	y: 0,
 }
 
-const max = 250
-
-let counter = 0
-const settings = { screen_wrap: false }
-
-export default (context, count, points, size, gui) => {
-	if (counter < 1) {
-		gui.add(settings, "screen_wrap")
-		counter++
+document.addEventListener('mousedown', (event) => {
+	if (event.button == 0) {
+		ball_array.length = 0
+		for (let i = 0; i < 100; i++) {
+			ball_array.push({
+				...ball_init,
+				x: event.offsetX - event.target.clientWidth / 2,
+				y: event.offsetY - event.target.clientHeight / 2,
+				damping: 0.7 + (i * 0.002),
+			})
+		}
 	}
 
-	cursor.left_click = () => {
-		for (let i = 0; i < max; i++) {
-			const theta = i * tau / max
+	if (event.button == 2) {
+		pin.x = event.offsetX
+		pin.y = event.offsetY
+	}
+})
 
-			points[i] = {
-				...new_ball,
-				x: (cursor.x - size.x / 2) + cos(theta) * 2.5,
-				y: (cursor.y - size.y / 2) + sin(theta) * 2.5,
-				damping: 0.8 + rng(0.1)
+document.addEventListener('mouseup', (event) => {
+	ball_array.forEach((ball, i) => {
+		switch (event.button) {
+			case 0: {
+				ball.vx = event.offsetX - event.target.clientWidth / 2 - ball.x
+				ball.vy = event.offsetY - event.target.clientHeight / 2 - ball.y
+				ball.frozen = false
+				break
+			}
+			case 2: {
+				ball.vx = event.offsetX - pin.x
+				ball.vy = event.offsetY - pin.y
+				break
 			}
 		}
-	}
-	cursor.left_up = () => {
-		for (let i = 0; i < max; i++) {
-			const ball = points[i]
+	})
+})
 
-			ball.vx = cursor.x - size.x / 2 - ball.x
-			ball.vy = cursor.y - size.y / 2 - ball.y
-			ball.frozen = false
-		}
-	}
-
-	cursor.right_click = () => {
-		pin.x = cursor.x
-		pin.y = cursor.y
-	}
-	cursor.right_up = () => {
-		for (let i = 0; i < max; i++) {
-			const ball = points[i]
-
-			ball.vx = cursor.x - pin.x
-			ball.vy = cursor.y - pin.y
-		}
-	}
-
+export default (context, count, points, size) => {
 	context.translate(size.x / 2, size.y / 2)
 
-	points.forEach((ball, index) => {
+	ball_array.forEach((ball) => {
 		if (!ball.frozen) {
 			if (abs(ball.x) > size.x / 2 - ball.radius) {
-				if (settings.screen_wrap) {
-					ball.x = (size.x / 2 - ball.radius) * -sign(ball.x)
-				} else {
-					ball.vx *= -ball.damping
-					ball.x = (size.x / 2 - ball.radius) * sign(ball.x)
-				}
+				ball.vx *= -ball.damping
+				ball.x = (size.x / 2 - ball.radius) * sign(ball.x)
 			}
 
 			if (abs(ball.y) > size.y / 2 - ball.radius) {
 				ball.vy *= -ball.damping
 				ball.y = (size.y / 2 - ball.radius) * sign(ball.y)
-
 				if (sign(ball.y) == 1) ball.vx *= ball.traction
 			}
 
@@ -94,19 +81,10 @@ export default (context, count, points, size, gui) => {
 			ball.y += ball.vy
 		}
 
-		draw_arc(context, {
-			center: [ball.x, ball.y],
-			radius: ball.radius,
-			fill: {
-				alpha: 0.25,
-				style: `hsl(${index * 360 / points.length}, 100%, 50%)`,
-			}
-		})
-
-		// context.beginPath()
-		// context.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI, false)
-		// context.globalAlpha = 0.25
-		// context.fillStyle = 'white'
-		// context.fill()
+		context.beginPath()
+		context.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI, false)
+		context.globalAlpha = 0.25
+		context.fillStyle = 'white'
+		context.fill()
 	})
 }
