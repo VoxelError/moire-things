@@ -1,17 +1,17 @@
-const mip_next = ({ data: src, width: src_width, height: src_height }) => {
-	const dest_width = Math.max(1, src_width / 2 | 0)
-	const dest_height = Math.max(1, src_height / 2 | 0)
+const mip_next = ({ data, width, height }) => {
+	const dest_width = Math.max(1, width / 2 | 0)
+	const dest_height = Math.max(1, height / 2 | 0)
 	const dest = new Uint8Array(dest_width * dest_height * 4)
 
 	const get_pixel = (x, y) => {
-		const offset = (x + y * src_width) * 4
-		return src.subarray(offset, offset + 4)
+		const offset = (x + y * width) * 4
+		return data.subarray(offset, offset + 4)
 	}
 
 	for (let y = 0; y < dest_height; ++y) {
 		for (let x = 0; x < dest_width; ++x) {
-			const au = src_width * (x + 0.5) / dest_width - 0.5
-			const av = src_height * (y + 0.5) / dest_height - 0.5
+			const au = width * (x + 0.5) / dest_width - 0.5
+			const av = height * (y + 0.5) / dest_height - 0.5
 
 			const tx = au | 0
 			const ty = av | 0
@@ -47,11 +47,11 @@ const mip_next = ({ data: src, width: src_width, height: src_height }) => {
 	}
 }
 
-export const gen_mips = (src, src_width) => {
+export const gen_mips = (array, width) => {
 	let mip = {
-		data: src,
-		width: src_width,
-		height: 0.25 * src.length / src_width,
+		data: array,
+		width,
+		height: 0.25 * array.length / width,
 	}
 
 	const mips = [mip]

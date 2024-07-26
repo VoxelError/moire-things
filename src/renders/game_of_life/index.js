@@ -1,12 +1,12 @@
-import compute from "../shaders/(GoL)compute.wgsl?raw"
-import shader from "../shaders/(GoL)render.wgsl?raw"
+import compute from "./compute.wgsl?raw"
+import shader from "./render.wgsl?raw"
 
 // SETUP
 
-const grid_size = 80
+const grid_size = 64
 
 const canvas = document.createElement("canvas")
-canvas.width = window.innerHeight
+canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 document.body.append(canvas)
 

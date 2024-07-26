@@ -1,6 +1,6 @@
 import shader from "../shaders/textures.wgsl?raw"
 import { GUI } from "dat.gui"
-import image from "../resources/images/f-texture.png"
+import image from "../f-texture.png"
 
 const adapter = await navigator.gpu?.requestAdapter()
 const device = await adapter?.requestDevice()

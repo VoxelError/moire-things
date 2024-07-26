@@ -12,10 +12,10 @@ const orb_list = get_storage("orb_list", [])
 const settings = {
 	clear: () => orb_list.length = 0,
 	undo: () => orb_list.pop(),
-	speed: 1,
-	radius: 1,
+	speed: 0,
+	radius: 1.5,
 	sectus: 0.5,
-	sectors: 8,
+	sectors: 5,
 }
 
 const gui = new GUI({ closeOnTop: true })
@@ -25,7 +25,7 @@ gui.add(settings, "clear")
 gui.add(settings, "undo")
 gui.add(settings, "speed", 0, 2, 0.01)
 gui.add(settings, "radius", 0.5, 1.5, 0.01)
-gui.add(settings, "sectus", 0, 0.99, 0.01)
+gui.add(settings, "sectus", 0, 1, 0.01)
 gui.add(settings, "sectors", 3, 17, 1)
 // gui.add(settings, "hue_hz", 1, 5)
 
@@ -70,7 +70,10 @@ const pipeline = device.createRenderPipeline({
 
 !function render(time) {
 	const circle_vertices = ({ speed, sectors, radius, sectus }) => {
+		const apothem = radius * cos(pi / sectors)
+
 		sectors > 16 && (sectors = 33)
+		sectus = Math.min(sectus, 0.98)
 		speed *= time
 
 		const vertices = sectors * 6
@@ -82,8 +85,8 @@ const pipeline = device.createRenderPipeline({
 			vertex_data.set([
 				cos_wave(i * tau / sectors, radius, 0, 1, -speed * 0.002),
 				sin_wave(i * tau / sectors, radius, 0, 1, -speed * 0.002),
-				cos_wave(i * tau / sectors, radius * sectus, 0, 1, -speed * 0.002),
-				sin_wave(i * tau / sectors, radius * sectus, 0, 1, -speed * 0.002),
+				cos_wave((i + sectus) * tau / sectors, apothem * 0.5, 0, 1, -speed * 0.002),
+				sin_wave((i + sectus) * tau / sectors, apothem * 0.5, 0, 1, -speed * 0.002),
 			], i * 4)
 
 			color_data.set([
@@ -91,7 +94,8 @@ const pipeline = device.createRenderPipeline({
 				1.0, 1.0, 1.0, null,
 			], i * 8)
 
-			if (i < sectors) index_data.set([0, 1, 2, 1, 2, 3].map(e => e + i * 2), i * 6)
+			// if (i < sectors) index_data.set([0, 1, 2, 1, 2, 3].map(e => e + i * 2), i * 6)
+			if (i < sectors) index_data.set([0, 1, 2, 0, 1, 2].map(e => e + i * 2), i * 6)
 		}
 
 		return {

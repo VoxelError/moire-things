@@ -4,7 +4,8 @@ struct VertexIn {
 	@location(1) color: vec4f,
 	@location(2) offset: vec2f,
 	@location(3) scale: vec2f,
-	@location(4) vertex_color: vec4f,
+	@location(4) shades: vec2f,
+	@location(5) vertex_color: vec4f,
 }
 
 struct VertexOut {
@@ -16,7 +17,9 @@ struct VertexOut {
 fn vertex_main(in: VertexIn) -> VertexOut {
     var out: VertexOut;
     out.pos = vec4f(in.pos * in.scale + in.offset, 0, 1);
-    out.color = in.color * in.vertex_color;
+    out.color = in.color * in.vertex_color * 255;
+    // out.color = in.color;
+    // out.color = in.color * vec4f(0.5, 0.5, 0.5, 0.5);
     return out;
 }
 
