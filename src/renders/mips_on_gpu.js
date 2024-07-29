@@ -2,18 +2,9 @@ import { mat4 } from 'https://webgpufundamentals.org/3rdparty/wgpu-matrix.module
 import shader from "../shaders/textures3.wgsl?raw"
 import shader2 from "../shaders/textures4.wgsl?raw"
 import { phi, tau } from "../util/math"
+import { setup } from '../util/helpers'
 
-const adapter = await navigator.gpu?.requestAdapter()
-const device = await adapter?.requestDevice()
-
-const canvas = document.createElement('canvas')
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
-document.body.append(canvas)
-
-const context = canvas.getContext('webgpu')
-const format = navigator.gpu.getPreferredCanvasFormat()
-context.configure({ device, format })
+const { canvas, context, device, format } = await setup()
 
 const module = device.createShaderModule({ code: shader })
 

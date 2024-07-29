@@ -1,15 +1,13 @@
-const adapter = await navigator.gpu?.requestAdapter()
-const device = await adapter?.requestDevice()
-!device && alert("Your browser does not support WebGPU")
+import { setup } from "../util/helpers"
+
+const { device } = await setup(false)
 
 const canvas = document.createElement('canvas')
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 document.body.append(canvas)
 
-const context = canvas.getContext('webgpu')
-const format = navigator.gpu.getPreferredCanvasFormat()
-context.configure({ device, format })
+const context = canvas.getContext("2d")
 
 const module = device.createShaderModule({
 	code: /* wgsl */`
@@ -35,7 +33,6 @@ const create_buffer = (array, flags) => (
 		usage: flags,
 	})
 )
-
 
 const input = new Float32Array([1, 3, 5])
 const workBuffer = create_buffer(input,
@@ -74,7 +71,13 @@ const bindGroup = device.createBindGroup({
 await resultBuffer.mapAsync(GPUMapMode.READ)
 const result = new Float32Array(resultBuffer.getMappedRange())
 
-console.log(String(input))
-console.log(String(result))
+context.font = "50px sans-serif"
+context.textAlign = "center"
+
+context.fillStyle = "green"
+context.fillText(String(input), canvas.width / 2, canvas.height / 2)
+
+context.fillStyle = "blue"
+context.fillText(String(result), canvas.width / 2, canvas.height / 2 + 50)
 
 resultBuffer.unmap()

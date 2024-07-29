@@ -1,21 +1,10 @@
+import { render_pass, setup } from "../../util/helpers"
 import compute from "./compute.wgsl?raw"
 import shader from "./render.wgsl?raw"
 
-// SETUP
+const { canvas, context, device, format } = await setup()
 
 const grid_size = 64
-
-const canvas = document.createElement("canvas")
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
-document.body.append(canvas)
-
-const adapter = await navigator.gpu.requestAdapter()
-const device = await adapter.requestDevice()
-const format = navigator.gpu.getPreferredCanvasFormat()
-
-const context = canvas.getContext("webgpu")
-context.configure({ device, format })
 
 // PIPELINE
 
@@ -34,33 +23,18 @@ const bind_group_layout = device.createBindGroupLayout({
 	]
 })
 
-const compute_pipeline = device.createComputePipeline({
-	layout: device.createPipelineLayout({ bindGroupLayouts: [bind_group_layout] }),
-	compute: {
-		module: device.createShaderModule({ code: compute }),
-		entryPoint: "compute_main",
-	}
-})
+const module = device.createShaderModule({ code: shader })
 
 const render_pipeline = device.createRenderPipeline({
 	layout: device.createPipelineLayout({ bindGroupLayouts: [bind_group_layout] }),
 	vertex: {
-		module: device.createShaderModule({ code: shader }),
-		entryPoint: "vertex_main",
+		module,
 		buffers: [{
 			arrayStride: 8,
-			attributes: [{
-				format: "float32x2",
-				offset: 0,
-				shaderLocation: 0
-			}]
+			attributes: [{ shaderLocation: 0, offset: 0, format: "float32x2" }]
 		}]
 	},
-	fragment: {
-		module: device.createShaderModule({ code: shader }),
-		entryPoint: "fragment_main",
-		targets: [{ format }]
-	}
+	fragment: { module, targets: [{ format }] }
 })
 
 // BUFFERS
@@ -119,24 +93,20 @@ const update = () => {
 	const encoder = device.createCommandEncoder()
 
 	const compute_pass = encoder.beginComputePass()
-	compute_pass.setPipeline(compute_pipeline)
+	compute_pass.setPipeline(device.createComputePipeline({
+		layout: device.createPipelineLayout({ bindGroupLayouts: [bind_group_layout] }),
+		compute: { module: device.createShaderModule({ code: compute }) }
+	}))
 	compute_pass.setBindGroup(0, bind_groups[step % 2])
 	compute_pass.dispatchWorkgroups(workgroup_count, workgroup_count)
 	compute_pass.end()
 
-	const colorAttachments = [{
-		view: context.getCurrentTexture().createView(),
-		loadOp: "clear",
-		clearValue: [0, 0, 0, 1],
-		storeOp: "store",
-	}]
-
-	const render_pass = encoder.beginRenderPass({ colorAttachments })
-	render_pass.setPipeline(render_pipeline)
-	render_pass.setBindGroup(0, bind_groups[step % 2])
-	render_pass.setVertexBuffer(0, vertex_buffer)
-	render_pass.draw(vertices.length / 2, grid_size ** 2)
-	render_pass.end()
+	const pass = render_pass(encoder, context, [0, 0, 0, 1])
+	pass.setPipeline(render_pipeline)
+	pass.setBindGroup(0, bind_groups[step % 2])
+	pass.setVertexBuffer(0, vertex_buffer)
+	pass.draw(vertices.length / 2, grid_size ** 2)
+	pass.end()
 
 	device.queue.submit([encoder.finish()])
 	step++
@@ -150,4 +120,4 @@ let counter = 0
 	requestAnimationFrame(render)
 }()
 
-// document.addEventListener("mousedown", update); update(); update()
+// canvas.addEventListener("mousedown", update); update(); update()

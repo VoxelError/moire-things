@@ -1,19 +1,9 @@
 import shader from "../shaders/textures.wgsl?raw"
 import { GUI } from "dat.gui"
 import image from "../f-texture.png"
+import { setup } from "../util/helpers"
 
-const adapter = await navigator.gpu?.requestAdapter()
-const device = await adapter?.requestDevice()
-!device && alert("Your browser does not support WebGPU")
-
-const canvas = document.createElement('canvas')
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
-document.body.append(canvas)
-
-const context = canvas.getContext('webgpu')
-const format = navigator.gpu.getPreferredCanvasFormat()
-context.configure({ device, format })
+const { canvas, context, device, format } = await setup()
 
 async function load_image_bitmap(url) {
 	const result = await fetch(url)

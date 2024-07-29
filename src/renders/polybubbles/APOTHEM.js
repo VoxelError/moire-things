@@ -118,7 +118,7 @@ const pipeline = device.createRenderPipeline({
 	const aspect = canvas.height / canvas.width
 	const speed = time * settings.speed
 
-	cursor.held && orb_list.push({
+	cursor.left_held && orb_list.push({
 		x: (cursor.x / canvas.width) * 2 - 1,
 		y: -((cursor.y / canvas.height) * 2 - 1),
 		delta: speed,

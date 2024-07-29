@@ -1,22 +1,12 @@
 import { mat4 } from 'https://webgpufundamentals.org/3rdparty/wgpu-matrix.module.js'
-import { cursor, listen } from "../util/controls"
 import shader from "../shaders/hall.wgsl?raw"
 import { array_mipmap, canvas_mipmap, texture_mipmap, mipmapped_texture } from "./mip2"
 import { degrees, tau } from "../util/math"
 import image from "../f-texture.png"
 import { GUI } from 'dat.gui'
+import { setup } from '../util/helpers'
 
-const adapter = await navigator.gpu?.requestAdapter()
-const device = await adapter?.requestDevice()
-
-const canvas = document.createElement('canvas')
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
-document.body.append(canvas)
-
-const context = canvas.getContext('webgpu')
-const format = navigator.gpu.getPreferredCanvasFormat()
-context.configure({ device, format })
+const { canvas, context, device, format } = await setup()
 
 const module = device.createShaderModule({ code: shader })
 
@@ -62,7 +52,7 @@ const settings = {
 
 let tex_index = 0
 
-function render() {
+const update = () => {
 	objectInfos.length = 0
 
 	for (let i = 0; i < 8; ++i) {
@@ -152,13 +142,14 @@ function render() {
 	device.queue.submit([encoder.finish()])
 }
 
-render()
+function render() {
+	update()
+}; render()
 
-listen(canvas)
-cursor.click = () => {
+canvas.addEventListener("mousedown", () => {
 	tex_index = (tex_index + 1) % textures.length
 	render()
-}
+})
 
 const gui = new GUI({ closeOnTop: true })
 gui.add(settings, "minFilter").onChange(render)

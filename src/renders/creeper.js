@@ -1,24 +1,31 @@
-import { sin, sin_wave } from "../util/math"
+import { sin_wave } from "../util/math"
 import shader from "../shaders/textures.wgsl?raw"
 import { GUI } from "dat.gui"
 import { gen_mips } from "./mip"
+import { render_pass, setup } from "../util/helpers"
 
-const adapter = await navigator.gpu?.requestAdapter()
-const device = await adapter?.requestDevice()
-!device && alert("Your browser does not support WebGPU")
+const { canvas, context, device, format } = await setup()
 
-const canvas = document.createElement('canvas')
 canvas.width = window.innerWidth / 64
 canvas.height = window.innerHeight / 64
 canvas.style.imageRendering = "pixelated"
-document.body.append(canvas)
 
-const context = canvas.getContext('webgpu')
-const format = navigator.gpu.getPreferredCanvasFormat()
-context.configure({ device, format })
+const settings = {
+	addressModeU: 'clamp-to-edge',
+	addressModeV: 'clamp-to-edge',
+	magFilter: 'linear',
+	minFilter: 'linear',
+	scale: 6,
+}
+
+const gui = new GUI({ closeOnTop: true })
+gui.add(settings, 'addressModeU', ['repeat', 'clamp-to-edge'])
+gui.add(settings, 'addressModeV', ['repeat', 'clamp-to-edge'])
+gui.add(settings, 'magFilter', ['nearest', 'linear'])
+gui.add(settings, 'minFilter', ['nearest', 'linear'])
+gui.add(settings, 'scale', 0.5, 6)
 
 const tex_width = 8
-const tex_height = 8
 const g = [0, 255, 0, 255]
 const x = [0, 0, 0, 255]
 export const creeper = new Uint8Array([
@@ -65,21 +72,6 @@ const uniform_buffer = device.createBuffer({
 	usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 })
 
-const settings = {
-	addressModeU: 'clamp-to-edge',
-	addressModeV: 'clamp-to-edge',
-	magFilter: 'linear',
-	minFilter: 'linear',
-	scale: 6,
-}
-
-const gui = new GUI({ closeOnTop: true })
-gui.add(settings, 'addressModeU', ['repeat', 'clamp-to-edge'])
-gui.add(settings, 'addressModeV', ['repeat', 'clamp-to-edge'])
-gui.add(settings, 'magFilter', ['nearest', 'linear'])
-gui.add(settings, 'minFilter', ['nearest', 'linear'])
-gui.add(settings, 'scale', 0.5, 6)
-
 const bind_groups = []
 
 for (let i = 0; i < 16; ++i) {
@@ -102,9 +94,7 @@ for (let i = 0; i < 16; ++i) {
 	bind_groups.push(bind_group)
 }
 
-console.log(canvas.height)
-
-function update(time) {
+!function render(time) {
 	const theta = sin_wave(time, 0.15, -0.34, 0.0005)
 
 	uniform_values.set([4 / canvas.width * settings.scale, 4 / canvas.height * settings.scale])
@@ -120,24 +110,14 @@ function update(time) {
 	)]
 
 	const encoder = device.createCommandEncoder()
+	const pass = render_pass(encoder, context, [0.2, 0.2, 0.2, 1])
 
-	const pass = encoder.beginRenderPass({
-		colorAttachments: [{
-			view: context.getCurrentTexture().createView(),
-			clearValue: [0.2, 0.2, 0.2, 1],
-			loadOp: "clear",
-			storeOp: "store",
-		}]
-	})
 	pass.setPipeline(pipeline)
 	pass.setBindGroup(0, bind_group)
 	pass.draw(6)
 	pass.end()
 
 	device.queue.submit([encoder.finish()])
-}
 
-!function render(time) {
-	update(time)
 	requestAnimationFrame(render)
 }()

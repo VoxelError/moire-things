@@ -1,23 +1,29 @@
 export const cursor = {
 	x: 0,
 	y: 0,
-	button: "",
-	click: () => { },
-	held: false,
 	show: true,
 }
 
 export const listen = (canvas) => {
 	canvas.addEventListener("mousedown", (event) => {
-		if (event.button == 0) { cursor.button = "left" }
-		if (event.button == 1) { cursor.button = "middle" }
-		if (event.button == 2) { cursor.button = "right" }
-		cursor.held = true
-		cursor.click()
+		event.button == 0 && (cursor.left_held = true)
+		event.button == 2 && (cursor.right_held = true)
+
+		event.button == 0 && cursor.left_click()
+		event.button == 2 && cursor.right_click()
+
+		cursor.left_click = () => { }
+		cursor.right_click = () => { }
 	})
-	canvas.addEventListener("mouseup", () => {
-		cursor.button = ""
-		cursor.held = false
+	canvas.addEventListener("mouseup", (event) => {
+		cursor.left_held = false
+		cursor.right_held = false
+
+		event.button == 0 && cursor.left_up()
+		event.button == 2 && cursor.right_up()
+
+		cursor.left_up = () => { }
+		cursor.right_up = () => { }
 	})
 	canvas.addEventListener("mousemove", (event) => {
 		cursor.x = event.offsetX
@@ -25,7 +31,8 @@ export const listen = (canvas) => {
 	})
 	canvas.addEventListener("mouseover", () => cursor.show = true)
 	canvas.addEventListener("mouseleave", () => {
-		cursor.held = false
+		cursor.left_held = false
+		cursor.right_held = false
 		cursor.show = false
 	})
 	canvas.addEventListener("wheel", (event) => {
