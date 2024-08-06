@@ -71,14 +71,12 @@ const bind_group = device.createBindGroup({
 	entries: bind_entries([device.createSampler(), texture.createView()])
 })
 
-!function render() {
-	const encoder = device.createCommandEncoder()
-	const pass = render_pass(encoder, context, [0.2, 0.2, 0.2, 1])
+const encoder = device.createCommandEncoder()
+const pass = render_pass(encoder, context, [0.2, 0.2, 0.2, 1])
 
-	pass.setPipeline(pipeline)
-	pass.setBindGroup(0, bind_group)
-	pass.draw(6)
-	pass.end()
+pass.setPipeline(pipeline)
+pass.setBindGroup(0, bind_group)
+pass.draw(6)
+pass.end()
 
-	device.queue.submit([encoder.finish()])
-}()
+device.queue.submit([encoder.finish()])

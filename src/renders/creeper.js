@@ -28,7 +28,7 @@ gui.add(settings, 'scale', 0.5, 6)
 const tex_width = 8
 const g = [0, 255, 0, 255]
 const x = [0, 0, 0, 255]
-export const creeper = new Uint8Array([
+const creeper = new Uint8Array([
 	g, g, g, g, g, g, g, g,
 	g, x, x, g, g, x, x, g,
 	g, x, x, g, g, x, x, g,
