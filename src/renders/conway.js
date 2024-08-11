@@ -2,10 +2,23 @@ import { render_pass } from "../util/helpers"
 import shader from "../shaders/conway.wgsl?raw"
 
 export default (props) => {
+
 	// SETUP
 	// ======================================================================== //
 
-	const { canvas, context, device, format, gui } = props
+	const { canvas, context, device, queue, format, gui } = props
+
+	const settings = {
+		restart,
+	}
+	gui.remember(settings)
+	gui.add(settings, "restart")
+
+	function restart() {
+		const array = new Uint32Array(grid_size ** 2).map(e => e = Math.random() > 0.55 ? 1 : 0)
+		queue.writeBuffer(cell_state_storage[0], 0, array)
+		queue.writeBuffer(cell_state_storage[1], 0, array)
+	}
 
 	const aspect = canvas.height / canvas.width
 	const grid_size = 160
@@ -56,10 +69,10 @@ export default (props) => {
 	const cell_state_storage = create_storage(cell_state_array)
 	const cell_neighbor_storage = create_storage(cell_neighbor_array)
 
-	device.queue.writeBuffer(vertex_buffer, 0, vertices)
-	device.queue.writeBuffer(uniform_buffer, 0, new Float32Array([grid_size, grid_size * aspect]))
-	device.queue.writeBuffer(cell_state_storage[0], 0, cell_state_array)
-	device.queue.writeBuffer(cell_neighbor_storage[0], 0, cell_neighbor_array)
+	queue.writeBuffer(vertex_buffer, 0, vertices)
+	queue.writeBuffer(uniform_buffer, 0, new Float32Array([grid_size, grid_size * aspect]))
+	queue.writeBuffer(cell_state_storage[0], 0, cell_state_array)
+	queue.writeBuffer(cell_neighbor_storage[0], 0, cell_neighbor_array)
 
 	const bind_groups = [
 		device.createBindGroup({
@@ -109,7 +122,7 @@ export default (props) => {
 		pass.draw(vertices.length / 2, grid_size ** 2)
 		pass.end()
 
-		device.queue.submit([encoder.finish()])
+		queue.submit([encoder.finish()])
 
 		step++
 

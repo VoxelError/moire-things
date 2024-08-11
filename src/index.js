@@ -11,7 +11,7 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 listen(canvas)
 
-const settings = { mode: get_storage("mode", Object.keys(modes)[3]) }
+const settings = { mode: get_storage("mode", Object.keys(modes)[4]) }
 let gui
 
 const render = async () => {
@@ -26,8 +26,8 @@ const render = async () => {
 	gui = new GUI({ closeOnTop: true })
 	gui.useLocalStorage = true
 	gui.domElement.style.userSelect = "none"
-
 	set_storage("mode", settings.mode)
+
 	const handle = modes[settings.mode]({
 		canvas,
 		context,
