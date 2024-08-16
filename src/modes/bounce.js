@@ -1,36 +1,14 @@
 import { cursor } from "../util/controls.js"
-import { get_storage, render_pass, set_storage } from "../util/helpers.js"
-import { abs, cos, cos_wave, phi, pi, tau } from "../util/math.js"
-import shader from "../shaders/teeth.wgsl?raw"
+import { render_pass } from "../util/helpers.js"
+import { abs, cos, cos_wave, sin, tau } from "../util/math.js"
+import shader from "../shaders/bounce.wgsl?raw"
 
 export default (props) => {
 	const { canvas, context, device, queue, format, gui } = props
 
-	const points = get_storage("points", [])
+	const points = []
 
-	const settings = {
-		clear: () => points.length = 0,
-		undo: () => points.pop(),
-		reset,
-		radius: 1,
-		teeth: 16,
-	}
-	gui.remember(settings)
-
-	function reset() {
-		settings.radius = 1
-		settings.teeth = 16
-		gui.updateDisplay()
-	}
-
-	gui.add(settings, "clear")
-	gui.add(settings, "undo")
-	gui.add(settings, "reset").name("reset values")
-	gui.add(settings, "radius", 0.5, 1.5, 0.01)
-	gui.add(settings, "teeth", 3, 16, 1)
-	// gui.add(settings, "hue_hz", 1, 5)
-
-	const props_stride = 36
+	const props_stride = 40
 
 	const pipeline = device.createRenderPipeline({
 		layout: "auto",
@@ -44,8 +22,8 @@ export default (props) => {
 					attributes: [
 						{ shaderLocation: 1, offset: 0, format: 'float32x2' },
 						{ shaderLocation: 2, offset: 8, format: 'float32x2' },
-						{ shaderLocation: 3, offset: 16, format: 'float32' },
-						{ shaderLocation: 4, offset: 20, format: 'float32x4' },
+						{ shaderLocation: 3, offset: 16, format: 'float32x2' },
+						{ shaderLocation: 4, offset: 24, format: 'float32x4' },
 					]
 				}
 			]
@@ -58,12 +36,12 @@ export default (props) => {
 					color: {
 						operation: 'add',
 						srcFactor: 'one',
-						dstFactor: 'zero',
+						dstFactor: 'one-minus-src-alpha',
 					},
 					alpha: {
 						operation: 'add',
 						srcFactor: 'one',
-						dstFactor: 'zero',
+						dstFactor: 'one-minus-src-alpha',
 					},
 				}
 			}]
@@ -71,8 +49,9 @@ export default (props) => {
 		// primitive: { topology: "line-list" },
 	})
 
-	const render = (time) => {
-		const vertices = settings.teeth * 6
+	return () => {
+		const sectors = 16
+		const vertices = sectors * 6
 		const index_data = new Uint32Array(vertices)
 		const vertex_data = new Float32Array(vertices * 2)
 
@@ -81,33 +60,27 @@ export default (props) => {
 
 		const aspect = canvas.height / canvas.width
 
-		const add_orb = () => points.push({
-			x: (cursor.x / canvas.width) * 2 - 1,
-			y: -((cursor.y / canvas.height) * 2 - 1),
-			delta: time,
-		})
+		cursor.left_click = () => {
+			const amount = 250
+			for (let i = 0; i < amount; i++) {
+				points[i] = {
+					x: (cursor.x / canvas.width) * 2 - 1,
+					y: -((cursor.y / canvas.height) * 2 - 1),
+					vx: cos(i * tau / amount) * 0.01 * aspect,
+					vy: sin(i * tau / amount) * 0.01,
+				}
+			}
+		}
 
-		cursor.left_held && add_orb()
-		cursor.right_click = add_orb
-
-		set_storage("points", points)
-
-		for (let i = 0; i <= settings.teeth; i++) {
-			const radius = settings.radius
-			const apothem = radius * cos(pi / settings.teeth)
-			const ratio = tau / settings.teeth;
-			const delta = (offset) => (i + offset) * ratio + time * 0.001;
-			const chomp = abs(cos_wave(time, 0.5, 0, 0.0025))
+		for (let i = 0; i <= sectors; i++) {
+			const ratio = i * tau / sectors;
 
 			vertex_data.set([
-				delta(0),
-				radius,
-				delta(0.5),
-				apothem * chomp,
-				// apothem * delta(0),
+				ratio, 1,
+				ratio, 0,
 			], i * 4)
 
-			if (i < settings.teeth) index_data.set([0, 1, 2, 0, 1, 2].map(e => e + i * 2), i * 6)
+			if (i < sectors) index_data.set([0, 1, 2, 1, 2, 3].map(e => e + i * 2), i * 6)
 		}
 
 		queue.writeBuffer(vertex_buffer, 0, vertex_data)
@@ -116,15 +89,19 @@ export default (props) => {
 		const instance_buffer = device.createBuffer({ size: props_stride * points.length, usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST })
 		const instance_values = new Float32Array(props_stride / 4 * points.length)
 
-		points.forEach((orb, i) => {
-			orb.scale = cos_wave(time - orb.delta, 0.025, 0.2, 0.0025)
-			orb.lightness = cos_wave(time - orb.delta, 0.15, 0.7, 0.0025)
+		points.forEach((bounce, i) => {
+			bounce.radius = 0.015
+
+			bounce.x += bounce.vx
+			bounce.y += bounce.vy
+			abs(bounce.x) > 1 - bounce.radius / 2 && (bounce.vx *= -1)
+			abs(bounce.y) > 1 - bounce.radius / 2 && (bounce.vy *= -1)
 
 			instance_values.set([
-				[orb.x, orb.y],
-				[orb.scale, aspect],
-				[orb.delta * 0.0025],
-				[0.7, 0.5, orb.lightness, 1],
+				[bounce.x, bounce.y],
+				[bounce.radius, aspect],
+				[bounce.vx, bounce.vy],
+				[i / points.length, 1, 0.5, 0.5],
 			].flat(), i * props_stride / 4)
 		})
 
@@ -141,8 +118,5 @@ export default (props) => {
 		pass.end()
 
 		queue.submit([encoder.finish()])
-
-		return requestAnimationFrame(render)
 	}
-	return render()
 }

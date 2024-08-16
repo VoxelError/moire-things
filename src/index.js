@@ -12,9 +12,10 @@ canvas.height = window.innerHeight
 listen(canvas)
 
 const settings = { mode: get_storage("mode", Object.keys(modes)[4]) }
+let frame = () => { }
 let gui
 
-const render = async () => {
+const setup = async () => {
 	const format = navigator.gpu.getPreferredCanvasFormat()
 	const adapter = await navigator.gpu.requestAdapter()
 	const device = await adapter.requestDevice()
@@ -28,7 +29,7 @@ const render = async () => {
 	gui.domElement.style.userSelect = "none"
 	set_storage("mode", settings.mode)
 
-	const handle = modes[settings.mode]({
+	frame = modes[settings.mode]({
 		canvas,
 		context,
 		device,
@@ -38,11 +39,13 @@ const render = async () => {
 	})
 
 	gui.add(settings, "mode", Object.keys(modes)).onChange(() => {
-		cancelAnimationFrame(handle)
 		device.destroy()
 		gui.destroy()
-		render()
+		setup()
 	})
-}; render()
+}; setup()
 
-// to-do: clear points on mode select
+const render = (time) => {
+	frame(time)
+	requestAnimationFrame(render)
+}; render()

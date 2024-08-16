@@ -11,7 +11,7 @@ export default (props) => {
 		fragment: { module, targets: [{ format }] },
 	})
 
-	const render = () => {
+	return () => {
 		const encoder = device.createCommandEncoder()
 
 		const pass = encoder.beginRenderPass({
@@ -27,10 +27,7 @@ export default (props) => {
 		pass.end()
 
 		device.queue.submit([encoder.finish()])
-
-		return requestAnimationFrame(render)
 	}
-	return render()
 }
 
 // make it scroll?

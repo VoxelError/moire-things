@@ -21,7 +21,7 @@ export default (props) => {
 	}
 
 	const aspect = canvas.height / canvas.width
-	const grid_size = 160
+	const grid_size = 1000
 
 	const ALL_STAGES = GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE | GPUShaderStage.FRAGMENT
 	const COMP_STAGE = GPUShaderStage.COMPUTE
@@ -103,7 +103,7 @@ export default (props) => {
 	let step = 0
 	const workgroup_count = Math.ceil(grid_size / 8)
 
-	const update = () => {
+	return () => {
 		const encoder = device.createCommandEncoder()
 
 		const compute_pass = encoder.beginComputePass()
@@ -125,8 +125,5 @@ export default (props) => {
 		queue.submit([encoder.finish()])
 
 		step++
-
-		return requestAnimationFrame(update)
 	}
-	return update()
 }

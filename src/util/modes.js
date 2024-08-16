@@ -1,10 +1,12 @@
-import teeth from "../renders/teeth"
-import bubbles from "../renders/bubbles"
-import conway from "../renders/conway"
-import rainbow from "../renders/rainbow"
-import starfield from "../renders/starfield"
+import bounce from "../modes/bounce"
+import bubbles from "../modes/bubbles"
+import conway from "../modes/conway"
+import rainbow from "../modes/rainbow"
+import starfield from "../modes/starfield"
+import teeth from "../modes/teeth"
 
 export default {
+	bounce,
 	bubbles,
 	conway,
 	rainbow,

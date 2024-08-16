@@ -1,42 +1,33 @@
 import { cursor } from "../util/controls.js"
-import { get_storage, render_pass, set_storage, setup } from "../util/helpers.js"
-import { abs, cos_wave, tau } from "../util/math.js"
-import shader from "../shaders/bubbles.wgsl?raw"
+import { render_pass } from "../util/helpers.js"
+import { abs, cos, cos_wave, phi, pi, tau } from "../util/math.js"
+import shader from "../shaders/teeth.wgsl?raw"
 
 export default (props) => {
 	const { canvas, context, device, queue, format, gui } = props
 
-	const points = get_storage("points", [])
+	const points = []
 
 	const settings = {
 		clear: () => points.length = 0,
 		undo: () => points.pop(),
 		reset,
-		colors: false,
-		speed: 1,
 		radius: 1,
-		sectus: 0.5,
-		sectors: 8,
+		teeth: 16,
 	}
 	gui.remember(settings)
 
 	function reset() {
-		settings.colors = false
-		settings.speed = 1
 		settings.radius = 1
-		settings.sectus = 0.5
-		settings.sectors = 8
+		settings.teeth = 16
 		gui.updateDisplay()
 	}
 
 	gui.add(settings, "clear")
 	gui.add(settings, "undo")
 	gui.add(settings, "reset").name("reset values")
-	gui.add(settings, "colors")
-	gui.add(settings, "speed", 0, 2, 0.01).name("time_multiplier")
 	gui.add(settings, "radius", 0.5, 1.5, 0.01)
-	gui.add(settings, "sectus", 0, 0.99, 0.01)
-	gui.add(settings, "sectors", 3, 33, 1)
+	gui.add(settings, "teeth", 3, 16, 1)
 	// gui.add(settings, "hue_hz", 1, 5)
 
 	const props_stride = 36
@@ -67,12 +58,12 @@ export default (props) => {
 					color: {
 						operation: 'add',
 						srcFactor: 'one',
-						dstFactor: 'one-minus-src-alpha',
+						dstFactor: 'zero',
 					},
 					alpha: {
 						operation: 'add',
 						srcFactor: 'one',
-						dstFactor: 'one-minus-src-alpha',
+						dstFactor: 'zero',
 					},
 				}
 			}]
@@ -80,8 +71,8 @@ export default (props) => {
 		// primitive: { topology: "line-list" },
 	})
 
-	const render = (time) => {
-		const vertices = settings.sectors * 6
+	return (time) => {
+		const vertices = settings.teeth * 6
 		const index_data = new Uint32Array(vertices)
 		const vertex_data = new Float32Array(vertices * 2)
 
@@ -89,26 +80,32 @@ export default (props) => {
 		const index_buffer = device.createBuffer({ size: index_data.byteLength, usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST })
 
 		const aspect = canvas.height / canvas.width
-		const speed = time * settings.speed
 
-		const add_point = () => points.push({
+		const add_orb = () => points.push({
 			x: (cursor.x / canvas.width) * 2 - 1,
 			y: -((cursor.y / canvas.height) * 2 - 1),
-			delta: speed,
+			delta: time,
 		})
 
-		cursor.left_held && add_point()
-		cursor.right_click = add_point
+		cursor.left_held && add_orb()
+		cursor.right_click = add_orb
 
-		set_storage("points", points)
+		for (let i = 0; i <= settings.teeth; i++) {
+			const radius = settings.radius
+			const apothem = radius * cos(pi / settings.teeth)
+			const ratio = tau / settings.teeth;
+			const delta = (offset) => (i + offset) * ratio + time * 0.001;
+			const chomp = abs(cos_wave(time, 0.5, 0, 0.0025))
 
-		for (let i = 0; i <= settings.sectors; i++) {
-			const ratio = i * tau / settings.sectors;
-			const delta = ratio + settings.speed * time * 0.002;
+			vertex_data.set([
+				delta(0),
+				radius,
+				delta(0.5),
+				apothem * chomp,
+				// apothem * delta(0),
+			], i * 4)
 
-			vertex_data.set([delta, settings.radius, delta, settings.radius * settings.sectus], i * 4)
-
-			if (i < settings.sectors) index_data.set([0, 1, 2, 1, 2, 3].map(e => e + i * 2), i * 6)
+			if (i < settings.teeth) index_data.set([0, 1, 2, 0, 1, 2].map(e => e + i * 2), i * 6)
 		}
 
 		queue.writeBuffer(vertex_buffer, 0, vertex_data)
@@ -117,17 +114,15 @@ export default (props) => {
 		const instance_buffer = device.createBuffer({ size: props_stride * points.length, usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST })
 		const instance_values = new Float32Array(props_stride / 4 * points.length)
 
-		points.forEach((bubble, i) => {
-			const saturation = settings.colors ? 1 : 0
-
-			bubble.color = cos_wave(speed - bubble.delta, -0.5, 0.5, 0.0005)
-			bubble.scale = abs(cos_wave(speed - bubble.delta, 0.2, 0, 0.0025))
+		points.forEach((orb, i) => {
+			orb.scale = cos_wave(time - orb.delta, 0.025, 0.2, 0.0025)
+			orb.lightness = cos_wave(time - orb.delta, 0.15, 0.7, 0.0025)
 
 			instance_values.set([
-				[bubble.x, bubble.y],
-				[bubble.scale, aspect],
-				[bubble.delta * 0.005],
-				[bubble.color, saturation, 0.5, 0.5],
+				[orb.x, orb.y],
+				[orb.scale, aspect],
+				[orb.delta * 0.0025],
+				[0.7, 0.5, orb.lightness, 1],
 			].flat(), i * props_stride / 4)
 		})
 
@@ -144,8 +139,5 @@ export default (props) => {
 		pass.end()
 
 		queue.submit([encoder.finish()])
-
-		return requestAnimationFrame(render)
 	}
-	return render()
 }
