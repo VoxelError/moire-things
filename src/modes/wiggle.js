@@ -1,7 +1,7 @@
 import { cursor } from "../util/controls.js"
-import { get_storage, render_pass, set_storage } from "../util/helpers.js"
-import { abs, cos, cos_wave, sin, tau } from "../util/math.js"
-import shader from "../shaders/bounce.wgsl?raw"
+import { render_pass } from "../util/helpers.js"
+import { abs, cos, sign, sin, tau } from "../util/math.js"
+import shader from "../shaders/wiggle.wgsl?raw"
 
 export default (props) => {
 	const { canvas, context, device, queue, format, points, gui } = props
@@ -49,6 +49,11 @@ export default (props) => {
 		// primitive: { topology: "line-list" },
 	})
 
+	const pin = {
+		x: 0,
+		y: 0,
+	}
+
 	const sectors = 16
 	const vertices = sectors * 6
 	const index_data = new Uint32Array(vertices)
@@ -64,36 +69,30 @@ export default (props) => {
 
 		vertex_data.set([
 			ratio, 1,
-			ratio, 0.95,
+			ratio, 0,
 		], i * 4)
 
 		if (i < sectors) index_data.set([0, 1, 2, 1, 2, 3].map(e => e + i * 2), i * 6)
 	}
 
-	queue.writeBuffer(vertex_buffer, 0, vertex_data)
-	queue.writeBuffer(index_buffer, 0, index_data)
+	const gravity = 9.8
+	const damping = 0.9
+	const traction = 0.8
 
 	return () => {
 		cursor.left_click = () => {
-			const max = 500
+			const max = 2
 
 			for (let i = 0; i < max; i++) {
 				points[i] = {
 					x: (cursor.x / canvas.width) * 2 - 1,
 					y: -((cursor.y / canvas.height) * 2 - 1),
-					vx: cos(i * tau / max) * 0.01 * aspect,
-					vy: sin(i * tau / max) * 0.01,
-					hue: i / max,
+					vx: 0,
+					vy: 0,
+					animate: false,
 				}
 			}
 		}
-
-		// cursor.right_click = () => {
-		// 	points.forEach((bounce) => {
-		// 		bounce.vx *= -1
-		// 		bounce.vy *= -1
-		// 	})
-		// }
 
 		queue.writeBuffer(vertex_buffer, 0, vertex_data)
 		queue.writeBuffer(index_buffer, 0, index_data)
@@ -104,17 +103,44 @@ export default (props) => {
 		points.forEach((bounce, i) => {
 			bounce.radius = 0.05
 
-			bounce.x += bounce.vx
-			bounce.y += bounce.vy
+			bounce.animate = cursor.left_held ? false : true
 
-			abs(bounce.x) > 1 - bounce.radius && (bounce.vx *= -1)
-			abs(bounce.y) > 1 - bounce.radius && (bounce.vy *= -1)
+			if (cursor.left_held) {
+				pin.x = (cursor.x / canvas.width) * 2 - 1
+				pin.y = -((cursor.y / canvas.height) * 2 - 1)
+
+				bounce.animate = false
+			}
+
+			(cursor.left_release = (pin) => {
+				bounce.vx -= bounce.x - pin.x
+				bounce.vy -= bounce.y - pin.y
+
+				bounce.animate = true
+			})(pin)
+
+			if (bounce.animate) {
+				bounce.vy -= (gravity / 60) / 66
+
+				bounce.x += bounce.vx
+				bounce.y += bounce.vy
+
+				if (abs(bounce.x) > 1 - bounce.radius) {
+					bounce.vx *= -damping
+					bounce.x = sign(bounce.x) * (1 - bounce.radius)
+				}
+				if (abs(bounce.y) > 1 - bounce.radius) {
+					bounce.vy *= -damping
+					bounce.y = sign(bounce.y) * (1 - bounce.radius)
+					if (sign(bounce.y) < 0) bounce.vx *= traction
+				}
+			}
 
 			instance_values.set([
 				[bounce.x, bounce.y],
 				[bounce.radius, aspect],
 				[bounce.vx, bounce.vy],
-				[bounce.hue, 1, 0.5, 0.5],
+				[0, 1, 0.5, 0.5],
 			].flat(), i * props_stride / 4)
 		})
 

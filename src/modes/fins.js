@@ -1,12 +1,15 @@
 import { cursor } from "../util/controls.js"
 import { get_storage, render_pass, set_storage } from "../util/helpers.js"
-import { abs, cos, cos_wave, sin, tau } from "../util/math.js"
-import shader from "../shaders/bounce.wgsl?raw"
+import shader from "../shaders/fins.wgsl?raw"
 
 export default (props) => {
 	const { canvas, context, device, queue, format, points, gui } = props
 
-	gui.add({ clear: () => points.length = 0 }, "clear")
+	const settings = {
+		clear: () => points.length = 0
+	}
+
+	gui.add(settings, "clear")
 
 	const props_stride = 40
 
@@ -15,17 +18,18 @@ export default (props) => {
 		vertex: {
 			module: device.createShaderModule({ code: shader }),
 			buffers: [
-				{ arrayStride: 8, attributes: [{ shaderLocation: 0, offset: 0, format: 'float32x2' }] },
 				{
 					arrayStride: props_stride,
 					stepMode: 'instance',
 					attributes: [
-						{ shaderLocation: 1, offset: 0, format: 'float32x2' },
-						{ shaderLocation: 2, offset: 8, format: 'float32x2' },
-						{ shaderLocation: 3, offset: 16, format: 'float32x2' },
-						{ shaderLocation: 4, offset: 24, format: 'float32x4' },
+						{ shaderLocation: 0, offset: 0, format: 'float32x2' },
+						{ shaderLocation: 1, offset: 8, format: 'float32x2' },
+						{ shaderLocation: 2, offset: 16, format: 'float32x4' },
+						{ shaderLocation: 3, offset: 32, format: 'float32x2' },
 					]
-				}
+				},
+				{ arrayStride: 8, attributes: [{ shaderLocation: 4, offset: 0, format: 'float32x2' }] },
+				// { arrayStride: 8, attributes: [{ shaderLocation: 5, offset: 0, format: 'float32x2' }] },
 			]
 		},
 		fragment: {
@@ -45,76 +49,52 @@ export default (props) => {
 					},
 				}
 			}]
-		},
-		// primitive: { topology: "line-list" },
+		}
 	})
 
-	const sectors = 16
-	const vertices = sectors * 6
+	const vertices = 12
 	const index_data = new Uint32Array(vertices)
 	const vertex_data = new Float32Array(vertices * 2)
+
+	vertex_data.set([
+		+0.05, +2,
+		-0.05, +2,
+		+0.05, -2,
+		-0.05, -2,
+	])
+	index_data.set([
+		0, 1, 2,
+		1, 2, 3,
+	])
 
 	const vertex_buffer = device.createBuffer({ size: vertex_data.byteLength, usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST })
 	const index_buffer = device.createBuffer({ size: index_data.byteLength, usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST })
 
-	const aspect = canvas.height / canvas.width
-
-	for (let i = 0; i <= sectors; i++) {
-		const ratio = i * tau / sectors
-
-		vertex_data.set([
-			ratio, 1,
-			ratio, 0.95,
-		], i * 4)
-
-		if (i < sectors) index_data.set([0, 1, 2, 1, 2, 3].map(e => e + i * 2), i * 6)
-	}
-
 	queue.writeBuffer(vertex_buffer, 0, vertex_data)
 	queue.writeBuffer(index_buffer, 0, index_data)
 
-	return () => {
-		cursor.left_click = () => {
-			const max = 500
+	const aspect = canvas.height / canvas.width
 
-			for (let i = 0; i < max; i++) {
-				points[i] = {
-					x: (cursor.x / canvas.width) * 2 - 1,
-					y: -((cursor.y / canvas.height) * 2 - 1),
-					vx: cos(i * tau / max) * 0.01 * aspect,
-					vy: sin(i * tau / max) * 0.01,
-					hue: i / max,
-				}
-			}
+	return (time) => {
+		if (cursor.left_held) {
+			points.push({
+				x: (cursor.x / canvas.width) * 2 - 1,
+				y: -((cursor.y / canvas.height) * 2 - 1),
+				delta: time,
+			})
 		}
-
-		// cursor.right_click = () => {
-		// 	points.forEach((bounce) => {
-		// 		bounce.vx *= -1
-		// 		bounce.vy *= -1
-		// 	})
-		// }
-
-		queue.writeBuffer(vertex_buffer, 0, vertex_data)
-		queue.writeBuffer(index_buffer, 0, index_data)
 
 		const instance_buffer = device.createBuffer({ size: props_stride * points.length, usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST })
 		const instance_values = new Float32Array(props_stride / 4 * points.length)
 
-		points.forEach((bounce, i) => {
-			bounce.radius = 0.05
-
-			bounce.x += bounce.vx
-			bounce.y += bounce.vy
-
-			abs(bounce.x) > 1 - bounce.radius && (bounce.vx *= -1)
-			abs(bounce.y) > 1 - bounce.radius && (bounce.vy *= -1)
+		points.forEach((orb, i) => {
+			orb.radius = 0.1
 
 			instance_values.set([
-				[bounce.x, bounce.y],
-				[bounce.radius, aspect],
-				[bounce.vx, bounce.vy],
-				[bounce.hue, 1, 0.5, 0.5],
+				[orb.x, orb.y],
+				[orb.radius, aspect],
+				[orb.delta * 0.001 % 1, 0.5, 0.5, 0.5],
+				[time, orb.delta],
 			].flat(), i * props_stride / 4)
 		})
 
@@ -124,8 +104,8 @@ export default (props) => {
 		const pass = render_pass(encoder, context, [0, 0, 0, 1])
 
 		pass.setPipeline(pipeline)
-		pass.setVertexBuffer(0, vertex_buffer)
-		pass.setVertexBuffer(1, instance_buffer)
+		pass.setVertexBuffer(0, instance_buffer)
+		pass.setVertexBuffer(1, vertex_buffer)
 		pass.setIndexBuffer(index_buffer, 'uint32')
 		pass.drawIndexed(vertices, points.length)
 		pass.end()

@@ -4,7 +4,14 @@ import { abs, cos, phi, rng, sign, sin, tau } from "../util/math.js"
 import shader from "../shaders/starfield.wgsl?raw"
 
 export default (props) => {
-	const { canvas, context, device, queue, format, gui } = props
+	const { canvas, context, device, queue, format, points, gui } = props
+
+	for (let i = 0; i < 100; i++) {
+		points.push({
+			x: rng(2, -1),
+			y: rng(2, -1),
+		})
+	}
 
 	const settings = { speed: 1 }
 	gui.add(settings, "speed", 1, 2, 0.01)
@@ -34,15 +41,6 @@ export default (props) => {
 		},
 		// primitive: { topology: "line-list" },
 	})
-
-	const points = []
-
-	for (let i = 0; i < 100; i++) {
-		points.push({
-			x: rng(2, -1),
-			y: rng(2, -1),
-		})
-	}
 
 	return (time) => {
 		const vertices = 6

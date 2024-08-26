@@ -7,13 +7,23 @@ import { get_storage, set_storage } from "./util/helpers.js"
 !navigator.gpu && alert("Your browser does not support WebGPU")
 
 const canvas = document.getElementById("webgpu_canvas")
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
+canvas.width = canvas.clientWidth
+canvas.height = canvas.clientHeight
 listen(canvas)
 
-const settings = { mode: get_storage("mode", Object.keys(modes)[4]) }
+const settings = { mode: get_storage("mode", Object.keys(modes)[0]) }
 let frame = () => { }
 let gui
+
+const points = get_storage("points", [])
+
+const mode_selector = document.querySelector(".mode-selector")
+for (const mode of Object.keys(modes)) {
+	const option = document.createElement("option")
+	option.value = mode
+	option.textContent = mode
+	mode_selector.appendChild(option)
+}
 
 const setup = async () => {
 	const format = navigator.gpu.getPreferredCanvasFormat()
@@ -35,17 +45,23 @@ const setup = async () => {
 		device,
 		queue,
 		format,
+		points,
 		gui,
 	})
 
-	gui.add(settings, "mode", Object.keys(modes)).onChange(() => {
+	const mode_select = gui.add(settings, "mode", Object.keys(modes))
+
+	mode_select.onChange(() => {
 		device.destroy()
 		gui.destroy()
+		points.length = 0
+		set_storage("points", points)
 		setup()
 	})
 }; setup()
 
 const render = (time) => {
 	frame(time)
+	set_storage("points", points)
 	requestAnimationFrame(render)
 }; render()

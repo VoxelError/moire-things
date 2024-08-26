@@ -3,8 +3,8 @@ struct VertexIn {
 	@location(0) pos: vec2f,
 	@location(1) offset: vec2f,
 	@location(2) scale: vec2f,
-	@location(3) rotation: f32,
-	@location(4) color: vec4f,
+	@location(3) color: vec4f,
+	@location(4) delta: vec2f,
 }
 
 struct VertexOut {
@@ -29,17 +29,16 @@ fn hsl(h: f32, s: f32, l: f32, a: f32) -> vec4f {
     return vec4f((point + m) * a, a);
 }
 
-fn radial(in: vec2f, rot: f32) -> vec2f {
+fn radial(in: vec2f, delta: f32) -> vec2f {
     return vec2f(
-        cos(in.x - rot) * in.y,
-        sin(in.x - rot) * in.y,
+        cos(in.x) * in.y * delta,
+        sin(in.x) * in.y * delta,
     );
 }
 
 @vertex
 fn vertex_main(in: VertexIn) -> VertexOut {
     let scale = vec2f(in.scale.x * in.scale.y, in.scale.x);
-    let props = radial(in.pos, in.rotation) * scale + in.offset;
     let color = hsl(
         in.color.x,
         in.color.y,
@@ -47,11 +46,22 @@ fn vertex_main(in: VertexIn) -> VertexOut {
         in.color.w,
     );
 
+    // let theta = atan2(props.y, props.x);
+    let theta = (in.delta.x - in.delta.y) * 0.005;
+
+    // let offset = radial(vec2f(theta * 0.0015, 0.1)) + in.offset;
+    let radius = vec2f(0.1 * in.scale.y, 0.1);
+    let offset = vec2f(
+        sin(theta),
+        cos(theta),
+    ) * radius + vec2f(in.offset.x, in.offset.y - radius.y);
+    let props = radial(in.pos, theta) * scale + in.offset;
+
     var out: VertexOut;
     out.pos = vec4f(props, 0, 1);
     out.color = select(
         color,
-        color * vec4f(0.25),
+        color * vec4f(0.25, 0.25, 0.25, 0),
         in.vertex % 2 == 0,
     );
     return out;

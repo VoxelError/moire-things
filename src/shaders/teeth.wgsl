@@ -1,9 +1,13 @@
+const phi = radians(90.);
+const pi = radians(180.);
+const tau = radians(360.);
+
 struct VertexIn {
 	@builtin(vertex_index) vertex: u32,
 	@location(0) pos: vec2f,
 	@location(1) offset: vec2f,
 	@location(2) scale: vec2f,
-	@location(3) rotation: f32,
+	@location(3) rotation: vec2f,
 	@location(4) color: vec4f,
 }
 
@@ -38,12 +42,28 @@ fn radial(in: vec2f, rot: f32) -> vec2f {
 
 @vertex
 fn vertex_main(in: VertexIn) -> VertexOut {
-    let scale = vec2f(in.scale.x * in.scale.y, in.scale.x);
-    let props = radial(in.pos, in.rotation) * scale + in.offset;
+    let delta = in.rotation.x - in.rotation.y;
+
+    let chomp = vec2f(1, abs(cos(delta * 0.0025) * 0.75));
+
+    let pos = select(
+        in.pos,
+        in.pos * chomp,
+        in.vertex % 2 == 0,
+    );
+
+    // let scale = vec2f(in.scale.x * in.scale.y, in.scale.x);
+    // let size = cos(delta * 0.005 + tau * in.rotation.x * 0.0002) * 0.05 + 0.2;
+    let size = cos(delta * 0.005) * 0.04 + 0.2;
+    let scale = vec2f(size * in.scale.y, size);
+    let props = radial(pos, delta * 0.0025) * scale + in.offset;
     let color = hsl(
-        in.color.x,
+        sin(delta * 0.00015) * 0.5 + 0.5,
+        // in.color.x,
         in.color.y,
-        in.color.z,
+        // in.color.z,
+		// sin(delta * 0.0005) * 0.15 + 0.7,
+        0.65,
         in.color.w,
     );
 
@@ -51,8 +71,8 @@ fn vertex_main(in: VertexIn) -> VertexOut {
     out.pos = vec4f(props, 0, 1);
     out.color = select(
         color,
-        color * vec4f(0.25, 0.25, 0.25, 1),
-        in.vertex % 2 == 0,
+        color * vec4f(0.25),
+        in.vertex % 2 != 0,
     );
     return out;
 }

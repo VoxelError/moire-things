@@ -1,43 +1,40 @@
 import { cursor } from "../util/controls.js"
 import { render_pass } from "../util/helpers.js"
-import { abs, cos_wave, tau } from "../util/math.js"
+import { abs, cos_wave, phi, pi, sin_wave, tau } from "../util/math.js"
 import shader from "../shaders/bubbles.wgsl?raw"
 
 export default (props) => {
-	const { canvas, context, device, queue, format, gui } = props
-
-	const points = []
+	const { canvas, context, device, queue, format, points, gui } = props
 
 	const settings = {
 		clear: () => points.length = 0,
 		undo: () => points.pop(),
 		reset,
-		colors: true,
+		colors: false,
 		speed: 1,
 		radius: 1,
-		sectus: 0,
+		sectus: 0.96,
 		sectors: 33,
 	}
 	gui.remember(settings)
 
 	function reset() {
-		settings.colors = true
+		settings.colors = false
 		settings.speed = 1
 		settings.radius = 1
-		settings.sectus = 0
+		settings.sectus = 0.96
 		settings.sectors = 33
 		gui.updateDisplay()
 	}
 
 	gui.add(settings, "clear")
 	gui.add(settings, "undo")
-	gui.add(settings, "reset").name("reset values")
+	gui.add(settings, "reset")
 	gui.add(settings, "colors")
 	gui.add(settings, "speed", 0, 2, 0.01)
 	gui.add(settings, "radius", 0.5, 1.5, 0.01)
-	gui.add(settings, "sectus", 0, 0.99, 0.01)
+	gui.add(settings, "sectus", 0, 0.96, 0.01)
 	gui.add(settings, "sectors", 3, 33, 1)
-	// gui.add(settings, "hue_hz", 1, 5)
 
 	const props_stride = 36
 
@@ -119,7 +116,7 @@ export default (props) => {
 			const saturation = settings.colors ? 1 : 0
 
 			bubble.color = cos_wave(speed - bubble.delta, -0.5, 0.5, 0.0005)
-			bubble.scale = abs(cos_wave(speed - bubble.delta, 0.2, 0, 0.0025))
+			bubble.scale = abs(sin_wave(speed - bubble.delta, 0.2, 0, 0.0025))
 
 			instance_values.set([
 				[bubble.x, bubble.y],
@@ -132,7 +129,7 @@ export default (props) => {
 		queue.writeBuffer(instance_buffer, 0, instance_values)
 
 		const encoder = device.createCommandEncoder()
-		const pass = render_pass(encoder, context, [0.2, 0.2, 0.2, 1])
+		const pass = render_pass(encoder, context, [0, 0, 0, 1])
 
 		pass.setPipeline(pipeline)
 		pass.setVertexBuffer(0, vertex_buffer)

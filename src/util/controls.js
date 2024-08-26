@@ -2,6 +2,8 @@ export const cursor = {
 	x: 0,
 	y: 0,
 	show: true,
+	left_held: false,
+	right_held: false,
 	left_click: () => { },
 	right_click: () => { },
 	left_release: () => { },
