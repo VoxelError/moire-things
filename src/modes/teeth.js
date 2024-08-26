@@ -12,24 +12,20 @@ export default (props) => {
 		reset,
 		radius: 1,
 		teeth: 16,
-		hue: 0,
 	}
 	gui.remember(settings)
 
 	function reset() {
 		settings.radius = 1
 		settings.teeth = 16
-		settings.hue = 0
 		gui.updateDisplay()
 	}
 
 	gui.add(settings, "clear")
 	gui.add(settings, "undo")
-	gui.add(settings, "reset").name("reset values")
+	gui.add(settings, "reset")
 	gui.add(settings, "radius", 0.5, 1.5, 0.01)
 	gui.add(settings, "teeth", 3, 16, 1)
-	gui.add(settings, "hue", 0, 1, 0.01)
-	// gui.add(settings, "hue_hz", 1, 5)
 
 	const props_stride = 40
 
@@ -124,7 +120,7 @@ export default (props) => {
 				[orb.x, orb.y],
 				[orb.scale, aspect],
 				[time, orb.delta],
-				[settings.hue, 0.5, orb.lightness, 1],
+				[0, 0.5, orb.lightness, 1],
 			].flat(), i * props_stride / 4)
 		})
 
