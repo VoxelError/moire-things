@@ -1,109 +1,60 @@
 # Introduction
 
-A showcasing of various simulations using the HTML5 Canvas API. Hosted over on [moire-things.netlify.app](https://moire-things.netlify.app).
+A showcasing of various graphics and simulations, using the WebGPU API. Hosted over on [moire-things.netlify.app](https://moire-things.netlify.app).
 
-Please note that this project is in an alpha state. It is recommended to try it out on Google Chrome, or a browser that uses Chromium.
+Please note that this project is in an alpha state. It is also recommended to try it out on Google Chrome, or a browser that uses Chromium.
 
-![Moire](https://github.com/user-attachments/assets/f5af2c1e-a2bf-481e-b77c-093dc15ef84a)
+![Screenshot 2024-08-26 160217](https://github.com/user-attachments/assets/9e4c5d94-2a74-4a67-8aea-8a48978bb614)
 
 # Overview
 
-Upon entering the site, you will be greeted with a blank canvas, and a user interface on the upper-right of the screen.
+The sidebar to the left contains a list of modes to choose from. On the top-right is a user interface with buttons and sliders. The rest of the screen is the canvas.
 
-<br>
-
-**In summary:**
-
--   Draw modes are like special paint brushes (with some exceptions), and can be changed using the "mode" dropdown.
--   Most draw modes are animated in some way, and can be paused using the "pause" toggle.
--   A number of draw modes use the mouse to draw points. Some modes have a predefined set of points that you can add, using the "plot" button.
--   Finally, the "reset" button will clear the canvas, reset time, and erase all points.
+A more in-depth explanation of each mode and their menus can be read below.
 
 # Modes
 
-A more in-depth explanation of each mode can be read below.
-
-**Plot:** pressing "plot" adds points for this mode <br>
-**Interactive:** points can be drawn for this mode, or is otherwise reactive to user input <br>
-**Performance Impact:** how computationally intensive a given mode is <br>
-
 ### Ball
 
-> Plot: ❌ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟡
-
-> A set of 100 balls that simulate gravity, damping, and traction. The set has a uniform distribution of damping values between 0.7 and 0.9 (smaller value = less bouncy).
+> A set of 100 balls that simulate gravity, damping, and traction. The set has a uniform distribution of damping values between 0.8 and 0.9 (less damping means more bounciness).
 >
 > <b>Left click</b> to drop the set of balls where you clicked. <b>Hold</b> left click, <b>drag</b> in a direction, and <b>release</b> left click to launch the set in the direction of your cursor. The farther your cursor, the faster the launch.
 >
 > <b>Right click</b> to momentarily halt the momentum of every ball. <b>Hold, drag, and release</b> right click to launch all balls in the direction of the cursor, but relative to where they are. For instance, dragging up will launch all balls straight and upwards. The distance of the drag matters here, too.
 >
-> Note that clicking anywhere on the gui panel will drop the whole set from the center of the screen.
-
-### Bounce
-
-> Plot: ❌ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟡
-
-> <b>Hold left click</b> to draw slow-moving circles. These move diagonally, and will travel down and right initially. Upon colliding with a wall, a circle will <b>bounce</b> in the perpendicular direction.
+> Wrap: Disables left and right walls, and wraps around to the other side of the screen.
+> Gravity: Adjusts gravitational constant (0 - 9.8).
 
 ### Bubbles
 
-> Plot: ❌ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟡
+> <b>Hold left click</b> to draw animated bubbles, that grow and shrink sinusoidally.
+>
+> Clear: Removes all bubbles.
+> Undo: Removes the most recent bubble.
+> Reset: Resets the sliders and toggles.
+> Colors: Toggles whether colors show or not.
+> Speed: Adjusts rate of time.
+> Radius: Adjusts bubble size.
+> Sectus: Adjusts the inner radius, as a coefficient of the radius (0 - 0.96).
+> Sectors: Adjusts how many edges the circle has (3 -33).
 
-> <b>Hold left click</b> to draw animated bubbles, that expand and shrink sinusoidally.
+### Compass
 
-### Cells
+> A grid of pointers covering the screen, facing towards the cursor.
+>
+> Facing: Toggles whether pointers face towards or away from the cursor.
 
-> Plot: ❌ <br>
-> Interactive: ❌ <br>
-> Performance Impact: 🟠🟠
+### Conway
 
-> A large set of tightly-packed, concentric rings. These rings are drawn with dashed lines, and display harmonic properties by modulating the offsets of those lines.
+> A simulation of Conways Game of Life, with standard rules. Cells are brighter the more neighbors they have.
+>
+> Restart: Starts a new and random simulation.
 
 ### Fins
 
-> Plot: ✅ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟡
-
-> <b>Hold left click</b> to draw colorful, rotating lines. The hue of these lines rotate over time.
-
-### Heart
-
-> Plot: ❌ <br>
-> Interactive: ❌ <br>
-> Performance Impact: 🟠🟠
-
-> A beating heart that sinusoidally shrinks into itself. The initial heart shape is drawn using two bezier curves.
-
-### Larva
-
-> Plot: ❌ <br>
-> Interactive: ❌ <br>
-> Performance Impact: 🔴🔴🔴
-
-> A set of slowly rotating "cones". The overlapping of these shapes causes many interference patterns to emerge.
-
-### Legs
-
-> Plot: ❌ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟠🟠
-
-> <b>Hold left click</b> to draw points that are connected to the cursor via lines. Dots originate and travel outward from the cursor, and along the lines. These dots fade according to their position on the line.
-
-### Lines
-
-> Plot: ❌ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟡
-
-> <b>Hold left click</b> to draw connected lines. All points will connect to the previous one. The lines subtly grow and shrink over time.
+> <b>Hold left click</b> to draw colorful, rotating lines.
+>
+> Clear: Removes all fins.
 
 ### Orbs
 
@@ -111,139 +62,28 @@ A more in-depth explanation of each mode can be read below.
 > Interactive: ✅ <br>
 > Performance Impact: 🟡
 
-> <b>Hold left click</b> to draw swinging orbs. Orbs swing in an upside-down pendulum motion. Hue shifts over time.
+> <b>Hold left click</b> to draw colorful, swinging orbs. Orbs grow and shrink over time.
+>
+> Clear: Removes all orbs.
 
-### Pendulums
+### Pendulum
 
-> Plot: ❌ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟡
+> Simulates pendulums with realistic motion. <b>Hold left click</b> continuously draws pendulums, and <b>right click</b> draws a single pendulum.
+>
+> Clear: Removes all pendulums.
 
-> <b>Hold left click</b> to continuously draw pendulums. <b>Right click</b> to draw a single pendulum.
+### Spikes
 
-### Petals
+> Spikes that reach towards the cursor. <b>Hold left click</b> to draw continuously, and press <b>right click</b> to draw a single spike.
+>
+> Clear: Removes all spikes.
 
-> Plot: ❌ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🔴🔴🔴
+### Teeth
 
-> <b>Hold left click</b> to draw breathing flower petals. They will attempt to face away from the cursor.
-
-### Pillar
-
-> Plot: ❌ <br>
-> Interactive: ❌ <br>
-> Performance Impact: 🟡
-
-> A bouncing, twisting pillar. Hue shifts over time, and jumps on each bounce. Bounce angle and velocity slightly vary on each bounce.
-
-### Pointer
-
-> Plot: ❌ <br>
-> Interactive: ❌ <br>
-> Performance Impact: 🟡
-
-A thing.
-
-### Radial
-
-> Plot: ❌ <br>
-> Interactive: ❌ <br>
-> Performance Impact: 🟠🟠
-
-> A circle made of an increasing number of lines. The number of lines oscillates between 1 and 250 lines, over a period of 40 seconds.
-
-### Snake
-
-> Plot: ❌ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟡
-
-> <b>Hold left click</b> to draw blinking circles. Dragging causes an apparent "snake-like" motion.
-
-### Speed
-
-> Plot: ❌ <br>
-> Interactive: ❌ <br>
-> Performance Impact: 🟡
-
-> Crazy orb zooms in random directions.
-
-### Sphere
-
-> Plot: ❌ <br>
-> Interactive: ❌ <br>
-> Performance Impact: 🟡
-
-> A simple bobbing sphere.
-
-### Spin
-
-> Plot: ✅ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟡
-
-> <b>Hold left click</b> to draw orbs that rotate clockwise around and along the y-axis and z-axis, respectively.
-
-### Stalks
-
-> Plot: ❌ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟡
-
-> <b>Hold left click</b> to draw blossoming, rotating square stems.
-
-### Squares
-
-> Plot: ✅ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟡
-
-> <b>Hold left click</b> to draw bouncing squares, similar to the "Bounce" mode.
-
-### Stare
-
-> Plot: ❌ <br>
-> Interactive: ❌ <br>
-> Performance Impact: 🟡
-
-> Be not afraid.
-
-### Sun
-
-> Plot: ✅ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟠🟠
-
-> <b>Hold left click</b> to draw dashed orbits. An orbit counter is faintly displayed in the top-left of the screen.
-
-### Trails
-
-> Plot: ❌ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟡
-
-> <b>Hold left click</b> to draw translucent orbs, that shrink and fade over time. Moving the cursor oustide of the window will draw points randomly to the screen.
-
-### Tree
-
-> Plot: ❌ <br>
-> Interactive: ❌ <br>
-> Performance Impact: 🟡
-
-> A variant of the Pythagoras tree fractal, with a simulation depth of 11. Segments shift their hues sequentially over time. Fully looping.
-
-### Twirls
-
-> Plot: ❌ <br>
-> Interactive: ✅ <br>
-> Performance Impact: 🟠🟠
-
-> <b>Hold left click</b> to draw spoked stars.
-
-# Remarks
-
--   Varying your strokes can achieve cool results. Experiment!
--   While hovering the cursor over the closed mode dropdown, you can use the scroll wheel to scroll through different modes. Be mindful however, it can sometimes bug out.
--   Note that everything is reset when switching modes, just as if you pressed the "reset" button. This feature prevents incredibly glitchy behavior when transferring points to between modes.
--   Some modes are computationally intensive, and have not been fully optimized yet. As well, there is currently no limit to how many points you can add. I am currently working on re-implementing the app using the WebGPU API, which could drastically improve performance.
+> Spinning circles with spikes, that grow and shrink. <b>Hold left click</b> to draw continuously, and press <b>right click</b> to draw a single circle.
+>
+> Clear: Removes all circles.
+> Undo: Removes the most recent circle.
+> Reset: Resets the sliders and toggles.
+> Radius: Adjusts circle size.
+> Teeth: Adjusts how many teeth each circle has (3 - 16).
