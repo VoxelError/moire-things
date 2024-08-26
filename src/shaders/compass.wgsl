@@ -4,6 +4,7 @@ const tau = radians(360.);
 
 @group(0) @binding(0) var<uniform> cursor: vec2<f32>;
 @group(0) @binding(1) var<uniform> aspect: f32;
+@group(0) @binding(2) var<uniform> facing: u32;
 
 struct VertexIn {
 	@builtin(vertex_index) vertex: u32,
@@ -43,9 +44,11 @@ fn vertex_main(in: VertexIn) -> VertexOut {
     let pos = get_pos(in.vertex, 0.02);
     // let pos = get_pos(in.vertex, mouse.x);
 
+    let direction = select(0, pi, facing == 1);
+
     let rot = vec2f(
-        pos.x * cos(pos.y + mouse.y) * aspect,
-        pos.x * sin(pos.y + mouse.y),
+        pos.x * cos(pos.y + mouse.y + direction) * aspect,
+        pos.x * sin(pos.y + mouse.y + direction),
     ) + in.offset;
 
     var out: VertexOut;

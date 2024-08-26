@@ -8,20 +8,21 @@ export default (props) => {
 	const aspect = canvas.height / canvas.width
 
 	const max = 50
+
 	for (let i = 0; i <= max; i++) {
 		for (let j = 0; j <= max; j++) {
-			points.push({
+			points[50 * i + j] = {
 				x: (i / max) * 2 - 1,
 				y: (j / max) * 2 - 1,
 				delta: 0,
-			})
+			}
 		}
 	}
 
 	const settings = {
-		clear: () => points.length = 0
+		facing: true
 	}
-	gui.add(settings, "clear")
+	gui.add(settings, "facing")
 
 	const props_stride = 16
 	const pipeline = device.createRenderPipeline({
@@ -55,45 +56,51 @@ export default (props) => {
 						srcFactor: 'one',
 						dstFactor: 'one-minus-src-alpha',
 					},
+				},
+				constants: {
+					facing: settings.facing,
 				}
 			}]
 		}
 	})
 
-	const cursor_array = new Float32Array(2)
-	const cursor_buffer = device.createBuffer({
-		size: cursor_array.byteLength,
-		usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-	})
+	const cursor_data = new Float32Array(2)
+	const aspect_data = new Float32Array(1)
+	const facing_data = new Uint32Array(1)
 
-	const aspect_buffer = device.createBuffer({
-		size: 4,
+	const cursor_buffer = device.createBuffer({
+		size: cursor_data.byteLength,
 		usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
 	})
-	device.queue.writeBuffer(aspect_buffer, 0, new Float32Array([aspect]))
+	const aspect_buffer = device.createBuffer({
+		size: aspect_data.byteLength,
+		usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+	})
+	const facing_buffer = device.createBuffer({
+		size: facing_data.byteLength,
+		usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+	})
 
 	const bind_group = device.createBindGroup({
 		layout: pipeline.getBindGroupLayout(0),
 		entries: [
 			{ binding: 0, resource: { buffer: cursor_buffer } },
 			{ binding: 1, resource: { buffer: aspect_buffer } },
+			{ binding: 2, resource: { buffer: facing_buffer } },
 		]
 	})
 
 	return (time) => {
-		cursor_array.set([
+		cursor_data.set([
 			((cursor.x / canvas.width) * 2 - 1),
 			-((cursor.y / canvas.height) * 2 - 1),
 		])
-		device.queue.writeBuffer(cursor_buffer, 0, cursor_array)
+		aspect_data.set([aspect])
+		facing_data.set([settings.facing ? 1 : 0])
 
-		if (cursor.left_held) {
-			points.push({
-				x: (cursor.x / canvas.width) * 2 - 1,
-				y: -((cursor.y / canvas.height) * 2 - 1),
-				delta: time,
-			})
-		}
+		device.queue.writeBuffer(cursor_buffer, 0, cursor_data)
+		device.queue.writeBuffer(aspect_buffer, 0, aspect_data)
+		device.queue.writeBuffer(facing_buffer, 0, facing_data)
 
 		const instance_buffer = device.createBuffer({ size: props_stride * points.length, usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST })
 		const instance_values = new Float32Array(props_stride / 4 * points.length)

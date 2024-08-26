@@ -1,6 +1,6 @@
 import { cursor } from "../util/controls.js"
 import { get_storage, render_pass, set_storage } from "../util/helpers.js"
-import shader from "../shaders/legs.wgsl?raw"
+import shader from "../shaders/spikes.wgsl?raw"
 
 export default (props) => {
 	const { canvas, context, device, queue, format, points, gui } = props

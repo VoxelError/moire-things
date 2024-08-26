@@ -107,7 +107,7 @@ export default (props) => {
 			bounce.x += bounce.vx
 			bounce.y += bounce.vy
 
-			abs(bounce.x) > 1 - bounce.radius && (bounce.vx *= -1)
+			abs(bounce.x) > 1 - bounce.radius * aspect && (bounce.vx *= -1)
 			abs(bounce.y) > 1 - bounce.radius && (bounce.vy *= -1)
 
 			instance_values.set([

@@ -11,7 +11,6 @@ export default (props) => {
 	const settings = {
 		restart,
 	}
-	gui.remember(settings)
 	gui.add(settings, "restart")
 
 	function restart() {

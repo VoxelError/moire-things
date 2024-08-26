@@ -6,8 +6,7 @@ body {
 }
 
 canvas {
-	cursor: crosshair;
-	display: block;
+	// cursor: crosshair;
 	width: 100%;
 	height: 100%;
 	background-color: black;
@@ -17,27 +16,30 @@ canvas {
 	user-select: none;
 	background-color: hsl(0, 0%, 15%);
 	color-scheme: light dark;
-	--background: #000;
-	--code-background: #555;
-	--link: #02abff;
-	--panel-color: #02abff;
-	--panel-background: #222;
-	--panel-emphasis: rgb(115, 206, 255);
-	--tooltip-background: #111;
-	--tooltip-border: rgba(255, 255, 255, 0.1);
-	--source-tab-color: white;
-	--source-tab-background: #444;
-	--source-tab-active-background: #282828;
-	--source-tab-active-shadow: rgb(167, 167, 167);
 	font-family: 'Inconsolata', monospace;
 	box-sizing: inherit;
-	text-decoration: none;
-	color: var(--link);
+	color: #02abff;
 	padding: 0px 20px;
+
+	&-option {
+		font-size: 20px;
+		height: min-content;
+		width: min-content;
+		margin: 5px 0px;
+
+		&:hover {
+			color: #57dfc8;
+		}
+
+		&#selected {
+			color: #6e57df;
+			text-decoration: underline;
+		}
+	}
 }
 
 .container {
 	height: 100%;
 	display: grid;
-	grid-template-columns: 200px 1fr;
+	grid-template-columns: 0.12fr 1fr;
 }

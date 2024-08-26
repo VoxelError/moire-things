@@ -142,6 +142,8 @@ export default (props) => {
 		points.forEach((bounce, i) => {
 			bounce.radius = 0.033
 
+			const wall = bounce.radius * aspect
+
 			bounce.animate = cursor.left_held ? false : true
 
 			cursor.left_held && (bounce.animate = false)
@@ -153,13 +155,13 @@ export default (props) => {
 				bounce.y += bounce.vy
 
 				if (settings.wrap) {
-					if (abs(bounce.x) > 1 + bounce.radius) {
-						bounce.x = -sign(bounce.x) * (1 + bounce.radius)
+					if (abs(bounce.x) > 1 + wall) {
+						bounce.x = -sign(bounce.x) * (1 + wall)
 					}
 				} else {
-					if (abs(bounce.x) > 1 - bounce.radius) {
+					if (abs(bounce.x) > 1 - wall) {
 						bounce.vx *= -bounce.damping
-						bounce.x = sign(bounce.x) * (1 - bounce.radius)
+						bounce.x = sign(bounce.x) * (1 - wall)
 					}
 				}
 
