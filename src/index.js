@@ -38,17 +38,17 @@ for (const mode of Object.keys(modes)) {
 	mode_selector.appendChild(option)
 }
 
-const format = navigator.gpu.getPreferredCanvasFormat()
-const adapter = await navigator.gpu.requestAdapter()
-const device = await adapter.requestDevice()
-const queue = device.queue
-
-const context = canvas.getContext("webgpu")
-context.configure({ device, format, alphaMode: "premultiplied" })
-
 let frame = () => { }
 
-const setup = () => {
+const setup = async () => {
+	const format = navigator.gpu.getPreferredCanvasFormat()
+	const adapter = await navigator.gpu.requestAdapter()
+	const device = await adapter.requestDevice()
+	const queue = device.queue
+
+	const context = canvas.getContext("webgpu")
+	context.configure({ device, format, alphaMode: "premultiplied" })
+
 	gui = new GUI({ closeOnTop: true })
 	gui.useLocalStorage = true
 	gui.domElement.style.userSelect = "none"
@@ -57,9 +57,9 @@ const setup = () => {
 	frame = modes[current_mode]({
 		canvas,
 		context,
+		format,
 		device,
 		queue,
-		format,
 		points,
 		gui,
 	})
