@@ -1,7 +1,9 @@
 import { cursor } from "../util/controls.js"
 import { get_storage, render_pass, set_storage } from "../util/helpers.js"
 import { abs, cos, cos_wave, sin, tau } from "../util/math.js"
-import shader from "../shaders/bounce.wgsl?raw"
+import shader from "../shaders/wave.wgsl?raw"
+
+// TO-DO: fix ball points bug
 
 export default (props) => {
 	const { canvas, context, device, queue, format, points, gui } = props
