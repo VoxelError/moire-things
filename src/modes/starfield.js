@@ -53,8 +53,8 @@ export default (props) => {
 		const aspect = canvas.height / canvas.width
 
 		const add_point = () => points.push({
-			x: (cursor.x / canvas.width) * 2 - 1,
-			y: -((cursor.y / canvas.height) * 2 - 1),
+			x: cursor.x,
+			y: cursor.y,
 		})
 
 		cursor.left_held && add_point()

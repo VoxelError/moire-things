@@ -12,8 +12,11 @@ export const cursor = {
 
 export const listen = (canvas) => {
 	canvas.addEventListener("mousemove", (event) => {
-		cursor.x = event.offsetX
-		cursor.y = event.offsetY
+		// cursor.x = event.offsetX
+		// cursor.y = event.offsetY
+
+		cursor.x = (event.offsetX / canvas.width) * 2 - 1
+		cursor.y = -((event.offsetY / canvas.height) * 2 - 1)
 	})
 
 	canvas.addEventListener("mousedown", (event) => {

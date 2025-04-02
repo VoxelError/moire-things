@@ -1,8 +1,8 @@
 import { mat4 } from 'https://webgpufundamentals.org/3rdparty/wgpu-matrix.module.js'
-import shader from "../shaders/textures3.wgsl?raw"
-import shader2 from "../shaders/textures4.wgsl?raw"
 import { phi, tau } from "../util/math"
 import { setup } from '../util/helpers'
+import shader from "./shaders/textures3.js"
+import shader2 from "./shaders/textures4.js"
 
 const { canvas, context, device, format } = await setup()
 

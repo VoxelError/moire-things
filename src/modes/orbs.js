@@ -66,8 +66,8 @@ export default (props) => {
 
 		if (cursor.left_held) {
 			points.push({
-				x: (cursor.x / canvas.width) * 2 - 1,
-				y: -((cursor.y / canvas.height) * 2 - 1),
+				x: cursor.x,
+				y: cursor.y,
 				delta: time,
 			})
 		}

@@ -1,5 +1,5 @@
 import { cursor } from "../util/controls.js"
-import { get_storage, render_pass, set_storage } from "../util/helpers.js"
+import { render_pass } from "../util/helpers.js"
 import shader from "../shaders/spikes.wgsl?raw"
 
 export default (props) => {
@@ -71,17 +71,14 @@ export default (props) => {
 
 	const add_point = (time) => {
 		points.push({
-			x: (cursor.x / canvas.width) * 2 - 1,
-			y: -((cursor.y / canvas.height) * 2 - 1),
+			x: cursor.x,
+			y: cursor.y,
 			delta: time,
 		})
 	}
 
 	return (time) => {
-		cursor_array.set([
-			((cursor.x / canvas.width) * 2 - 1),
-			-((cursor.y / canvas.height) * 2 - 1),
-		])
+		cursor_array.set([cursor.x, cursor.y])
 		device.queue.writeBuffer(cursor_buffer, 0, cursor_array)
 
 		cursor.left_held && add_point(time)

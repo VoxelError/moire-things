@@ -1,6 +1,6 @@
 import { cursor } from "../util/controls.js"
-import { get_storage, render_pass, set_storage } from "../util/helpers.js"
-import { abs, cos, cos_wave, sin, tau } from "../util/math.js"
+import { render_pass } from "../util/helpers.js"
+import { abs, cos, sin, tau } from "../util/math.js"
 import shader from "../shaders/wave.wgsl?raw"
 
 // TO-DO: fix ball points bug
@@ -51,7 +51,7 @@ export default (props) => {
 		// primitive: { topology: "line-list" },
 	})
 
-	const sectors = 16
+	const sectors = 8
 	const vertices = sectors * 6
 	const index_data = new Uint32Array(vertices)
 	const vertex_data = new Float32Array(vertices * 2)
@@ -66,7 +66,7 @@ export default (props) => {
 
 		vertex_data.set([
 			ratio, 1,
-			ratio, 0.95,
+			ratio, 0,
 		], i * 4)
 
 		if (i < sectors) index_data.set([0, 1, 2, 1, 2, 3].map(e => e + i * 2), i * 6)
@@ -77,25 +77,18 @@ export default (props) => {
 
 	return () => {
 		cursor.left_click = () => {
-			const max = 500
+			const max = 10
 
 			for (let i = 0; i < max; i++) {
 				points[i] = {
-					x: (cursor.x / canvas.width) * 2 - 1,
-					y: -((cursor.y / canvas.height) * 2 - 1),
+					x: cursor.x,
+					y: cursor.y,
 					vx: cos(i * tau / max) * 0.01 * aspect,
 					vy: sin(i * tau / max) * 0.01,
 					hue: i / max,
 				}
 			}
 		}
-
-		// cursor.right_click = () => {
-		// 	points.forEach((bounce) => {
-		// 		bounce.vx *= -1
-		// 		bounce.vy *= -1
-		// 	})
-		// }
 
 		queue.writeBuffer(vertex_buffer, 0, vertex_data)
 		queue.writeBuffer(index_buffer, 0, index_data)
@@ -104,7 +97,7 @@ export default (props) => {
 		const instance_values = new Float32Array(props_stride / 4 * points.length)
 
 		points.forEach((bounce, i) => {
-			bounce.radius = 0.05
+			bounce.radius = 0.25
 
 			bounce.x += bounce.vx
 			bounce.y += bounce.vy

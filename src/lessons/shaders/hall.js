@@ -1,3 +1,5 @@
+export default /* wgsl */`
+
 struct VertexOut {
 	@builtin(position) pos: vec4f,
 	@location(0) tex: vec2f,
@@ -32,3 +34,5 @@ fn vertex_main(@builtin(vertex_index) index: u32) -> VertexOut {
 fn fragment_main(in: VertexOut) -> @location(0) vec4f {
     return textureSample(texture, samp, in.tex);
 }
+
+`

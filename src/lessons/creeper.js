@@ -1,8 +1,8 @@
 import { sin_wave } from "../util/math"
-import shader from "../shaders/textures.wgsl?raw"
 import { GUI } from "dat.gui"
 import { gen_mips } from "./mip"
 import { render_pass, setup } from "../util/helpers"
+import shader from "./shaders/textures.js"
 
 const { canvas, context, device, format } = await setup()
 

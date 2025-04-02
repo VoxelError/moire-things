@@ -56,9 +56,6 @@ export default (props) => {
 						srcFactor: 'one',
 						dstFactor: 'one-minus-src-alpha',
 					},
-				},
-				constants: {
-					facing: settings.facing,
 				}
 			}]
 		}
@@ -92,11 +89,11 @@ export default (props) => {
 
 	return (time) => {
 		cursor_data.set([
-			((cursor.x / canvas.width) * 2 - 1),
-			-((cursor.y / canvas.height) * 2 - 1),
+			cursor.x,
+			cursor.y,
 		])
 		aspect_data.set([aspect])
-		facing_data.set([settings.facing ? 1 : 0])
+		facing_data.set([settings.facing ? 0 : 1])
 
 		device.queue.writeBuffer(cursor_buffer, 0, cursor_data)
 		device.queue.writeBuffer(aspect_buffer, 0, aspect_data)

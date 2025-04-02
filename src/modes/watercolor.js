@@ -1,39 +1,24 @@
 import { cursor } from "../util/controls.js"
 import { render_pass } from "../util/helpers.js"
-import { abs, cos_wave, phi, pi, sin_wave, tau } from "../util/math.js"
-import shader from "../shaders/bubbles.wgsl?raw"
+import { cos_wave, tau } from "../util/math.js"
+import shader from "../shaders/watercolor.wgsl?raw"
+
+// TODO: add hue setting
 
 export default (props) => {
-	const { canvas, context, device, queue, format, points, gui } = props
+	const { canvas, context, device, queue, format, gui } = props
+
+	const points = []
 
 	const settings = {
 		clear: () => points.length = 0,
-		undo: () => points.pop(),
-		reset,
-		colors: false,
-		speed: 1,
-		radius: 1,
-		sectus: 0.96,
-		sectors: 33,
-	}
-
-	function reset() {
-		settings.colors = false
-		settings.speed = 1
-		settings.radius = 1
-		settings.sectus = 0.96
-		settings.sectors = 33
-		gui.updateDisplay()
+		size: 1,
+		alpha: 0.05,
 	}
 
 	gui.add(settings, "clear")
-	gui.add(settings, "undo")
-	gui.add(settings, "reset")
-	gui.add(settings, "colors")
-	gui.add(settings, "speed", 0, 2, 0.01)
-	gui.add(settings, "radius", 0.5, 1.5, 0.01)
-	gui.add(settings, "sectus", 0, 0.96, 0.01)
-	gui.add(settings, "sectors", 3, 33, 1)
+	gui.add(settings, "size", 0.5, 1.5, 0.05)
+	gui.add(settings, "alpha", 0.05, 1, 0.05)
 
 	const props_stride = 36
 
@@ -77,7 +62,8 @@ export default (props) => {
 	})
 
 	return (time) => {
-		const vertices = settings.sectors * 6
+		const sectors = 64
+		const vertices = sectors * 6
 		const index_data = new Uint32Array(vertices)
 		const vertex_data = new Float32Array(vertices * 2)
 
@@ -85,24 +71,25 @@ export default (props) => {
 		const index_buffer = device.createBuffer({ size: index_data.byteLength, usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST })
 
 		const aspect = canvas.height / canvas.width
-		const speed = time * settings.speed
 
 		const add_point = () => points.push({
 			x: cursor.x,
 			y: cursor.y,
-			delta: speed,
+			delta: time,
+			size: settings.size,
+			alpha: settings.alpha,
 		})
 
 		cursor.left_held && add_point()
 		cursor.right_click = add_point
 
-		for (let i = 0; i <= settings.sectors; i++) {
-			const ratio = i * tau / settings.sectors;
-			const delta = ratio + settings.speed * time * 0.002;
+		for (let i = 0; i <= sectors; i++) {
+			const ratio = i * tau / sectors
+			vertex_data.set([ratio, 1, ratio, 0], i * 4)
+		}
 
-			vertex_data.set([delta, settings.radius, delta, settings.radius * settings.sectus], i * 4)
-
-			if (i < settings.sectors) index_data.set([0, 1, 2, 1, 2, 3].map(e => e + i * 2), i * 6)
+		for (let i = 0; i < sectors; i++) {
+			index_data.set([0, 1, 2, 1, 2, 3].map(e => e + i * 2), i * 6)
 		}
 
 		queue.writeBuffer(vertex_buffer, 0, vertex_data)
@@ -112,16 +99,19 @@ export default (props) => {
 		const instance_values = new Float32Array(props_stride / 4 * points.length)
 
 		points.forEach((bubble, i) => {
-			const saturation = settings.colors ? 1 : 0
+			const theta = time - bubble.delta
+			const scale = Math.log(theta) * 0.025
+			const size_cap = 0.2
 
-			bubble.color = cos_wave(speed - bubble.delta, -0.5, 0.5, 0.0005)
-			bubble.scale = abs(sin_wave(speed - bubble.delta, 0.2, 0, 0.0025))
+			bubble.color = cos_wave(bubble.delta, -0.5, 0.5, 0.0005)
+			// bubble.scale = theta < 1000 ? sin_wave(theta, 0.2, 0, 0.0025) : 0.25
+			bubble.scale = scale < size_cap ? scale : size_cap
 
 			instance_values.set([
 				[bubble.x, bubble.y],
-				[bubble.scale, aspect],
+				[bubble.scale * bubble.size, aspect],
 				[bubble.delta * 0.005],
-				[bubble.color, saturation, 0.5, 0.5],
+				[bubble.color, 1, 0.5, bubble.alpha],
 			].flat(), i * props_stride / 4)
 		})
 

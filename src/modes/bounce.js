@@ -1,7 +1,7 @@
 import { cursor } from "../util/controls.js"
 import { render_pass } from "../util/helpers.js"
 import { abs, cos, sign, sin, tau } from "../util/math.js"
-import shader from "../shaders/ball.wgsl?raw"
+import shader from "../shaders/bounce.wgsl?raw"
 
 export default (props) => {
 	const { canvas, context, device, queue, format, points, gui } = props
@@ -11,7 +11,6 @@ export default (props) => {
 		wrap: false,
 		gravity: 9.8,
 	}
-	gui.remember(settings)
 
 	gui.add(settings, "clear")
 	gui.add(settings, "wrap")
@@ -98,8 +97,8 @@ export default (props) => {
 		cursor.left_click = () => {
 			for (let i = 0; i < amount; i++) {
 				points[i] = {
-					x: (cursor.x / canvas.width) * 2 - 1,
-					y: -((cursor.y / canvas.height) * 2 - 1),
+					x: cursor.x,
+					y: cursor.y,
 					vx: 0,
 					vy: 0,
 					damping: 0.9 - i * 0.001,
@@ -109,8 +108,8 @@ export default (props) => {
 		}
 
 		cursor.right_click = () => {
-			pin.x = (cursor.x / canvas.width) * 2 - 1
-			pin.y = -((cursor.y / canvas.height) * 2 - 1)
+			pin.x = cursor.x
+			pin.y = cursor.y
 		}
 
 		cursor.left_release = () => {
@@ -122,8 +121,8 @@ export default (props) => {
 		}
 
 		cursor.right_release = () => {
-			const x = (cursor.x / canvas.width) * 2 - 1
-			const y = -((cursor.y / canvas.height) * 2 - 1)
+			const x = cursor.x
+			const y = cursor.y
 
 			const vx = x - pin.x
 			const vy = y - pin.y
@@ -135,8 +134,8 @@ export default (props) => {
 		}
 
 		if (cursor.left_held) {
-			pin.x = (cursor.x / canvas.width) * 2 - 1
-			pin.y = -((cursor.y / canvas.height) * 2 - 1)
+			pin.x = cursor.x
+			pin.y = cursor.y
 		}
 
 		points.forEach((bounce, i) => {
@@ -149,7 +148,7 @@ export default (props) => {
 			cursor.left_held && (bounce.animate = false)
 
 			if (bounce.animate) {
-				bounce.vy -= (settings.gravity / 60) / 66
+				bounce.vy -= settings.gravity * (0.016 ** 2)
 
 				bounce.x += bounce.vx
 				bounce.y += bounce.vy

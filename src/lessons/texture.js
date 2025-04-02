@@ -1,7 +1,7 @@
-import shader from "../shaders/textures.wgsl?raw"
 import { GUI } from "dat.gui"
-import image from "../f-texture.png"
 import { setup } from "../util/helpers"
+import image from "../f-texture.png"
+import shader from "./shaders/textures.js"
 
 const { canvas, context, device, format } = await setup()
 

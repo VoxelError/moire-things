@@ -24,7 +24,7 @@ fn radial(in: vec2f) -> vec2f {
 }
 
 @vertex
-fn vertex_main(in: VertexIn) -> VertexOut {
+fn bob(in: VertexIn) -> VertexOut {
     let scale = vec2f(in.scale.x * in.scale.y, in.scale.x);
     let color = vec4f(0.5, 0.5, 0.5, 1);
 
@@ -46,11 +46,48 @@ fn vertex_main(in: VertexIn) -> VertexOut {
 
     var out: VertexOut;
     out.pos = vec4f(props, 0, 1);
+    // out.pos = vec4f(check, 0, 1);
     out.color = select(
         color,
         color * vec4f(0.25, 0.25, 0.25, 0),
-        in.vertex % 2 == 0,
+        in.vertex > 0,
     );
+    return out;
+}
+
+@vertex
+fn string(in: VertexIn) -> VertexOut {
+    let scale = vec2f(in.scale.x * in.scale.y, in.scale.x);
+    let color = vec4f(0.5, 0.5, 0.5, 1);
+
+    let radius = 0.3;
+    let amplitude = tau * 0.1;
+
+    let theta = (in.delta.x - in.delta.y) * 0.005;
+    let length = vec2f(radius * in.scale.y, radius);
+
+    let gravity = 9.82;
+    let motion = cos(1 / sqrt(radius / gravity) * theta * 0.15) * amplitude;
+
+    let bob = vec2f(
+        sin(motion),
+        -cos(motion),
+    ) * length + in.offset;
+
+    let width = 0.1;
+
+    let line = array(
+        radial(vec2f(motion, -width)) * scale + bob,
+        radial(vec2f(motion, -width)) * scale + in.offset,
+        radial(vec2f(motion, width)) * scale + in.offset,
+        radial(vec2f(motion, -width)) * scale + bob,
+        radial(vec2f(motion, width)) * scale + bob,
+        radial(vec2f(motion, width)) * scale + in.offset,
+    );
+
+    var out: VertexOut;
+    out.pos = vec4f(line[in.vertex], 0, 1);
+    out.color = vec4f(0.25);
     return out;
 }
 

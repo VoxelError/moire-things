@@ -1,10 +1,10 @@
 import { mat4 } from 'https://webgpufundamentals.org/3rdparty/wgpu-matrix.module.js'
-import shader from "../shaders/hall.wgsl?raw"
 import { array_mipmap, canvas_mipmap, texture_mipmap, mipmapped_texture } from "./mip2"
 import { degrees, tau } from "../util/math"
 import image from "../f-texture.png"
 import { GUI } from 'dat.gui'
 import { setup } from '../util/helpers'
+import shader from "./shaders/hall.js"
 
 const { canvas, context, device, format } = await setup()
 

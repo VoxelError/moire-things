@@ -4,9 +4,17 @@ import { abs, cos, sign, sin, tau } from "../util/math.js"
 import shader from "../shaders/wiggle.wgsl?raw"
 
 export default (props) => {
-	const { canvas, context, device, queue, format, points, gui } = props
+	const { canvas, context, device, queue, format, gui } = props
 
-	gui.add({ clear: () => points.length = 0 }, "clear")
+	const points = []
+
+	const settings = {
+		clear: () => points.length = 0,
+		gravity: 9.8,
+	}
+
+	gui.add(settings, "clear")
+	gui.add(settings, "gravity", 0, 20, 0.2)
 
 	const props_stride = 40
 
@@ -54,7 +62,7 @@ export default (props) => {
 		y: 0,
 	}
 
-	const sectors = 16
+	const sectors = 32
 	const vertices = sectors * 6
 	const index_data = new Uint32Array(vertices)
 	const vertex_data = new Float32Array(vertices * 2)
@@ -71,75 +79,52 @@ export default (props) => {
 			ratio, 1,
 			ratio, 0,
 		], i * 4)
-
-		if (i < sectors) index_data.set([0, 1, 2, 1, 2, 3].map(e => e + i * 2), i * 6)
 	}
 
-	const gravity = 9.8
-	const damping = 0.9
-	const traction = 0.8
+	for (let i = 0; i < sectors; i++) {
+		const indices = [0, 1, 2, 1, 2, 3]
+		index_data.set(indices.map(e => e + i * 2), i * 6)
+	}
+
+	const damping = 0.5
+	const traction = 0.99
+
+	const max = 1
+
+	for (let i = 0; i < max; i++) {
+		points[i] = {
+			x: 0,
+			y: -1,
+			vx: 0,
+			vy: 0,
+			animate: false,
+		}
+	}
 
 	return () => {
-		cursor.left_click = () => {
-			const max = 2
-
-			for (let i = 0; i < max; i++) {
-				points[i] = {
-					x: (cursor.x / canvas.width) * 2 - 1,
-					y: -((cursor.y / canvas.height) * 2 - 1),
-					vx: 0,
-					vy: 0,
-					animate: false,
-				}
-			}
-		}
-
 		queue.writeBuffer(vertex_buffer, 0, vertex_data)
 		queue.writeBuffer(index_buffer, 0, index_data)
 
 		const instance_buffer = device.createBuffer({ size: props_stride * points.length, usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST })
 		const instance_values = new Float32Array(props_stride / 4 * points.length)
 
-		points.forEach((bounce, i) => {
-			bounce.radius = 0.05
-
-			bounce.animate = cursor.left_held ? false : true
+		points.forEach((wiggle, i) => {
+			wiggle.radius = 0.1
 
 			if (cursor.left_held) {
-				pin.x = (cursor.x / canvas.width) * 2 - 1
-				pin.y = -((cursor.y / canvas.height) * 2 - 1)
-
-				bounce.animate = false
+				pin.x = cursor.x
 			}
 
-			(cursor.left_release = (pin) => {
-				bounce.vx -= bounce.x - pin.x
-				bounce.vy -= bounce.y - pin.y
+			wiggle.vx = wiggle.vx - (wiggle.x - pin.x)
+			// wiggle.vx *= traction
 
-				bounce.animate = true
-			})(pin)
-
-			if (bounce.animate) {
-				bounce.vy -= (gravity / 60) / 66
-
-				bounce.x += bounce.vx
-				bounce.y += bounce.vy
-
-				if (abs(bounce.x) > 1 - bounce.radius) {
-					bounce.vx *= -damping
-					bounce.x = sign(bounce.x) * (1 - bounce.radius)
-				}
-				if (abs(bounce.y) > 1 - bounce.radius) {
-					bounce.vy *= -damping
-					bounce.y = sign(bounce.y) * (1 - bounce.radius)
-					if (sign(bounce.y) < 0) bounce.vx *= traction
-				}
-			}
+			wiggle.x += wiggle.vx
+			wiggle.y = wiggle.radius - 1
 
 			instance_values.set([
-				[bounce.x, bounce.y],
-				[bounce.radius, aspect],
-				[bounce.vx, bounce.vy],
+				[wiggle.x, wiggle.y],
+				[wiggle.radius, aspect],
+				[wiggle.vx, wiggle.vy],
 				[0, 1, 0.5, 0.5],
 			].flat(), i * props_stride / 4)
 		})
