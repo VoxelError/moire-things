@@ -18,6 +18,7 @@ import starfield from "../modes/starfield"
 import teeth from "../modes/teeth"
 import watercolor from "../modes/watercolor"
 import wave from "../modes/wave"
+import wave2 from "../modes/wave2"
 import wiggle from "../modes/wiggle"
 
 export default {
@@ -36,10 +37,12 @@ export default {
 	pull,
 	rainbow,
 	slices,
+	// slices1,
 	spikes,
 	// starfield,
 	teeth,
 	watercolor,
 	wave,
+	wave2,
 	// wiggle,
 }

@@ -5,7 +5,7 @@ const phi = radians(90.);
 const pi = radians(180.);
 const tau = radians(360.);
 
-@group(0) @binding(0) var<uniform> cursor: vec2<f32>;
+@group(0) @binding(0) var<uniform> mouse: vec2<f32>;
 @group(0) @binding(1) var<uniform> aspect: f32;
 @group(0) @binding(2) var<uniform> time: f32;
 
@@ -102,7 +102,7 @@ fn fragment_main(@builtin(position) in: vec4f) -> @location(0) vec4f {
     let t = sin(time * 0.001) * 0.5 + 0.5;
     let pos = (in.xy / vec2f(width, height)) * 2 - 1;
     let a = vec2f(1, aspect);
-    let c = cursor * a;
+    let c = mouse * a;
     let uv = pos * vec2f(1, -1) * a;
 
     var color: vec4<f32>;

@@ -48,3 +48,28 @@ export class GPUContext {
 		return this.context
 	}
 }
+
+export const create_buffer = (props, usage, data) => {
+	return {
+		data,
+		buffer: props.device.createBuffer({
+			size: data.byteLength,
+			usage,
+		})
+	}
+}
+
+export const write_buffer = (props, obj) => {
+	const { queue } = props.device
+	queue.writeBuffer(obj.buffer, 0, obj.data)
+}
+
+export const create_pipeline = (props, shader, buffers, targets, constants) => {
+	const { device } = props
+	const module = device.createShaderModule({ code: shader })
+	return device.createRenderPipeline({
+		layout: 'auto',
+		vertex: { module, buffers },
+		fragment: { module, targets, constants },
+	})
+}
